@@ -1,13 +1,11 @@
-import { useState } from "react";
 import ICONS from "../../../assets/icons/icons";
 import IMAGES from "../../../assets/images/images";
-import Model from "../../_components/model";
 
-const amounts = ["200", "500", "1000", "2000", "5000", "10000"];
+// const amounts = ["200", "500", "1000", "2000", "5000", "10000"];
 
 function Sidebar() {
-  const [selectedAmount, setSelectedAmount] = useState("200");
-  const [showSearchPlayer, setShowSearchPlayer] = useState(false);
+  // const [selectedAmount, setSelectedAmount] = useState("200");
+  // const [ setShowSearchPlayer] = useState(false);
   return (
     <aside className="bg-medium_blue w-full md:w-96 rounded-md ">
       {/* Profile Section */}
@@ -87,7 +85,7 @@ function Sidebar() {
           ))}
         </ul>
         <button
-          onClick={() => setShowSearchPlayer(true)}
+          // onClick={() => setShowSearchPlayer(true)}
           className="bg-black rounded-full text-white font-bold py-2 px-10  mt-4"
         >
           Search Players

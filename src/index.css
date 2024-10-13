@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Jua";
+    src: local("Jua-Regular"), url("./assets/fonts/Jua/Jua-Regular.ttf");
+  }
+
+  @font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: bold;
+    src: local("Roboto-Bold"), url("./assets/fonts/Roboto/Roboto-Bold.ttf");
+  }
+
+  @font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    src: local("Roboto-Regular"),
+      url("./assets/fonts/Roboto/Roboto-Regular.ttf");
+  }
+}

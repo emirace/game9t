@@ -1,0 +1,25 @@
+const IMAGES = {
+  hero: new URL("./hero.png", import.meta.url).href,
+  playinggames: new URL("./playinggames.png", import.meta.url).href,
+  logo: new URL("./logo.png", import.meta.url).href,
+  user: new URL("./user.png", import.meta.url).href,
+  connectfour: new URL("./connectfour.png", import.meta.url).href,
+  chess: new URL("./chess.png", import.meta.url).href,
+  checkers: new URL("./checkers.png", import.meta.url).href,
+  headsoccer: new URL("./headsoccer.png", import.meta.url).href,
+  rock: new URL("./rock.png", import.meta.url).href,
+  memory: new URL("./memory.png", import.meta.url).href,
+  snake: new URL("./snake.png", import.meta.url).href,
+  statistic: new URL("./statistic.png", import.meta.url).href,
+  tictactoe: new URL("./tictactoe.png", import.meta.url).href,
+  wordsearch: new URL("./wordsearch.png", import.meta.url).href,
+  browsegameblur: new URL("./browsegameblur.png", import.meta.url).href,
+  diceblur: new URL("./diceblur.png", import.meta.url).href,
+  chess_back: new URL("./chess_back.png", import.meta.url).href,
+  connectfour_main: new URL("./connectfour_main.png", import.meta.url).href,
+  user2: new URL("./user2.png", import.meta.url).href,
+  paystack: new URL("./paystack.png", import.meta.url).href,
+  nowpayment: new URL("./nowpayment.png", import.meta.url).href,
+};
+
+export default IMAGES;

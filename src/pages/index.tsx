@@ -5,7 +5,7 @@ import Newsletter from "./_components/newsletter";
 
 function Layout() {
   return (
-    <div className="text-white bg-dark_blue font-roboto ">
+    <div className="text-white bg-dark_blue font-roboto text-sm md:text-base ">
       <Header />
       <Outlet />
       <Newsletter />

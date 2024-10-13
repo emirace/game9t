@@ -1,6 +1,6 @@
 function Newsletter() {
   return (
-    <div className="px-20 flex flex-col justify-center items-center mb-40">
+    <div className="px-4 md:px-20 flex flex-col justify-center items-center mb-40">
       <div className="font-jua text-3xl text-center mb-5">
         Stay Ahead of the Game with Our Exclusive Newsletter
       </div>

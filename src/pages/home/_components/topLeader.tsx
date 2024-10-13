@@ -3,15 +3,21 @@ import IMAGES from "../../../assets/images/images";
 
 function TopLeader() {
   return (
-    <div className="flex items-center gap-6 p-4 pb-8">
-      <img src={ICONS.trophy} className="h-24 w-auto" alt="trophy" />
-      <div className="">
-        <div className=" font-jua text-xl text-cream mb-3">Top Leaders</div>
+    <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 p-4 pb-8">
+      <div className="flex items-center gap-2">
+        <img src={ICONS.trophy} className="h-10 md:h-24 w-auto" alt="trophy" />
+        <div className="md:hidden font-jua text-xl text-cream">Top Leaders</div>
+      </div>
+
+      <div className="w-full">
+        <div className="hidden md:block font-jua text-xl text-cream mb-3">
+          Top Leaders
+        </div>
         <div className="flex gap-4 overflow-x-auto w-full">
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}
-              className="flex items-center gap-4 bg-white bg-opacity-25 p-2 px-6 rounded-md"
+              className="flex items-center gap-4 bg-white bg-opacity-25 p-2 px-6 rounded-md "
             >
               <img
                 src={IMAGES.user}
@@ -23,7 +29,9 @@ function TopLeader() {
                 <div className=" text-xs">Reputations</div>
                 <img src={ICONS.star_color} className="h-4 w-4" alt="star" />
               </div>
-              <div className=" font-jua text-xs text-cream ml-4">Completed</div>
+              <div className=" font-jua text-xs text-cream mx-6 md:mx-0 md:ml-4">
+                Completed
+              </div>
             </div>
           ))}
         </div>

@@ -30,7 +30,7 @@ const faqs = [
 ];
 function Faq() {
   return (
-    <div className="px-20 pb-20">
+    <div className="px-4 md:px-20 pb-20">
       <div className="font-jua text-3xl text-center ">
         Frequently Asked Questions
       </div>

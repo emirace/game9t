@@ -57,9 +57,15 @@ function Header() {
             alt="faq"
             className="w-4 h-4"
           />
+          <img
+            src={ICONS.menu}
+            onClick={() => setShowSidebar(true)}
+            alt="faq"
+            className="w-4 h-4 md:hidden  "
+          />
           <div
             onClick={() => navigate("/wallet")}
-            className="flex items-center gap-2 border border-cream rounded-md px-1"
+            className="items-center gap-2 border border-cream rounded-md px-1 hidden md:flex"
           >
             <img src={ICONS.wallet} alt="faq" className="w-4 h-4" />
             <div className="font-jua  text-lg text-cream">₦200</div>

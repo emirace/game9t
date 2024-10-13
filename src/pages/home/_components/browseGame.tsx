@@ -26,9 +26,9 @@ function BrowseGame() {
   };
   return (
     <div>
-      <div className="flex items-center justify-between my-8">
+      <div className="flex items-center justify-between my-4 md:my-8">
         <div
-          className="relative w-56 h-10 bg-black rounded-full p-1 cursor-pointer transition-all"
+          className="relative hidden md:block w-56 h-10 bg-black rounded-full p-1 cursor-pointer transition-all"
           onClick={toggleSwitch}
         >
           <div
@@ -44,12 +44,12 @@ function BrowseGame() {
           </div>
         </div>
         <div className="font-jua text-3xl">Browse Games</div>
-        <div className="bg-black p-2 flex gap-2 items-center">
+        <div className="bg-black p-2 hidden md:flex gap-2 items-center">
           <img src={ICONS.search} alt="search" className="w-4 h-4" />
           <input placeholder="Search games" className="bg-black" />
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-4 ">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ">
         {games.map((game, index) => (
           <div
             onClick={() => router("/game")}
@@ -61,16 +61,28 @@ function BrowseGame() {
               <img
                 src={ICONS.play_green}
                 alt="play"
-                className="absolute top-1/2 left-1/2 w-16 h-16 -translate-x-1/2 -translate-y-1/2 "
+                className="absolute top-1/2 left-1/2 w-8 md:w-16 h-8 md:h-16 -translate-x-1/2 -translate-y-1/2 "
               />
             </div>
             <div className="flex items-center justify-between p-2">
-              <div className="font-jua">{game.name}</div>
-              <div className="flex items-center gap-2 ">
-                <img src={ICONS.play} alt="play" className="w-4 h-4" />
+              <div className="font-jua text-xs">{game.name}</div>
+              <div className="flex items-center gap-1 ">
+                <img
+                  src={ICONS.play}
+                  alt="play"
+                  className="w-3 md:w-4 h-3 md:h-4"
+                />
                 <div className="mr-2">3k</div>
-                <img src={ICONS.heart} alt="like" className="w-4 h-4" />
-                <img src={ICONS.share} alt="share" className="w-4 h-4" />
+                <img
+                  src={ICONS.heart}
+                  alt="like"
+                  className="w-3 md:w-4 h-3 md:h-4"
+                />
+                <img
+                  src={ICONS.share}
+                  alt="share"
+                  className="w-3 md:w-4 h-3 md:h-4"
+                />
               </div>
             </div>
           </div>

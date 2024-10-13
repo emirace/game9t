@@ -43,7 +43,7 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
   return (
-    <footer className="relative bg-dark pt-10 pb-20">
+    <footer className="relative bg-dark pt-10 pb-16 md:pb-20">
       <img
         src={IMAGES.diceblur}
         className="absolute right-0 w-1/2 opacity-10 bottom-0 z-0 "
@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
         className="absolute left-0 w-1/2 opacity-10 bottom-0 z-0 "
         alt="stat"
       />
-      <div className="absolute left-1/2 -translate-x-1/2 -top-1/4 translate-y-3/4 w-full  grid grid-cols-1 sm:grid-cols-4 gap-8 px-20">
+      <div className="absolute left-1/2 -translate-x-1/2 -top-1/4 translate-y-1/5 md:translate-y-3/4 w-full  grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-8 px-4 md:px-20">
         {features.map((feature, index) => (
           <div key={index} className="bg-light_blue rounded-md p-4">
             <img
@@ -68,7 +68,7 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-6 gap-8 text-sm mt-20 px-20 ">
+      <div className="grid grid-cols-1 sm:grid-cols-6 gap-8 text-sm mt-20 px-4 md:px-20 ">
         {/* About */}
         <div className="col-span-2">
           <div className="flex items-center gap-2 mb-8">
@@ -85,7 +85,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Quick Links */}
-        <div className="col-span-1">
+        <div className="col-span-1 hidden md:block">
           <h4 className=" text-lg mb-4 font-jua">Quick Links</h4>
           <ul className="space-y-2">
             {quickLinks.map((link, index) => (
@@ -95,7 +95,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Legal */}
-        <div className="col-span-1">
+        <div className="col-span-1 hidden md:block">
           <h4 className="font-jua text-lg mb-4">Legal</h4>
           <ul className="space-y-2">
             {legalLinks.map((link, index) => (
@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Contact Us */}
-        <div className="col-span-1">
+        <div className="col-span-1 ">
           <h4 className="font-jua text-lg mb-4">Contact Us</h4>
           <ul className="space-y-2">
             <li>Email: {contactInfo.email}</li>

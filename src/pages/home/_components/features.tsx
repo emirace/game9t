@@ -33,12 +33,12 @@ const features = [
 
 function Features() {
   return (
-    <div className="p-20">
+    <div className="p-4 py-8 md:py-20 md:p-20">
       <div className="font-jua text-3xl text-center mb-10">
         Explore Our Exciting Game Features
       </div>
 
-      <div className="grid grid-cols-4 gap-4 flex-[3]">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-[3]">
         {features.map((item, index) => (
           <div
             key={index}

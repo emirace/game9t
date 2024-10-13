@@ -27,21 +27,29 @@ const statistics = [
 function Statistic() {
   return (
     <div
-      className="py-20 bg-contain bg-no-repeat bg-left px-20 bg-"
+      className="py-20 bg-contain bg-no-repeat bg-left px-4 md:px-20 bg-"
       style={{ backgroundImage: `url(${IMAGES.statistic})` }}
     >
-      <div className="flex gap-4 items-center mb-8">
-        <div className="flex-1">
-          <div className="">
+      <div className="flex flex-col md:flex-row gap-4 md:items-center mb-8">
+        <div className="md:flex-1">
+          <div className="font-jua text-xl mb-2 text-center md:text-left">
             Discover the thrilling statistics that make our gaming community
             thrive. Join the action today!
           </div>
-          <div className="">
+          <div className="text-center md:text-left">
             Discover the thrilling statistics that make our gaming community
             thrive. Join the action today!
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-4 flex-[3]">
+        <div className="flex justify-center md:hidden">
+          <button
+            //   onClick={onButtonClick}
+            className="px-8 py-3 min-w-48 bg-black text-white font-semibold rounded-full hover:bg-dark_blue transition-colors"
+          >
+            Join Now
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:flex-[3]">
           {statistics.map((item, index) => (
             <div
               key={index}
@@ -57,7 +65,7 @@ function Statistic() {
 
       <button
         //   onClick={onButtonClick}
-        className="px-8 py-3 min-w-48 bg-black text-white font-semibold rounded-full hover:bg-dark_blue transition-colors"
+        className=" hidden md:block px-8 py-3 min-w-48 bg-black text-white font-semibold rounded-full hover:bg-dark_blue transition-colors"
       >
         Join Now
       </button>

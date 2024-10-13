@@ -7,7 +7,7 @@ import Sidebar from "./_component/sidebar";
 
 const Game: React.FC = () => {
   return (
-    <div className="p-20">
+    <div className="p-4  md:p-20">
       {/* Breadcrumb */}
       <nav className="mb-6 flex items-center gap-2">
         <img src={ICONS.home} alt="home" className="w-4 h-4" />
@@ -18,7 +18,7 @@ const Game: React.FC = () => {
       </nav>
 
       {/* Title */}
-      <h1 className="text-4xl text-cream font-bold mb-6  ">
+      <h1 className="text-2xl md:text-4xl text-cream font-bold mb-6  ">
         Play Connect Four Online Game
       </h1>
       <div className=" flex flex-col md:flex-row gap-8">
@@ -77,7 +77,7 @@ const Game: React.FC = () => {
           {/* Game Details */}
           <div className="bg-medium_blue px-8 p-6 rounded-lg">
             <h3 className="font-jua text-xl mb-4">Game Details</h3>
-            <div className="grid grid-cols-4 gap-4 mb-6 font-light text-sm">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 font-light text-sm">
               <p className="font-bold">Name:</p>
               <p> Connect Four</p>
               <p className="font-bold">Platforms:</p>
@@ -100,7 +100,9 @@ const Game: React.FC = () => {
         </div>
 
         {/* Sidebar */}
-        <Sidebar />
+        <div className="hidden md:block">
+          <Sidebar />
+        </div>
       </div>
       <OtherGames />
     </div>

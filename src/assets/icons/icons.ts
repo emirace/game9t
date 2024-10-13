@@ -42,6 +42,7 @@ const ICONS = {
   users2: new URL("./users2.png", import.meta.url).href,
   dollar: new URL("./dollar.png", import.meta.url).href,
   check_green: new URL("./check_green.png", import.meta.url).href,
+  menu: new URL("./menu.png", import.meta.url).href,
 };
 
 export default ICONS;

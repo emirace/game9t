@@ -1,19 +1,38 @@
+import { Link } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import IMAGES from "../../assets/images/images";
 
 const sidelists = [
-  { icon: ICONS.dashboard, label: "Dashboard" },
-  { icon: ICONS.box, label: "Profile" },
-  { icon: ICONS.wallet, label: "Wallet" },
-  { icon: ICONS.flag, label: "Challenge" },
-  { icon: ICONS.settings, label: "Setting" },
-  { icon: ICONS.support, label: "Support" },
-  { icon: ICONS.logout, label: "Logout" },
+  { icon: ICONS.dashboard, label: "Dashboard", path: "/" },
+  { icon: ICONS.box, label: "Profile", path: "/" },
+  { icon: ICONS.wallet, label: "Wallet", path: "/wallet" },
+  { icon: ICONS.flag, label: "Challenge", path: "/" },
+  { icon: ICONS.settings, label: "Setting", path: "/" },
+  { icon: ICONS.support, label: "Support", path: "/" },
+  { icon: ICONS.logout, label: "Logout", path: "/" },
+];
+
+const quickLinks = [
+  "Home",
+  "Games",
+  "Leaderboard",
+  "Wallet",
+  "Challenges",
+  "Support",
+  "FAQ",
+];
+
+const legalLinks = [
+  "Terms",
+  "Disclaimer",
+  "Privacy Policy",
+  "Terms & Conditions",
+  "Responsible Gaming",
 ];
 
 function Sidebar() {
   return (
-    <div>
+    <div className="overflow-y-auto h-full">
       <div className="flex items-center gap-4 bg-black px-6 p-4 absolute top-0 left-0 right-0 ">
         <img src={IMAGES.user} className="h-10 w-10 rounded-full" alt="user" />
         <div className="">
@@ -26,11 +45,31 @@ function Sidebar() {
       </div>
       <div className="py-6 flex flex-col gap-6">
         {sidelists.map((item, index) => (
-          <div key={index} className="flex items-center gap-1">
+          <Link to={item.path} key={index} className="flex items-center gap-1">
             <img src={item.icon} alt="close" className="w-4 h-4 " />
             <div className="font-jua">{item.label}</div>
-          </div>
+          </Link>
         ))}
+      </div>
+
+      {/* Quick Links */}
+      <div className="col-span-1 md:hidden mt-8">
+        <h4 className=" text-lg mb-4 font-jua">Quick Links</h4>
+        <ul className="space-y-2">
+          {quickLinks.map((link, index) => (
+            <li key={index}>{link}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Legal */}
+      <div className="col-span-1 md:hidden">
+        <h4 className="font-jua text-lg mb-4">Legal</h4>
+        <ul className="space-y-2">
+          {legalLinks.map((link, index) => (
+            <li key={index}>{link}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );

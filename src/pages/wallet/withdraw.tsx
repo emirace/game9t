@@ -20,7 +20,7 @@ const Withdraw: React.FC = () => {
       <div className="text-3xl  font-jua text-center mb-10 ">
         Choose Withdraw Method
       </div>
-      <div className="flex gap-8">
+      <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-[2]">
           <div className="flex items-center gap-2">
             <div className="w-40 bg-dark_blue p-2">₦200</div>

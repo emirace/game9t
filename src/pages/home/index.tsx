@@ -11,7 +11,7 @@ function Home() {
   return (
     <div>
       <Hero />
-      <div className="px-20 relative">
+      <div className="px-4 md:px-20 relative">
         <img
           src={IMAGES.browsegameblur}
           className="absolute right-0 top-1/4 h-1/3 z-0 "

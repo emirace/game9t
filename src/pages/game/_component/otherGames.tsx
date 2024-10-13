@@ -24,7 +24,7 @@ function OtherGames() {
       <div className="flex items-center justify-center my-8">
         <div className="font-jua text-3xl">Play Other Games</div>
       </div>
-      <div className="grid grid-cols-4 gap-4 ">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
         {games.map((game, index) => (
           <div
             onClick={() => router("/game")}

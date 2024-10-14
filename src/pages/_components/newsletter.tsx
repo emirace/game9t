@@ -4,7 +4,7 @@ function Newsletter() {
       <div className="font-jua text-3xl text-center mb-5">
         Stay Ahead of the Game with Our Exclusive Newsletter
       </div>
-      <div className="text-center mb-8 max-w-2xl">
+      <div className="text-center mb-2 max-w-2xl">
         Get the latest updates on top games, exclusive content, and gaming tips
         delivered straight to your inbox.
       </div>

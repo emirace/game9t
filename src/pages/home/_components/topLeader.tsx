@@ -1,5 +1,6 @@
 import ICONS from "../../../assets/icons/icons";
 import IMAGES from "../../../assets/images/images";
+import Rating from "../../_components/rating";
 
 function TopLeader() {
   return (
@@ -27,10 +28,10 @@ function TopLeader() {
               <div>
                 <div className=" font-jua whitespace-nowrap">Liam Carter</div>
                 <div className=" text-xs">Reputations</div>
-                <img src={ICONS.star_color} className="h-4 w-4" alt="star" />
+                <Rating rating={5} />
               </div>
               <div className=" font-jua text-xs text-cream mx-6 md:mx-0 md:ml-4">
-                Completed
+                Complete
               </div>
             </div>
           ))}

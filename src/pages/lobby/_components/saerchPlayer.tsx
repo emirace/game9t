@@ -2,6 +2,7 @@ import { useState } from "react";
 import ICONS from "../../../assets/icons/icons";
 import IMAGES from "../../../assets/images/images";
 import Model from "../../_components/model";
+import Rating from "../../_components/rating";
 
 const games = [
   { image: IMAGES.connectfour, name: "Connect Four" },
@@ -36,6 +37,9 @@ function SaerchPlayer() {
                 <div className="text-xs">
                   <span className="text-green">●</span> online
                 </div>
+              </div>
+              <div className="ml-10">
+                <Rating rating={4} />
               </div>
             </div>
             <button className="bg-black text-xs font-jua py-2 px-4 mt-2 rounded-md hover:bg-gray-600">

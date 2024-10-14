@@ -19,7 +19,7 @@ function Sidebar() {
       <div className="bg-light_blue p-4  ">
         <div className="flex items-center space-x-4 mb-4">
           <img
-            src={IMAGES.user}
+            src={IMAGES.user2}
             alt="Profile"
             className="w-12 h-12 rounded-full"
           />
@@ -93,7 +93,7 @@ function Sidebar() {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={IMAGES.user}
+                    src={IMAGES.user2}
                     alt="Profile"
                     className="w-12 h-12 rounded-full"
                   />

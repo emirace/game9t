@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import IMAGES from "../../assets/images/images";
 import OtherGames from "./_component/otherGames";
 import Sidebar from "./_component/sidebar";
+import SideModel from "../_components/sideModel";
 
 const Game: React.FC = () => {
+  const [showSideBar, setShowSideBar] = useState(false);
   return (
     <div className="p-4  md:p-20">
       {/* Breadcrumb */}
@@ -34,7 +36,7 @@ const Game: React.FC = () => {
           </div>
 
           {/* Challenge Stats & Player Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
             <div className="bg-cream text-black p-4 rounded-lg">
               <h3 className=" text-xl mb-2 font-jua">Challenge Stats</h3>
               <div className="flex items-center gap-8">
@@ -55,7 +57,7 @@ const Game: React.FC = () => {
                 <span className="bg-green text-white px-1 rounded">
                   Running challenge
                 </span>
-                <span className="bg-red-500 text-white px-1 rounded">
+                <span className="bg-red text-white px-1 rounded">
                   Cancel challenge
                 </span>
               </div>
@@ -63,31 +65,46 @@ const Game: React.FC = () => {
 
             <div className="bg-cream text-black p-4 px-6 rounded-lg">
               <h3 className="font-jua text-xl mb-2">Player Stats</h3>
-              <div className="flex items-start">
+              <div className="flex items-start mb-1">
                 <p className="flex-[2]">MrXyz (cpu) </p>
-                <p className="flex-1"> 100 Points</p>
+                <div className="flex items-center gap-3">
+                  <img src={ICONS.arrow_red} alt="main" className="w-3 h-2" />
+                  <p className="flex-1"> 100 Points</p>
+                </div>
               </div>
               <div className="flex items-start gap-8">
                 <p className="flex-[2]">MrYogesh (You) </p>
-                <p className="flex-1">30 Points</p>
+                <div className="flex items-center gap-3">
+                  <img src={ICONS.arrow_green} alt="main" className="w-3 h-2" />
+                  <p className="flex-1">130 Points</p>
+                </div>
               </div>
             </div>
+          </div>
+
+          <div className="flex justify-center md:hidden  mb-4">
+            <button
+              onClick={() => setShowSideBar(true)}
+              className="bg-black font-jua rounded-full text-white font-bold py-2 px-10  mt-4"
+            >
+              Place Bet
+            </button>
           </div>
 
           {/* Game Details */}
           <div className="bg-medium_blue px-8 p-6 rounded-lg">
             <h3 className="font-jua text-xl mb-4">Game Details</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 font-light text-sm">
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-2 mb-6 font-light text-sm ">
               <p className="font-bold">Name:</p>
-              <p> Connect Four</p>
+              <p className="md:col-span-2"> Connect Four</p>
               <p className="font-bold">Platforms:</p>
-              <p> Web, Android, iOS</p>
+              <p className="md:col-span-2"> Web, Android, iOS</p>
               <p className="font-bold">Popularity:</p>
-              <p> 1,50,000+ players</p>
+              <p className="md:col-span-2"> 1,50,000+ players</p>
               <p className="font-bold">Technology:</p>
-              <p> HTML5</p>
+              <p className="md:col-span-2"> HTML5</p>
               <p className="font-bold">Features:</p>
-              <p> Single Player, MultiPlayer</p>
+              <p className="md:col-span-2"> Single Player, MultiPlayer</p>
             </div>
             <p className="mt-4">
               Connect Four is an HTML5 game where 2 player game in which the
@@ -98,6 +115,11 @@ const Game: React.FC = () => {
             </p>
           </div>
         </div>
+        <SideModel isOpen={showSideBar} onClose={() => setShowSideBar(false)}>
+          <div className="absolute left-0 top-0 overflow-y-auto h-screen">
+            <Sidebar />
+          </div>
+        </SideModel>
 
         {/* Sidebar */}
         <div className="hidden md:block">

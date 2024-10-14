@@ -22,8 +22,8 @@ const Deposit: React.FC = () => {
       </div>
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-[2]">
-          <div className="flex items-center gap-2">
-            <div className="w-40 bg-dark_blue p-2">₦200</div>
+          <div className="flex gap-2 items-center">
+            <input placeholder="Enter amount" className="bg-black p-2 w-1/2" />
             <img src={ICONS.check_green} alt="" className="w-4 h-4" />
           </div>
           <div className="font-jua my-4">Pay With</div>

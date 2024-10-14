@@ -147,7 +147,7 @@ const Wallet: React.FC = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-6 text-white px-4 px-20">
+      <div className="flex justify-between items-center mt-6 text-white px-4 md:px-20">
         <span>Showing: 12 / 30</span>
         <div>
           <button className="hover:underline mr-4">PREVIOUS /</button>

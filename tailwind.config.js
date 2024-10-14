@@ -14,7 +14,7 @@ export default {
         cream: "#E2E2B6",
         dark: "#191919",
         green: "#13AA3D",
-        red: "#772515",
+        red: "#BF0317",
       },
     },
   },

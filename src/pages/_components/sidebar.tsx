@@ -32,7 +32,7 @@ const legalLinks = [
 
 function Sidebar() {
   return (
-    <div className="overflow-y-auto h-full">
+    <div className="overflow-y-auto h-screen ">
       <div className="flex items-center gap-4 bg-black px-6 p-4 absolute top-0 left-0 right-0 ">
         <img src={IMAGES.user} className="h-10 w-10 rounded-full" alt="user" />
         <div className="">
@@ -53,8 +53,8 @@ function Sidebar() {
       </div>
 
       {/* Quick Links */}
-      <div className="col-span-1 md:hidden mt-8">
-        <h4 className=" text-lg mb-4 font-jua">Quick Links</h4>
+      <div className="md:hidden mb-6">
+        <h4 className=" text-lg font-jua mb-2">Quick Links</h4>
         <ul className="space-y-2">
           {quickLinks.map((link, index) => (
             <li key={index}>{link}</li>
@@ -63,8 +63,8 @@ function Sidebar() {
       </div>
 
       {/* Legal */}
-      <div className="col-span-1 md:hidden">
-        <h4 className="font-jua text-lg mb-4">Legal</h4>
+      <div className="md:hidden mb-6">
+        <h4 className="font-jua text-lg mb-2">Legal</h4>
         <ul className="space-y-2">
           {legalLinks.map((link, index) => (
             <li key={index}>{link}</li>

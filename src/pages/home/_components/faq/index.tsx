@@ -1,7 +1,11 @@
-import ICONS from "../../../assets/icons/icons";
+import { Question } from "./_component/question";
 
 const faqs = [
-  { title: "What types of games can I play?", content: "" },
+  {
+    title: "What types of games can I play?",
+    content:
+      "Absolutely! Our platform allows you to invite friends and challenge them in exciting multiplayer games. You can team up or compete against each other to see who reigns supreme!",
+  },
   {
     title: "Can I play with friends?",
     content:
@@ -37,13 +41,7 @@ function Faq() {
       <div className="text-center mb-8 text-sm">All Your Queries Answered</div>
       <div className="flex flex-col gap-4">
         {faqs.map((faq, index) => (
-          <div key={index} className="relative bg-dark p-4 rounded-md">
-            <div className=" font-jua">{faq.title}</div>
-            <div className="text-sm">{faq.content}</div>
-            <div className="bg-cream p-1 absolute top-1/2 -translate-y-1/2 right-4 rounded-sm">
-              <img src={ICONS.arrow_down} className="h-2 w-4" alt="star" />
-            </div>
-          </div>
+          <Question content={faq.content} title={faq.title} key={index} />
         ))}
       </div>
     </div>

@@ -26,7 +26,7 @@ function BrowseGame() {
   };
   return (
     <div>
-      <div className="flex items-center justify-between my-4 md:my-8">
+      <div className="flex items-center justify-between my-3 md:my-8">
         <div
           className="relative hidden md:block w-56 h-10 bg-black rounded-full p-1 cursor-pointer transition-all"
           onClick={toggleSwitch}
@@ -44,9 +44,28 @@ function BrowseGame() {
           </div>
         </div>
         <div className="font-jua text-3xl">Browse Games</div>
+
         <div className="bg-black p-2 hidden md:flex gap-2 items-center">
           <img src={ICONS.search} alt="search" className="w-4 h-4" />
           <input placeholder="Search games" className="bg-black" />
+        </div>
+      </div>
+      <div className="flex justify-center mb-4">
+        <div
+          className="relative  md:hidden w-56 h-6 bg-black rounded-full p-1 cursor-pointer transition-all"
+          onClick={toggleSwitch}
+        >
+          <div
+            className={`absolute w-1/2 h-full top-0 left-0 p-2 px-8 rounded-full transition-transform duration-300 bg-light_blue ${
+              isFreeGames
+                ? "transform translate-x-0 "
+                : "transform translate-x-28 "
+            }`}
+          />
+          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-between px-6 ">
+            <div className="text-xs font-bold ">Free Games</div>
+            <div className="text-xs font-bold ">All Games</div>
+          </div>
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ">

@@ -74,7 +74,8 @@ function Sidebar() {
                 <div>
                   <div className="font-jua"> {player}</div>
                   <div className="text-xs">
-                    Bet Amount <span className="text-green ml-4">#150</span>
+                    Bet Amount{" "}
+                    <span className="text-green ml-4 font-bold">₦150</span>
                   </div>
                 </div>
               </div>

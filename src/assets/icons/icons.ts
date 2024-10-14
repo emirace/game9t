@@ -9,6 +9,7 @@ const ICONS = {
   heart: new URL("./heart.png", import.meta.url).href,
   share: new URL("./share.png", import.meta.url).href,
   trophy: new URL("./trophy.png", import.meta.url).href,
+  trophy2: new URL("./trophy2.png", import.meta.url).href,
   star: new URL("./star.png", import.meta.url).href,
   star_color: new URL("./star_color.png", import.meta.url).href,
   play: new URL("./play.png", import.meta.url).href,
@@ -43,6 +44,10 @@ const ICONS = {
   dollar: new URL("./dollar.png", import.meta.url).href,
   check_green: new URL("./check_green.png", import.meta.url).href,
   menu: new URL("./menu.png", import.meta.url).href,
+  games: new URL("./games.png", import.meta.url).href,
+  arrow_green: new URL("./arrow_green.png", import.meta.url).href,
+  arrow_red: new URL("./arrow_red.png", import.meta.url).href,
+  arrow_down_dark: new URL("./arrow_down_dark.png", import.meta.url).href,
 };
 
 export default ICONS;

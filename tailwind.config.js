@@ -12,6 +12,7 @@ export default {
         dark_blue: "#021526",
         medium_blue: "#022650",
         cream: "#E2E2B6",
+        chart: "#142635",
         dark: "#191919",
         green: "#13AA3D",
         red: "#BF0317",

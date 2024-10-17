@@ -4,11 +4,11 @@ import IMAGES from "../../assets/images/images";
 
 const sidelists = [
   { icon: ICONS.dashboard, label: "Dashboard", path: "/" },
-  { icon: ICONS.box, label: "Profile", path: "/" },
+  { icon: ICONS.box, label: "Profile", path: "/profile" },
   { icon: ICONS.wallet, label: "Wallet", path: "/wallet" },
   { icon: ICONS.flag, label: "Challenge", path: "/" },
-  { icon: ICONS.settings, label: "Setting", path: "/" },
-  { icon: ICONS.support, label: "Support", path: "/" },
+  { icon: ICONS.settings, label: "Settings", path: "/settings" },
+  { icon: ICONS.support, label: "Support", path: "/support" },
   { icon: ICONS.logout, label: "Logout", path: "/" },
 ];
 
@@ -34,7 +34,13 @@ function Sidebar() {
   return (
     <div className="overflow-y-auto h-screen ">
       <div className="flex items-center gap-4 bg-black px-6 p-4 absolute top-0 left-0 right-0 ">
-        <img src={IMAGES.user} className="h-10 w-10 rounded-full" alt="user" />
+        <div>
+          <img
+            src={IMAGES.user}
+            className="h-10 w-10 rounded-full"
+            alt="user"
+          />
+        </div>
         <div className="">
           <div className="font-jua">Mr Yagesh</div>
           <div className="flex items-center gap-2">
@@ -43,7 +49,7 @@ function Sidebar() {
           </div>
         </div>
       </div>
-      <div className="py-6 flex flex-col gap-6">
+      <div className="py-6 flex flex-col gap-6 pt-20">
         {sidelists.map((item, index) => (
           <Link to={item.path} key={index} className="flex items-center gap-1">
             <img src={item.icon} alt="close" className="w-4 h-4 " />

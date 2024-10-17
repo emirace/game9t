@@ -20,6 +20,9 @@ const IMAGES = {
   user2: new URL("./user2.png", import.meta.url).href,
   paystack: new URL("./paystack.png", import.meta.url).href,
   nowpayment: new URL("./nowpayment.png", import.meta.url).href,
+  login: new URL("./login.png", import.meta.url).href,
+  signup: new URL("./signup.png", import.meta.url).href,
+  connectfour_game: new URL("./connectfour_game.png", import.meta.url).href,
 };
 
 export default IMAGES;

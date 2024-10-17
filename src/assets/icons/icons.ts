@@ -48,6 +48,17 @@ const ICONS = {
   arrow_green: new URL("./arrow_green.png", import.meta.url).href,
   arrow_red: new URL("./arrow_red.png", import.meta.url).href,
   arrow_down_dark: new URL("./arrow_down_dark.png", import.meta.url).href,
+  facebook_color: new URL("./facebook_color.png", import.meta.url).href,
+  google: new URL("./google.png", import.meta.url).href,
+  trophy3: new URL("./trophy3.png", import.meta.url).href,
+  chart: new URL("./chart.png", import.meta.url).href,
+  carlendar: new URL("./carlendar.png", import.meta.url).href,
+  arrow_down_cream: new URL("./arrow_down_cream.png", import.meta.url).href,
+  support2: new URL("./support2.png", import.meta.url).href,
+  chat: new URL("./chat.png", import.meta.url).href,
+  call: new URL("./call.png", import.meta.url).href,
+  article: new URL("./article.png", import.meta.url).href,
+  filter: new URL("./filter.png", import.meta.url).href,
 };
 
 export default ICONS;

@@ -4,9 +4,11 @@ import ICONS from "../../assets/icons/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/auth";
 import Loading from "../_components/loading";
+import { useToastNotification } from "../../context/toastNotificationContext";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const { addNotification } = useToastNotification();
   const [loading, setLoading] = useState(false);
   // Form state
   const [formData, setFormData] = useState({
@@ -84,6 +86,7 @@ const Register: React.FC = () => {
       navigate("/auth/login");
     } catch (error: any) {
       setErrors({ ...errors, general: error });
+      addNotification({ message: error, error: true });
     } finally {
       setLoading(false);
     }

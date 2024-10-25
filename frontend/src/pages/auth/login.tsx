@@ -5,9 +5,11 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/auth";
 import Loading from "../_components/loading";
 import { useUser } from "../../context/user";
+import { useToastNotification } from "../../context/toastNotificationContext";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { addNotification } = useToastNotification();
   const { user, getUser } = useUser();
   const [loading, setLoading] = useState(false);
   // Form state
@@ -68,6 +70,7 @@ const Login: React.FC = () => {
       navigate("/profile");
     } catch (error: any) {
       setErrors({ ...errors, general: error });
+      addNotification({ message: error, error: true });
     } finally {
       setLoading(false);
     }

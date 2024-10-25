@@ -54,7 +54,9 @@ function Header() {
             <div className="font-jua  text-lg">FAQ</div>
           </div>
         </div>
-        {user ? (
+        {loading ? (
+          <Loading size="sm" />
+        ) : user ? (
           <div className="flex items-center gap-4">
             <img
               src={ICONS.profile}

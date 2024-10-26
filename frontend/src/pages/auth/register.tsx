@@ -93,10 +93,10 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative overflow-y-auto md:overflow-y-hidden">
       {/* Left Section */}
       <div
-        className="w-1/2 bg-cover bg-center flex flex-col justify-between p-20 pt-10"
+        className="w-full md:w-1/2 bg-cover bg-center flex flex-col justify-between p-4 md:p-20 md:pt-10"
         style={{ backgroundImage: `url(${IMAGES.signup})` }}
       >
         <div
@@ -130,8 +130,8 @@ const Register: React.FC = () => {
       </div>
 
       {/* Right Section */}
-      <div className="w-1/2 flex items-center justify-center">
-        <div className="max-w-md w-full space-y-8">
+      <div className="absolute bg-medium_blue bg-opacity-90 md:bg-none p-6 md:p-0 rounded-lg top-1/2 -translate-y-1/2 md:-translate-x-0 md:-translate-y-0 left-1/2 -translate-x-1/2 md:static md:w-1/2 md:flex md:items-center md:justify-center ">
+        <div className="md:max-w-md w-full space-y-8">
           <h2 className="text-3xl font-jua text-center">Create Your Account</h2>
 
           <form className="mt-8 space-y-6" onSubmit={handleRegister}>

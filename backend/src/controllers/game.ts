@@ -9,6 +9,7 @@ export const createGame = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
       name,
+      slug,
       description,
       genre,
       platforms,
@@ -30,6 +31,7 @@ export const createGame = async (req: AuthenticatedRequest, res: Response) => {
     const game = new Game({
       userId,
       name,
+      slug,
       description,
       genre,
       platforms,

@@ -1,6 +1,7 @@
 export interface IGame {
   _id: string;
   name: string;
+  slug: string;
   description: string;
   genre: string[];
   platforms: string[];

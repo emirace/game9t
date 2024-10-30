@@ -44,6 +44,13 @@ function GameManage() {
     setInitialGameData(gameData);
   };
 
+  const closeEditGameForm = () => {
+    setShowAddGame(false);
+    setIsEditMode(false);
+    setEditGameId(undefined);
+    setInitialGameData(undefined);
+  };
+
   return (
     <div>
       <h1 className="font-jua text-xl">Game Management</h1>
@@ -129,7 +136,7 @@ function GameManage() {
           </button>
         </div>
       </div>
-      <Model isOpen={showAddGame} onClose={() => setShowAddGame(false)}>
+      <Model isOpen={showAddGame} onClose={() => closeEditGameForm()}>
         <AddGame
           onClose={() => setShowAddGame(false)}
           gameId={isEditMode ? editGameId : undefined}

@@ -30,7 +30,7 @@ const Model: React.FC<ModelProps> = ({ children, isOpen, onClose }) => {
         />
 
         {/* Model Content */}
-        <div className="h-full ">{children}</div>
+        {isVisible && <div className="h-full ">{children}</div>}
       </div>
 
       {/* Overlay when sidebar is open */}

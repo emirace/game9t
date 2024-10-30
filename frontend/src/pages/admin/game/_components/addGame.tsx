@@ -20,6 +20,7 @@ const GameForm: React.FC<Props> = ({ onClose, gameId, initialGameData }) => {
 
   const [gameData, setGameData] = useState<IGameData>({
     name: initialGameData?.name || "",
+    slug: initialGameData?.slug || "",
     description: initialGameData?.description || "",
     genre: (initialGameData?.genre as unknown as string) || "Puzzle",
     platforms: initialGameData?.platforms || [],
@@ -57,6 +58,7 @@ const GameForm: React.FC<Props> = ({ onClose, gameId, initialGameData }) => {
       [name]: checked,
     }));
   };
+  console.log(gameId);
 
   const handlePlatformChange = (platform: string) => {
     setGameData((prev) => ({
@@ -97,6 +99,19 @@ const GameForm: React.FC<Props> = ({ onClose, gameId, initialGameData }) => {
         await createNewGame(gameData);
         addNotification({ message: "Game created successfully!" });
       }
+      setGameData({
+        name: "",
+        slug: "",
+        description: "",
+        platforms: [],
+        image: "",
+        genre: "",
+        active: true,
+        onlineMultiplayer: true,
+        paid: false,
+        playPreview: [],
+        price: "",
+      });
       onClose();
     } catch (error) {
       addNotification({ message: "Failed to save game", error: true });
@@ -116,6 +131,15 @@ const GameForm: React.FC<Props> = ({ onClose, gameId, initialGameData }) => {
         name="name"
         placeholder="Game Name"
         value={gameData.name}
+        onChange={handleInputChange}
+        className="w-full p-3 bg-black rounded"
+        required
+      />
+      <input
+        type="text"
+        name="slug"
+        placeholder="Game Slug"
+        value={gameData.slug}
         onChange={handleInputChange}
         className="w-full p-3 bg-black rounded"
         required

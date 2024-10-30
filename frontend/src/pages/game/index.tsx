@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
-import IMAGES from "../../assets/images/images";
 import OtherGames from "./_component/otherGames";
 import Sidebar from "./_component/sidebar";
 import SideModel from "../_components/sideModel";
@@ -62,10 +61,9 @@ const Game: React.FC = () => {
         {/* Main Content */}
         <div className="flex-1">
           {/* Game Mode Selection */}
-          <div className="border-4 border-light_blue mb-6">
-            <img
-              src={IMAGES.connectfour_main}
-              alt="main"
+          <div className="border-4 border-light_blue mb-6 h-96">
+            <iframe
+              src={`/src/games/${game?.slug}/index.html`}
               className="w-full h-full"
             />
           </div>

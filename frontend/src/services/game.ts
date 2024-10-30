@@ -2,6 +2,7 @@ import api from "./api";
 
 export interface IGameData {
   name: string;
+  slug: string;
   description: string;
   genre: string;
   platforms: string[];

@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 // Define an interface for the Game model
 interface IGame extends Document {
   name: string;
+  slug: string;
   description: string;
   genre: string[];
   platforms: string[];
@@ -20,6 +21,12 @@ interface IGame extends Document {
 const GameSchema: Schema<IGame> = new Schema(
   {
     name: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    slug: {
       type: String,
       required: true,
       unique: true,

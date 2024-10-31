@@ -62,10 +62,10 @@ const Game: React.FC = () => {
         <div className="flex-1">
           {/* Game Mode Selection */}
           <div className="border-4 border-light_blue mb-6 h-96">
-            {/* <iframe
-              src={`/src/games/${game?.slug}/index.html`}
+            <iframe
+              src={`/games/${game?.slug}/index.html`}
               className="w-full h-full"
-            /> */}
+            />
           </div>
 
           {/* Challenge Stats & Player Stats */}

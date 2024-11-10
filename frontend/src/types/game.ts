@@ -15,3 +15,9 @@ export interface IGame {
   playPreview: string[];
   totalPlays: number;
 }
+
+export interface createGameData {
+  gameId: string;
+  amount?: number;
+  compete?: string;
+}

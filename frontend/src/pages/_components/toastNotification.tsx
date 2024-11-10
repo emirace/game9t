@@ -31,7 +31,7 @@ const ToastNotification: React.FC = () => {
   const notificationsWithoutAction = notifications.filter(
     (notification) => !notification.action
   );
-
+  console.log(notifications);
   return (
     <>
       <div className="fixed top-4 right-4 z-[100]">

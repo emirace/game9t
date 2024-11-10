@@ -1,15 +1,38 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ICONS from "../../../assets/icons/icons";
-import IMAGES from "../../../assets/images/images";
 import { useUser } from "../../../context/user";
 import { imageUrl } from "../../../services/api";
 import { useWallet } from "../../../context/wallet";
+import { useGameSession } from "../../../context/gameSession";
+import { useToastNotification } from "../../../context/toastNotificationContext";
+import { useState } from "react";
+import Loading from "../../_components/loading";
+import SaerchPlayer from "./saerchPlayer";
+import Model from "../../_components/model";
 
 // const amounts = ["200", "500", "1000", "2000", "5000", "10000"];
 
 function Sidebar() {
   const { user } = useUser();
   const { balance } = useWallet();
+  const { addNotification } = useToastNotification();
+  const { gameSessions, acceptChallenge } = useGameSession();
+  const [loading, setLoading] = useState(false);
+  const [showSearchPlayer, setShowSearchPlayer] = useState(false);
+  const navigate = useNavigate();
+
+  const handleAcceptChallenge = async (session: string) => {
+    try {
+      setLoading(true);
+      const res = await acceptChallenge({ sessionId: session });
+      navigate(`/game/${res?.initiatedGame?._id}`);
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <aside className="bg-medium_blue w-full md:w-96 rounded-md ">
       {/* Profile Section */}
@@ -61,34 +84,46 @@ function Sidebar() {
         <h2 className="font-jua text-2xl ">Available Challeges</h2>
       </div>
       <div className="bg-light_blue p-4 ">
+        {gameSessions.length <= 0 && <div>No challege available</div>}
         <ul>
-          {[].map((player, index) => (
+          {gameSessions.map((game, index) => (
             <li
               key={index}
               className="flex justify-between items-center mb-4 text-white"
             >
               <div className="flex items-center gap-4">
                 <img
-                  src={IMAGES.user}
+                  src={game.players[0]?.personalInfo?.profilePictureUrl}
                   alt="Profile"
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
-                  <div className="font-jua"> {player}</div>
-                  <div className="text-xs">
-                    Bet Amount{" "}
-                    <span className="text-green ml-4 font-bold">₦150</span>
-                  </div>
+                  <div className="font-jua"> {game.initiatedGame.name}</div>
+                  {game.amount && (
+                    <div className="text-xs">
+                      Bet Amount{" "}
+                      <span className="text-green ml-4 font-bold">
+                        ₦{game.amount}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
-              <button className="bg-black text-xs font-jua py-1 px-2 rounded-md hover:bg-gray-600">
-                Accept
-              </button>
+              {loading ? (
+                <Loading size="sm" />
+              ) : (
+                <button
+                  onClick={() => handleAcceptChallenge(game._id)}
+                  className="bg-black text-xs font-jua py-1 px-2 rounded-md hover:bg-gray-600"
+                >
+                  Accept
+                </button>
+              )}
             </li>
           ))}
         </ul>
         <button
-          // onClick={() => setShowSearchPlayer(true)}
+          onClick={() => setShowSearchPlayer(true)}
           className="bg-black rounded-full text-white font-bold py-2 px-10  mt-4"
         >
           Search Players
@@ -117,6 +152,13 @@ function Sidebar() {
           />
         </div>
       </div>
+
+      <Model
+        isOpen={showSearchPlayer}
+        onClose={() => setShowSearchPlayer(false)}
+      >
+        <SaerchPlayer />
+      </Model>
     </aside>
   );
 }

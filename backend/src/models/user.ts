@@ -10,6 +10,7 @@ export interface IUser extends Document {
   verified: boolean;
   email: string;
   bio: string;
+  rating: number;
   personalInfo: {
     firstName: string;
     lastName: string;
@@ -99,6 +100,7 @@ const UserSchema: Schema<IUser> = new Schema(
     verified: { type: Boolean, default: false },
     email: { type: String, required: true, unique: true },
     bio: { type: String },
+    rating: { type: Number, dafault: 0 },
     personalInfo: {
       firstName: { type: String },
       lastName: { type: String },

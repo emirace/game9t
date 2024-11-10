@@ -1,20 +1,83 @@
 import { useState } from "react";
 import ICONS from "../../../assets/icons/icons";
-import IMAGES from "../../../assets/images/images";
 import Model from "../../_components/model";
 import SaerchPlayer from "./saerchPlayer";
 import { useUser } from "../../../context/user";
 import { useWallet } from "../../../context/wallet";
 import { Link } from "react-router-dom";
 import { imageUrl } from "../../../services/api";
+import { useSocket } from "../../../context/socket";
+import Loading from "../../_components/loading";
+import { useToastNotification } from "../../../context/toastNotificationContext";
+import { IGameSession } from "../../../types/gameSession";
+import { useGameSession } from "../../../context/gameSession";
 
 const amounts = ["200", "500", "1000", "2000", "5000", "10000"];
 
-function Sidebar() {
+const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const { user } = useUser();
   const { balance } = useWallet();
+  const { createChallenge, onlineUsers } = useSocket();
+  const { cancelChallenge } = useGameSession();
+  const { addNotification } = useToastNotification();
   const [selectedAmount, setSelectedAmount] = useState("200");
   const [showSearchPlayer, setShowSearchPlayer] = useState(false);
+  const [showCompete, setShowCompete] = useState(false);
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [gameSession, setGameSession] = useState<IGameSession | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+
+  const handleChallenge = async (compete?: string) => {
+    if (!gameId) return;
+    if (!selectedAmount) {
+      addNotification({ message: "Select an ammount", error: true });
+      return;
+    }
+    try {
+      setShowCompete(true);
+      setMessage("Craeting Challenge...");
+      const res = await createChallenge({
+        gameId,
+        amount: parseFloat(selectedAmount),
+        compete,
+      });
+      setGameSession(res);
+      if (compete) {
+        setMessage("Wait for opponent to accept challenge");
+      } else {
+        setMessage("Challenge created Successfully");
+        setSuccess(true);
+      }
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+      setShowCompete(false);
+    }
+  };
+  const handleCloseCompete = async () => {
+    setShowCompete(false);
+    setMessage("");
+    setSuccess(false);
+  };
+
+  const handleCancelChallenge = async () => {
+    try {
+      if (!gameSession) return;
+      setCancelling(true);
+      const res = await cancelChallenge({ sessionId: gameSession?._id });
+
+      setMessage("");
+      setShowCompete(false);
+      setGameSession(null);
+      setSuccess(false);
+      addNotification({ message: res.message });
+    } catch (error: any) {
+      addNotification({ message: error.message, error: true });
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   return (
     <aside className="bg-medium_blue w-full md:w-96 rounded-md ">
       {/* Profile Section */}
@@ -81,7 +144,10 @@ function Sidebar() {
             </button>
           ))}
         </div>
-        <button className="flex items-center justify-center gap-2 text-white font-bold py-2 px-4 rounded-md w-full">
+        <button
+          onClick={() => handleChallenge()}
+          className="flex items-center justify-center gap-2 text-white font-bold py-2 px-4 rounded-md w-full"
+        >
           Place Bet & Create Challenge
           <img src={ICONS.pointer} alt="profile" className="w-4 h-4" />
         </button>
@@ -94,27 +160,32 @@ function Sidebar() {
         <h2 className="font-jua text-2xl ">Available Players</h2>
       </div>
       <div className="bg-light_blue p-4 ">
-        <div className="p-4">No player available</div>
+        {onlineUsers.length <= 0 && (
+          <div className="p-4">No player available</div>
+        )}
         <ul>
-          {[].map((player, index) => (
+          {onlineUsers.map((player, index) => (
             <li
               key={index}
               className="flex justify-between items-center mb-4 text-white"
             >
               <div className="flex items-center gap-4">
                 <img
-                  src={IMAGES.user2}
+                  src={player.image}
                   alt="Profile"
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
-                  <div className="font-jua"> {player}</div>
+                  <div className="font-jua"> {player.username}</div>
                   <div className="text-xs">
                     <span className="text-green">●</span> online
                   </div>
                 </div>
               </div>
-              <button className="bg-black text-xs font-jua py-1 px-2 rounded-md hover:bg-gray-600">
+              <button
+                onClick={() => handleChallenge(player.userId)}
+                className="bg-black text-xs font-jua py-1 px-2 rounded-md hover:bg-gray-600"
+              >
                 Compete
               </button>
             </li>
@@ -131,10 +202,29 @@ function Sidebar() {
         isOpen={showSearchPlayer}
         onClose={() => setShowSearchPlayer(false)}
       >
-        <SaerchPlayer />
+        <SaerchPlayer gameId={gameId} />
+      </Model>
+
+      <Model isOpen={showCompete} onClose={handleCloseCompete}>
+        <div className="flex flex-col justify-center items-center w-full h-full">
+          {success ? (
+            <img src={ICONS.check_green} className="" />
+          ) : (
+            <Loading size="lg" />
+          )}
+          <div className="text-xl font-jua mt-5">{message}</div>
+
+          <button
+            onClick={handleCancelChallenge}
+            className="bg-red text-white text-xs font-jua py-2 px-4 mt-2 rounded-md disabled:bg-slate-400 "
+            disabled={cancelling}
+          >
+            {cancelling ? "Cancelling" : "Cancel"}
+          </button>
+        </div>
       </Model>
     </aside>
   );
-}
+};
 
 export default Sidebar;

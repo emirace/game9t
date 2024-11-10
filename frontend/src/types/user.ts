@@ -159,3 +159,11 @@ export interface IProfileData {
     canSendRequest?: string;
   };
 }
+
+export interface IOnlineUser {
+  userId: string;
+  socketId: string;
+  username: string;
+  image: string;
+  rating: number;
+}

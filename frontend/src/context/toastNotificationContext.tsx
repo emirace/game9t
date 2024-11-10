@@ -46,7 +46,7 @@ export const ToastNotificationProvider: React.FC<Props> = ({ children }) => {
     const { message, action, buttonText, error } = data;
     const id = notificationIdCounter.current.toString();
     notificationIdCounter.current += 1;
-
+    console.log("notification message", message);
     setNotifications((prevNotifications) => [
       ...prevNotifications,
       { id, message, action, buttonText, error },

@@ -146,13 +146,13 @@ const Game: React.FC = () => {
         </div>
         <SideModel isOpen={showSideBar} onClose={() => setShowSideBar(false)}>
           <div className="absolute left-0 top-0 overflow-y-auto h-screen">
-            <Sidebar />
+            <Sidebar gameId={game?._id} />
           </div>
         </SideModel>
 
         {/* Sidebar */}
         <div className="hidden md:block">
-          <Sidebar />
+          <Sidebar gameId={game?._id} />
         </div>
       </div>
       <OtherGames />

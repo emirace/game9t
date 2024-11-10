@@ -6,6 +6,7 @@ import image from './image';
 import gameplay from './gameplay';
 import transaction from './transaction';
 import wallet from './wallet';
+import gameSession from './gameSession';
 
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.use('/images', image);
 router.use('/gameplays', gameplay);
 router.use('/transactions', transaction);
 router.use('/wallets', wallet);
+router.use('/gameSessions', gameSession);
 
 export default router;

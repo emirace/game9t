@@ -18,6 +18,7 @@ interface IGameplay extends Document {
   startTime: Date;
   endTime?: Date;
   bet?: mongoose.Types.ObjectId;
+  session: mongoose.Types.ObjectId;
   winner?: mongoose.Types.ObjectId;
 }
 
@@ -72,6 +73,11 @@ const GameplaySchema: Schema<IGameplay> = new Schema(
     bet: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Bet',
+    },
+    session: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'GameSession',
+      required: true,
     },
     winner: {
       type: mongoose.Schema.Types.ObjectId,

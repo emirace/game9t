@@ -1,32 +1,20 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 interface IGameSession extends Document {
-  player1: mongoose.Types.ObjectId;
-  player2?: mongoose.Types.ObjectId;
+  players: mongoose.Types.ObjectId[];
+  initiatedGame: mongoose.Types.ObjectId;
   active: boolean;
-  games: mongoose.Types.ObjectId[];
-  sessionStart: Date;
-  sessionEnd?: Date;
+  private: boolean;
+  amount?: number;
 }
 
 const GameSessionSchema: Schema<IGameSession> = new Schema(
   {
-    player1: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    player2: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    initiatedGame: { type: mongoose.Schema.Types.ObjectId, ref: 'Game' },
     active: { type: Boolean, default: true },
-    games: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'GamePlay',
-        required: true,
-      },
-    ],
-    sessionStart: { type: Date, default: Date.now },
-    sessionEnd: { type: Date },
+    private: { type: Boolean, default: false },
+    amount: { type: Number },
   },
   { timestamps: true },
 );

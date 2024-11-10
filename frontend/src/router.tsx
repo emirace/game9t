@@ -37,74 +37,81 @@ import Leaderboards from "./pages/admin/leaderboard";
 import Site from "./pages/admin/site";
 import SettingAdmin from "./pages/admin/settingAdmin";
 import Protected from "./pages/protected";
+import Main from "./pages/main";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <Main />,
     children: [
-      { path: "/", element: <Home /> },
-      { path: "/leaderboard", element: <Leaderboard /> },
-      { path: "/support", element: <Support /> },
       {
         path: "/",
-        element: <Protected />,
+        element: <Layout />,
         children: [
-          { path: "/wallet", element: <Wallet /> },
-          { path: "/lobby", element: <Lobby /> },
-          { path: "/wallet/deposit", element: <Deposit /> },
-          { path: "/wallet/withdraw", element: <Withdraw /> },
-          { path: "/game/:id", element: <Game /> },
+          { path: "/", element: <Home /> },
+          { path: "/leaderboard", element: <Leaderboard /> },
+          { path: "/support", element: <Support /> },
           {
-            path: "/profile",
-            element: <Profile />,
+            path: "/",
+            element: <Protected />,
             children: [
-              { path: "/profile", element: <Bio /> },
-              { path: "social", element: <Social /> },
-              { path: "info", element: <Info /> },
-              { path: "payments", element: <Payments /> },
-              { path: "history", element: <History /> },
-              { path: "transactions", element: <Transaction /> },
-            ],
-          },
-          {
-            path: "/settings",
-            element: <Settings />,
-            children: [
-              { path: "/settings", element: <Account /> },
-              { path: "privacy", element: <Privacy /> },
-              { path: "notification", element: <Notification /> },
-              { path: "security", element: <Security /> },
-              { path: "payment", element: <Payment /> },
-              { path: "gameplay", element: <Gameplay /> },
-              { path: "friends", element: <Friends /> },
-              { path: "delete", element: <Delete /> },
+              { path: "/wallet", element: <Wallet /> },
+              { path: "/lobby", element: <Lobby /> },
+              { path: "/wallet/deposit", element: <Deposit /> },
+              { path: "/wallet/withdraw", element: <Withdraw /> },
+              { path: "/game/:id", element: <Game /> },
+              {
+                path: "/profile",
+                element: <Profile />,
+                children: [
+                  { path: "/profile", element: <Bio /> },
+                  { path: "social", element: <Social /> },
+                  { path: "info", element: <Info /> },
+                  { path: "payments", element: <Payments /> },
+                  { path: "history", element: <History /> },
+                  { path: "transactions", element: <Transaction /> },
+                ],
+              },
+              {
+                path: "/settings",
+                element: <Settings />,
+                children: [
+                  { path: "/settings", element: <Account /> },
+                  { path: "privacy", element: <Privacy /> },
+                  { path: "notification", element: <Notification /> },
+                  { path: "security", element: <Security /> },
+                  { path: "payment", element: <Payment /> },
+                  { path: "gameplay", element: <Gameplay /> },
+                  { path: "friends", element: <Friends /> },
+                  { path: "delete", element: <Delete /> },
+                ],
+              },
             ],
           },
         ],
       },
-    ],
-  },
-  {
-    path: "/admin",
-    element: <Admin />,
-    children: [
-      { path: "/admin", element: <Dashboard /> },
-      { path: "users", element: <Users /> },
-      { path: "game", element: <GameManage /> },
-      { path: "payments", element: <Walletpayment /> },
-      { path: "betting", element: <Betting /> },
-      { path: "leaderboard", element: <Leaderboards /> },
-      { path: "site", element: <Site /> },
-      { path: "settings", element: <SettingAdmin /> },
-    ],
-  },
-  {
-    path: "/auth",
-    element: <Auth />,
-    children: [
-      { path: "login", element: <Login /> },
-      { path: "register", element: <Register /> },
+      {
+        path: "/admin",
+        element: <Admin />,
+        children: [
+          { path: "/admin", element: <Dashboard /> },
+          { path: "users", element: <Users /> },
+          { path: "game", element: <GameManage /> },
+          { path: "payments", element: <Walletpayment /> },
+          { path: "betting", element: <Betting /> },
+          { path: "leaderboard", element: <Leaderboards /> },
+          { path: "site", element: <Site /> },
+          { path: "settings", element: <SettingAdmin /> },
+        ],
+      },
+      {
+        path: "/auth",
+        element: <Auth />,
+        children: [
+          { path: "login", element: <Login /> },
+          { path: "register", element: <Register /> },
+        ],
+      },
     ],
   },
 ]);

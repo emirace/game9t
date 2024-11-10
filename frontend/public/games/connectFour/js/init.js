@@ -60,21 +60,66 @@
 var browserSupport=false;
 var isTablet;
 function checkBrowser(){
-	isTablet = (/ipad|android|android 3.0|xoom|sch-i800|playbook|tablet|kindle/i.test(navigator.userAgent.toLowerCase()));
-	deviceVer=getDeviceVer();
-	
-	var canvasEl = document.createElement('canvas');
-	if(canvasEl.getContext){ 
-	  browserSupport=true;
-	}
-	
-	if(browserSupport){
-		if(!isLoaded){
-			isLoaded=true;
-			initPreload();
-		}
-	}else{
-		//browser not support
-		$('#notSupportHolder').show();
-	}
+   isTablet = (/ipad|android|android 3.0|xoom|sch-i800|playbook|tablet|kindle/i.test(navigator.userAgent.toLowerCase()));
+   deviceVer=getDeviceVer();
+   
+   var canvasEl = document.createElement('canvas');
+   if(canvasEl.getContext){ 
+	 browserSupport=true;
+   }
+   
+   if(browserSupport){
+	   if(!isLoaded){
+		   isLoaded=true;
+
+		   detectAddScript(true);
+	   }
+   }else{
+	   //browser not support
+	   $('#notSupportHolder').show();
+   }
+}
+
+function detectAddScript(addon){
+   if(addon){
+	   if(checkAddScript("multiplayer/css/socket.css", "multiplayer/js/socket.js", "multiplayer/js/socket-app.js", "/socket.io/socket.io.js")){
+            doneAddScript();
+	   }else{
+		   doneAddScript();
+	   }
+   }else{
+	   doneAddScript();
+   }
+}
+
+function checkAddScript(styleFile, scriptFile, scriptAppFile, socketFile){
+   var styleExist = checkFileExist(styleFile);
+   var scriptExist = checkFileExist(scriptFile);
+   var scriptAppExist = checkFileExist(scriptAppFile);
+   var socketExist = checkFileExist(socketFile);
+
+   if(styleExist & scriptExist & socketExist){
+	   $('head').append('<link rel="stylesheet" type="text/css" href="'+styleFile+'">');
+	   $('head').append('<script type="text/javascript" src="'+socketFile+'"></script>');
+	   $('head').append('<script type="text/javascript" src="'+scriptFile+'"></script>');
+	   $('head').append('<script type="text/javascript" src="'+scriptAppFile+'"></script>');
+
+	   return true;
+   }else{
+	   return false;
+   }
+}
+
+function doneAddScript(){
+	initPreload();
+}
+
+function checkFileExist(urlToFile) {
+   var response = jQuery.ajax({
+	   url: urlToFile,
+	   type: 'HEAD',
+	   async: false
+   }).status;	
+   
+   return (response != "200") ? false : true;
 }

@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import OtherGames from "./_component/otherGames";
 import Sidebar from "./_component/sidebar";
@@ -20,6 +25,10 @@ const Game: React.FC = () => {
   const [showSideBar, setShowSideBar] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get("sessionid");
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -38,6 +47,34 @@ const Game: React.FC = () => {
     };
     fetchGame();
   }, []);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data.type === "STATUS" && event.data.data === "Ready") {
+        console.log("Message from game:", event.data.data);
+        setReady(true);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(sessionId, ready);
+    if (sessionId && ready) {
+      if (iframeRef.current?.contentWindow) {
+        const message = {
+          type: "GAME",
+          sessionId,
+        };
+        iframeRef.current.contentWindow.postMessage(message, "*");
+      }
+    }
+  }, [sessionId, ready]);
+
   return loading ? (
     <div className="w-full h-screen">
       <Loading />
@@ -61,8 +98,9 @@ const Game: React.FC = () => {
         {/* Main Content */}
         <div className="flex-1">
           {/* Game Mode Selection */}
-          <div className="border-4 border-light_blue mb-6 h-96">
+          <div className="border-4 border-light_blue mb-6 h-[26rem]">
             <iframe
+              ref={iframeRef}
               src={`/games/${game?.slug}/index.html`}
               className="w-full h-full"
             />

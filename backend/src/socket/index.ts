@@ -1,12 +1,13 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from './config/env';
-import User from './models/user';
+import { JWT_SECRET } from '../config/env';
+import User from '../models/user';
 import {
   acceptChallenge,
   cancelChallenge,
   createChallenge,
-} from './controllers/socket';
+} from '../controllers/socket';
+import { games } from './games';
 
 export const onlineUsers = new Map();
 
@@ -59,7 +60,6 @@ export const setupSockets = (io: SocketIOServer) => {
       rating,
     });
 
-    // Emit the updated list of online users to all clients
     io.emit('onlineUsers', Array.from(onlineUsers.values()));
 
     socket.on('createChallenge', ({ gameId, amount, compete }) =>
@@ -72,6 +72,13 @@ export const setupSockets = (io: SocketIOServer) => {
 
     socket.on('cancelChallenge', ({ sessionId }) => {
       cancelChallenge({ sessionId, socket });
+    });
+
+    // HTML5 SOCKETS -----------------
+    games(io, socket);
+
+    socket.onAny((event, ...args) => {
+      console.log(event, args);
     });
 
     // Handle disconnection

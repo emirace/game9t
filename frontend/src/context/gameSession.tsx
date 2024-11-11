@@ -162,14 +162,14 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
             const res = await acceptChallenge({ sessionId: gameSession._id });
             navigate(`/game/${res?.initiatedGame?._id}?gamesession=${res._id}`);
           } catch (error: any) {
-            addNotification({ message: error, error: true });
+            addNotification({ message: error.message, error: true });
           }
         };
         addNotification({
           message: `${gameSession.players[0]?.username} challenge you to a ${
             gameSession.initiatedGame.name
           }, ₦${gameSession.amount || 0}`,
-          buttonText: "View",
+          buttonText: "Accept",
           action: () => handleAcceptChallenge(),
         });
       }

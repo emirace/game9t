@@ -59,6 +59,7 @@ const ICONS = {
   call: new URL("./call.png", import.meta.url).href,
   article: new URL("./article.png", import.meta.url).href,
   filter: new URL("./filter.png", import.meta.url).href,
+  bell_blue: new URL("./bell_blue.png", import.meta.url).href,
 };
 
 export default ICONS;

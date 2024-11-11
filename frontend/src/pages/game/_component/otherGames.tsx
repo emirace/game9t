@@ -17,7 +17,7 @@ function OtherGames() {
           <div className="animate-pulse bg-medium_blue rounded-lg h-40 p-4" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ">
           {games.games.length <= 0 ? (
             <div>No games available</div>
           ) : (

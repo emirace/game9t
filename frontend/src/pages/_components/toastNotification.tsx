@@ -42,7 +42,7 @@ const ToastNotification: React.FC = () => {
               key={notification.id}
               className="bg-cream text-black rounded-lg p-4 my-2 shadow-md flex gap-4 items-center justify-between"
             >
-              <img src={ICONS.bell} alt="bell" className="w-4 h-4" />
+              <img src={ICONS.bell_blue} alt="bell" className="w-4 h-4" />
               <div className="space-y-4">
                 <div className="text-xs text-center sm:text-sm md:text-base">
                   {notification.message}
@@ -52,13 +52,18 @@ const ToastNotification: React.FC = () => {
                     notification.action && notification.action();
                     removeNotification(notification.id);
                   }}
-                  className="px-2 py-1 bg-white  text-orange-color text-sm rounded"
+                  className="px-2 py-1 bg-white  text-orange-color text-jua text-sm rounded"
                 >
                   {notification.buttonText}
                 </button>
               </div>
 
-              <img src={ICONS.close} alt="bell" className="w-4 h-4" />
+              <img
+                src={ICONS.close}
+                alt="bell"
+                className="w-4 h-4 cursor-pointer"
+                onClick={() => removeNotification(notification.id)}
+              />
             </div>
           ))}
         </div>

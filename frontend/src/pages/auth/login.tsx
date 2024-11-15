@@ -156,7 +156,7 @@ const Login: React.FC = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                className="w-full py-3    focus:outline-none "
+                className="w-full py-3  bg-black  focus:outline-none "
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}

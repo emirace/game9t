@@ -202,7 +202,7 @@ const Register: React.FC = () => {
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
-                  className="w-full py-3  focus:outline-none"
+                  className="w-full py-3 bg-black  focus:outline-none"
                   placeholder="Confirm Password"
                   value={formData.confirmPassword}
                   onChange={handleChange}

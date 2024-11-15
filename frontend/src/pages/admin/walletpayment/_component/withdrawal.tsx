@@ -17,7 +17,7 @@ function Withdrawal() {
 
   const handleApprove = async (id: string) => {
     try {
-      const updatedRequest = await approveWithdrawalRequest(id);
+      await approveWithdrawalRequest(id);
     } catch (error: any) {
       addNotification({ message: error, error: true });
     }
@@ -25,7 +25,7 @@ function Withdrawal() {
 
   const handleDecline = async (id: string) => {
     try {
-      const updatedRequest = await declineWithdrawalRequest(id);
+      await declineWithdrawalRequest(id);
     } catch (error: any) {
       addNotification({ message: error, error: true });
     }

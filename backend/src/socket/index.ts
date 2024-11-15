@@ -77,14 +77,14 @@ export const setupSockets = (io: SocketIOServer) => {
     // HTML5 SOCKETS -----------------
     games(io, socket);
 
-    socket.onAny((event, ...args) => {
-      console.log(event, args);
-    });
+    // socket.onAny((event, ...args) => {
+    //   console.log(event, args);
+    // });
 
     // Handle disconnection
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id}`);
-      onlineUsers.delete(userId);
+      onlineUsers.delete(userId.toString());
       io.emit('onlineUsers', Array.from(onlineUsers.values()));
     });
   });

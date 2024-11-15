@@ -167,3 +167,10 @@ export interface IOnlineUser {
   image: string;
   rating: number;
 }
+
+export interface IGetAllUsersResponse {
+  users: IUser[];
+  totalPages: number;
+  currentPage: number;
+  totalCount: number;
+}

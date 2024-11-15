@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ICONS from "../../../assets/icons/icons";
 import Model from "../../_components/model";
 import SaerchPlayer from "./saerchPlayer";
@@ -17,6 +17,7 @@ const amounts = ["200", "500", "1000", "2000", "5000", "10000"];
 const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const { user } = useUser();
   const { balance } = useWallet();
+  const { socket } = useSocket();
   const { createChallenge, onlineUsers } = useSocket();
   const { cancelChallenge } = useGameSession();
   const { addNotification } = useToastNotification();
@@ -77,6 +78,14 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
       setCancelling(false);
     }
   };
+
+  useEffect(() => {
+    if (!socket) return;
+    socket?.on("challengeAccepted", (gameSession) => {
+      setGameSession(gameSession);
+      setSuccess(true);
+    });
+  }, [socket]);
 
   return (
     <aside className="bg-medium_blue w-full md:w-96 rounded-md ">
@@ -208,19 +217,29 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
       <Model isOpen={showCompete} onClose={handleCloseCompete}>
         <div className="flex flex-col justify-center items-center w-full h-full">
           {success ? (
-            <img src={ICONS.check_green} className="" />
+            <div className="flex flex-col justify-center items-center ">
+              <img src={ICONS.check_green} className="" />
+              <div className="text-xl font-jua mt-5">Challenge Accepted</div>
+              <button
+                onClick={handleCloseCompete}
+                className="bg-cream text-xs font-jua py-2 px-4 mt-2 rounded-md disabled:bg-slate-400 "
+              >
+                Continue
+              </button>
+            </div>
           ) : (
-            <Loading size="lg" />
+            <>
+              <Loading size="lg" />
+              <div className="text-xl font-jua mt-5">{message}</div>
+              <button
+                onClick={handleCancelChallenge}
+                className="bg-red text-white text-xs font-jua py-2 px-4 mt-2 rounded-md disabled:bg-slate-400 "
+                disabled={cancelling}
+              >
+                {cancelling ? "Cancelling" : "Cancel"}
+              </button>
+            </>
           )}
-          <div className="text-xl font-jua mt-5">{message}</div>
-
-          <button
-            onClick={handleCancelChallenge}
-            className="bg-red text-white text-xs font-jua py-2 px-4 mt-2 rounded-md disabled:bg-slate-400 "
-            disabled={cancelling}
-          >
-            {cancelling ? "Cancelling" : "Cancel"}
-          </button>
         </div>
       </Model>
     </aside>

@@ -22,7 +22,7 @@ function AvailableGame() {
             <div
               onClick={() => router(`/game/${game._id}`)}
               key={index}
-              className="mb-4"
+              className="mb-4 cursor-pointer hover:scale-105 transition-all duration-300 "
             >
               <div className="relative">
                 <img src={imageUrl + game.image} alt="game" />

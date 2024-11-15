@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { getUserProfile, updateUserProfile } from "../services/user";
 import { IProfileData, IUser } from "../types/user";
+// import { googleLogout } from "@react-oauth/google";
 
 // Define the context types
 interface UserContextType {
@@ -47,6 +48,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   const logout = () => {
     setUser(null);
+    // googleLogout();
     localStorage.removeItem("authToken");
   };
 

@@ -6,7 +6,7 @@ import axios, {
 import { getBackendErrorMessage } from "../utils/error";
 
 export const baseURL = "https://game9t.onrender.com";
-// export const baseURL = "http://localhost:5000";
+// export const baseURL = "https://game9t.onrender.com";
 export const imageUrl = baseURL;
 
 const api = axios.create({

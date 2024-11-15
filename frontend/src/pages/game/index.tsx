@@ -38,6 +38,7 @@ const Game: React.FC = () => {
         return;
       }
       try {
+        setLoading(true);
         const res = await fetchGameById(id);
         setGame(res);
         setLoading(false);
@@ -46,7 +47,7 @@ const Game: React.FC = () => {
       }
     };
     fetchGame();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {

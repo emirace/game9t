@@ -1,12 +1,33 @@
+import { useState, useEffect } from "react";
 import ICONS from "../../../../assets/icons/icons";
-
-const stats = [
-  { icon: ICONS.profile_outline, name: "Active Users", value: "12,000" },
-  { icon: "", name: "Ongoing Games", value: "300" },
-  { icon: ICONS.dollar, name: "Revenue", value: "45,000" },
-];
+import { getDashboardStat } from "../../../../services/admin";
 
 function Stat() {
+  const [stat, setStat] = useState<any>(null);
+
+  const stats = [
+    {
+      icon: ICONS.profile_outline,
+      name: "Active Users",
+      value: stat?.activeUsers || 0,
+    },
+    { icon: "", name: "Ongoing Games", value: stat?.ongoingGames || 0 },
+    { icon: ICONS.dollar, name: "Revenue", value: stat?.totalRevenue || 0 },
+  ];
+
+  useEffect(() => {
+    const loadStat = async () => {
+      try {
+        const data = await getDashboardStat();
+        setStat(data);
+      } catch (error) {
+        console.log("Error loading stat:", error);
+      }
+    };
+
+    loadStat();
+  }, []);
+
   return (
     <div className="grid grid-cols-3 gap-6 mb-5">
       {stats.map((item, index) => (

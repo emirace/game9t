@@ -1,6 +1,11 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { generateCode, getTimeStamp } from '../utils/games';
-import GameSession from '../models/gameSession';
+import GameSession, { IGameSession } from '../models/gameSession';
+import Gameplay from '../models/gameplay';
+import mongoose from 'mongoose';
+import Bet from '../models/bet';
+import Wallet from '../models/wallet';
+import Transaction from '../models/transaction';
 
 let roomSettings = {
   totalRooms: 8, //total rooms
@@ -45,8 +50,7 @@ let textDisplay = {
   ],
 };
 
-let gameType: string;
-let maxPlayers: number;
+let maxPlayers: number = 2;
 let rooms: {
   nickNamesIndex: number[];
 
@@ -96,18 +100,6 @@ for (let n = 0; n < roomSettings.totalRooms; n++) {
 }
 
 export const games = (io: SocketIOServer, socket: Socket) => {
-  socket.on('updateGameType', function (game) {
-    gameType = game;
-
-    let maxPlayersIndex = roomSettings.maxPlayers.findIndex(
-      (x) => x.game === gameType,
-    );
-    maxPlayers =
-      maxPlayersIndex == -1
-        ? 2
-        : roomSettings.maxPlayers[maxPlayersIndex].total;
-  });
-
   socket.on('adduser', function (username) {
     let enterName = username == undefined ? false : true;
     let newUser =
@@ -118,6 +110,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
       index: userIndex,
       room: '',
       roomIndex: '',
+      gameType: '',
     };
     userIndex++;
 
@@ -131,45 +124,42 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     //find room and users
     let roomCode: any = -1;
 
-    console.log(sessionId);
+    var gameSession: IGameSession | null;
     try {
-      const gameSession = await GameSession.findOne({
+      if (!sessionId) {
+        throw 'error';
+      }
+      gameSession = await GameSession.findOne({
         _id: sessionId,
         players: (socket.request as any).user._id,
         active: true,
-      });
+      }).populate('initiatedGame', 'slug');
 
       if (!gameSession) {
-        socket.broadcast
-          .to(socket.data.room)
-          .emit('updateSocketRooms', 'nosession');
-        return;
+        throw 'error';
       }
+
+      socket.data.gameType = (gameSession.initiatedGame as any).slug;
     } catch (error) {
       socket.emit('updateSocketRooms', 'nosession');
-      socket
-        .to(socket.data.room)
-        .emit(
-          'updateSocketLog',
-          getTimeStamp() +
-            textDisplay.disconnectedPublic.replace(
-              '[USER]',
-              socket.data.username,
-            ),
-        );
       return;
     }
 
     for (let n = 0; n < privateRooms.length; n++) {
-      if (privateRooms[n].matching && !privateRooms[n].play) {
+      if (
+        privateRooms[n].matching &&
+        !privateRooms[n].play &&
+        privateRooms[n].name === (gameSession._id as any).toString()
+      ) {
         roomCode = privateRooms[n].name;
+        break;
       }
     }
 
     if (roomCode == -1) {
       //create new room if no room found
       for (let n = 0; n < 10; n++) {
-        roomCode = generateCode(4);
+        roomCode = (gameSession._id as any).toString();
         let roomIndex = privateRooms.findIndex((x) => x.name === roomCode);
         if (roomIndex == -1) {
           n = 10;
@@ -215,6 +205,96 @@ export const games = (io: SocketIOServer, socket: Socket) => {
       });
 
       if (targetArray[roomIndex].users.length >= maxPlayers) {
+        const gamePlay = await Gameplay.create({
+          game: gameSession.initiatedGame,
+          player1: {
+            userId: gameSession.players[0],
+          },
+          player2: {
+            userId: gameSession.players[1],
+          },
+          multiplayer: true,
+          active: true,
+          startTime: Date,
+          session: gameSession._id,
+        });
+
+        if (gameSession.amount) {
+          try {
+            // Create a new Bet record
+            const bet = await Bet.create({
+              game: gameSession.initiatedGame,
+              session: gameSession._id,
+              amount: gameSession.amount,
+              status: 'ongoing',
+            });
+
+            // Associate the bet with the gameplay
+            gamePlay.bet = bet._id as mongoose.Types.ObjectId;
+            await gamePlay.save();
+
+            // Fetch wallets for both players
+            const [wallet1, wallet2] = await Promise.all([
+              Wallet.findOne({ user: gameSession.players[0] }),
+              Wallet.findOne({ user: gameSession.players[1] }),
+            ]);
+
+            // Check wallet existence and sufficient balance
+            if (!wallet1 || !wallet2) {
+              socket.emit('updateSocketRooms', 'nobalance');
+              return;
+            }
+
+            if (
+              wallet1.balance < gameSession.amount ||
+              wallet2.balance < gameSession.amount
+            ) {
+              socket.emit('updateSocketRooms', 'nobalance');
+              return;
+            }
+
+            // Deduct balances
+            wallet1.balance -= gameSession.amount;
+            wallet2.balance -= gameSession.amount;
+
+            // Save updated wallet balances
+            await Promise.all([wallet1.save(), wallet2.save()]);
+
+            // Create transactions for both players
+            const transactions = [
+              new Transaction({
+                type: 'Bet',
+                user: gameSession.players[0],
+                amount: gameSession.amount,
+                status: 'Completed',
+                paymentMethod: 'Wallet',
+              }),
+              new Transaction({
+                type: 'Bet',
+                user: gameSession.players[1],
+                amount: gameSession.amount,
+                status: 'Completed',
+                paymentMethod: 'Wallet',
+              }),
+            ];
+
+            await Transaction.insertMany(transactions);
+
+            console.log('Bet and wallet transactions processed successfully');
+          } catch (error) {
+            console.error(
+              'Error processing bet or wallet transactions:',
+              error,
+            );
+            socket.emit('updateSocketRooms', 'error');
+            socket.emit('updateSocketRooms', 'nosession');
+            return;
+          }
+        }
+
+        gameSession.active = false;
+        await gameSession.save();
+
         targetArray[roomIndex].matching = false;
         socket.broadcast
           .to(socket.data.room)
@@ -229,6 +309,84 @@ export const games = (io: SocketIOServer, socket: Socket) => {
 
   socket.on('exitroom', function () {
     leaveSocketRoom();
+  });
+
+  socket.on('exitGame', async function ({ status, score }) {
+    const userId = (socket.request as any).user._id;
+
+    try {
+      const gameplay = await Gameplay.findOne({
+        session: socket.data.room,
+        active: true,
+      });
+
+      if (!gameplay) {
+        console.log('No active gameplay found for this session');
+        return;
+      }
+
+      gameplay.active = false; // Mark the game as inactive
+
+      // Update scores based on which player exited
+      if (gameplay.player1.userId.toString() === userId.toString()) {
+        gameplay.player1.score = score.score;
+        if (gameplay.player2) {
+          gameplay.player2.score = score.opponentScore;
+        }
+      } else if (
+        gameplay.player2 &&
+        gameplay.player2.userId.toString() === userId.toString()
+      ) {
+        gameplay.player2.score = score.score;
+        gameplay.player1.score = score.opponentScore;
+      }
+
+      // Determine winner
+      if (gameplay.player1 && gameplay.player2) {
+        if (gameplay.player1.score > gameplay.player2.score) {
+          gameplay.winner = gameplay.player1.userId; // player1 is the winner
+        } else if (gameplay.player2.score > gameplay.player1.score) {
+          gameplay.winner = gameplay.player2.userId; // player2 is the winner
+        }
+      } else {
+        // In case only one player played, declare them the winner by default
+        gameplay.winner = gameplay.player1
+          ? gameplay.player1.userId
+          : gameplay.player2?.userId;
+      }
+
+      const bet = await Bet.findOne({
+        session: gameplay.session,
+        status: 'ongoing',
+      });
+      console.log(bet);
+      if (bet) {
+        bet.status = 'pending';
+        if (gameplay.player1 && gameplay.player2) {
+          if (gameplay.player1.score > gameplay.player2.score) {
+            bet.winner = gameplay.player1.userId; // player1 is the winner
+          } else if (gameplay.player2.score > gameplay.player1.score) {
+            bet.winner = gameplay.player2.userId; // player2 is the winner
+          }
+        }
+        await bet.save();
+      }
+
+      // Save the updated gameplay record
+      await gameplay.save();
+
+      // Emit an event to both players to notify game over and results
+      socket.to(socket.data.room).emit('gameOver', {
+        status: 'completed',
+        winner: gameplay.winner,
+        player1Score: gameplay.player1.score,
+        player2Score: gameplay.player2?.score,
+      });
+
+      console.log('Game exited and updated successfully');
+    } catch (error) {
+      console.error('Error exiting game:', error);
+    }
   });
 
   socket.on('disconnect', () => {
@@ -314,7 +472,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     }
   }
 
-  function updateSocketGame(status: string, data: any, others: any) {
+  async function updateSocketGame(status: string, data: any, others: any) {
     let getRoomInfo = findSocketRoom(socket.data.room);
     let roomIndex = getRoomInfo.roomIndex;
     let targetArray = getRoomInfo.targetArray;
@@ -344,9 +502,9 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     }
 
     if (
-      gameType == 'tictactoe' ||
-      gameType == 'connectfour' ||
-      gameType == 'wordsearch'
+      socket.data.gameType == 'tictactoe' ||
+      socket.data.gameType == 'connectFour' ||
+      socket.data.gameType == 'wordsearch'
     ) {
       if (status == 'start') {
         let randomTurn = Math.floor(
@@ -455,19 +613,22 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     let userIndex = targetArray[roomIndex].users.findIndex(
       (x) => x.index === Number(socket.data.index),
     );
-    if (targetArray[roomIndex].play) {
-      targetArray[roomIndex].users[userIndex].active = false;
-      returnUserTurn(getRoomInfo, false);
-    } else {
-      targetArray[roomIndex].users.splice(userIndex, 1);
 
-      if (
-        !socket.data.enterName &&
-        Array.isArray(targetArray[roomIndex].nickNamesIndex)
-      ) {
-        let thisNickNameIndex = userIndex;
-        targetArray[roomIndex]?.nickNamesIndex.splice(userIndex, 1);
-        targetArray[roomIndex]?.nickNamesIndex.push(thisNickNameIndex);
+    if (userIndex >= 0) {
+      if (targetArray[roomIndex].play) {
+        targetArray[roomIndex].users[userIndex].active = false;
+        returnUserTurn(getRoomInfo, false);
+      } else {
+        targetArray[roomIndex].users.splice(userIndex, 1);
+
+        if (
+          !socket.data.enterName &&
+          Array.isArray(targetArray[roomIndex].nickNamesIndex)
+        ) {
+          let thisNickNameIndex = userIndex;
+          targetArray[roomIndex]?.nickNamesIndex.splice(userIndex, 1);
+          targetArray[roomIndex]?.nickNamesIndex.push(thisNickNameIndex);
+        }
       }
     }
 
@@ -501,17 +662,17 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     }
 
     //clear room
-    for (let n = 0; n < rooms.length; n++) {
-      if (rooms[n].users.length == 0) {
-        rooms[n].play = false;
-      }
-    }
+    // for (let n = 0; n < rooms.length; n++) {
+    //   if (rooms[n].users.length == 0) {
+    //     rooms[n].play = false;
+    //   }
+    // }
 
-    for (let n = 0; n < privateRooms.length; n++) {
-      if (privateRooms[n].users.length == 0) {
-        privateRooms.splice(n, 1);
-      }
-    }
+    // for (let n = 0; n < privateRooms.length; n++) {
+    //   if (privateRooms[n].users.length == 0) {
+    //     privateRooms.splice(n, 1);
+    //   }
+    // }
 
     togglePrivateTimer();
     io.sockets.emit('updateSocketRooms', 'roomlist', rooms);

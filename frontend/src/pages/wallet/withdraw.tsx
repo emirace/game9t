@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import IMAGES from "../../assets/images/images";
+import { useWallet } from "../../context/wallet";
 
 const Withdraw: React.FC = () => {
+  const { balance } = useWallet();
+  const [amount, setAmount] = useState("");
   return (
     <div className="bg-dark-900 text-white min-h-screen p-6 pb-40 md:px-20">
       {/* Breadcrumb */}
@@ -23,8 +26,15 @@ const Withdraw: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-[2]">
           <div className="flex gap-2 items-center">
-            <input placeholder="Enter amount" className="bg-black p-2 w-1/2" />
-            <img src={ICONS.check_green} alt="" className="w-4 h-4" />
+            <input
+              placeholder="Enter amount"
+              className="bg-black p-2 w-1/2"
+              onChange={(e) => setAmount(e.target.value)}
+            />
+            {parseFloat(amount) >= 200 && (
+              <img src={ICONS.check_green} alt="" className="w-4 h-4" />
+            )}
+            <div>(5% Admin Fees Will be deducted)</div>
           </div>
           <div className="font-jua my-4">Withdraw in</div>
           <div className="bg-light_blue p-4 px-8 rounded-lg mb-6">
@@ -63,7 +73,7 @@ const Withdraw: React.FC = () => {
                 <span className="text-cream">$</span> Current Balance :
               </span>
               <span className="bg-cream text-black px-4 py-1 rounded-md ml-2 font-jua">
-                ₦200
+                ₦{balance}
               </span>
             </h2>
             <span className="bg-red text-xs px-4 py-1 rounded-lg cursor-pointer">

@@ -5,7 +5,12 @@ export const fetchUserTransation = async () => {
   return response.data;
 };
 
-export const fetchAllTransaction = async () => {
-  const response = await api.get(`/transactions`);
+export const fetchAllTransaction = async (data: {
+  page: number;
+  limit: number;
+}) => {
+  const response = await api.get(`/transactions`, {
+    params: { ...data },
+  });
   return response.data;
 };

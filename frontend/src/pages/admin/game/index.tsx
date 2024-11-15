@@ -123,14 +123,16 @@ function GameManage() {
         </span>
         <div>
           <button
+            disabled={page <= 1}
             onClick={() => (page > 1 ? setPage(page - 1) : null)}
-            className="hover:underline mr-4"
+            className="hover:underline mr-4 disabled:text-gray-500"
           >
             PREVIOUS /
           </button>
           <button
             onClick={() => (page < games.totalGames ? setPage(page + 1) : null)}
-            className="hover:underline"
+            disabled={page >= games.totalPages}
+            className="hover:underline disabled:text-gray-500"
           >
             NEXT
           </button>

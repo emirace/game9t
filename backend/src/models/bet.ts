@@ -6,7 +6,7 @@ interface IBet extends Document {
   session: mongoose.Types.ObjectId;
   amount: number;
   status: 'pending' | 'ongoing' | 'completed';
-  payout?: number;
+  winner?: mongoose.Types.ObjectId;
   settlementDate?: Date;
 }
 
@@ -32,9 +32,9 @@ const BetSchema: Schema<IBet> = new Schema(
       enum: ['pending', 'ongoing', 'completed'],
       default: 'ongoing',
     },
-    payout: {
-      type: Number,
-      default: 0,
+    winner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     settlementDate: { type: Date },
   },

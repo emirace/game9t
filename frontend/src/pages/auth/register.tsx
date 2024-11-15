@@ -5,11 +5,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/auth";
 import Loading from "../_components/loading";
 import { useToastNotification } from "../../context/toastNotificationContext";
+import { FiEyeOff, FiEye } from "react-icons/fi";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const { addNotification } = useToastNotification();
   const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // Form state
   const [formData, setFormData] = useState({
     username: "",
@@ -92,6 +96,14 @@ const Register: React.FC = () => {
     }
   };
 
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <div className="min-h-screen flex relative overflow-y-auto md:overflow-y-hidden">
       {/* Left Section */}
@@ -131,7 +143,7 @@ const Register: React.FC = () => {
 
       {/* Right Section */}
       <div className="absolute bg-medium_blue bg-opacity-90 md:bg-none p-6 md:p-0 rounded-lg top-1/2 -translate-y-1/2 md:-translate-x-0 md:-translate-y-0 left-1/2 -translate-x-1/2 md:static md:w-1/2 md:flex md:items-center md:justify-center ">
-        <div className="md:max-w-md w-full space-y-8">
+        <div className="md:max-w-md w-full space-y-6">
           <h2 className="text-3xl font-jua text-center">Create Your Account</h2>
 
           <form className="mt-8 space-y-6" onSubmit={handleRegister}>
@@ -164,28 +176,44 @@ const Register: React.FC = () => {
             </div>
 
             <div>
-              <input
-                type="password"
-                name="password"
-                className="w-full px-4 py-3 rounded-md bg-black focus:outline-none"
-                placeholder="Create Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+              <div className="flex items-center px-4 rounded-md bg-black">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className="w-full px-4 py-3 rounded-md bg-black focus:outline-none"
+                  placeholder="Create Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                {showPassword ? (
+                  <FiEyeOff onClick={togglePassword} />
+                ) : (
+                  <FiEye onClick={togglePassword} />
+                )}
+              </div>
+
               {errors.password && (
                 <p className="text-red text-xs">{errors.password}</p>
               )}
             </div>
 
             <div>
-              <input
-                type="password"
-                name="confirmPassword"
-                className="w-full px-4 py-3 rounded-md bg-black focus:outline-none"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
+              <div className="flex items-center px-4 rounded-md bg-black">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  className="w-full py-3  focus:outline-none"
+                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                />
+
+                {showPassword ? (
+                  <FiEyeOff onClick={toggleConfirmPassword} />
+                ) : (
+                  <FiEye onClick={toggleConfirmPassword} />
+                )}
+              </div>
               {errors.confirmPassword && (
                 <p className="text-red text-xs">{errors.confirmPassword}</p>
               )}
@@ -214,14 +242,14 @@ const Register: React.FC = () => {
           </form>
 
           <div className="mt-6">
-            <button className="flex items-center justify-center w-full py-2 bg-light_blue rounded-md">
+            <button className="flex items-center justify-center w-full py-2 bg-light_blue hover:bg-medium_blue rounded-md">
               <img src={ICONS.google} className="h-5 w-5 mr-2" alt="Google" />
               Sign in with Google
             </button>
           </div>
 
-          <div className="mt-4">
-            <button className="flex items-center justify-center w-full py-2 bg-light_blue rounded-md">
+          <div className="mt-2">
+            <button className="flex items-center justify-center w-full py-2 bg-light_blue hover:bg-medium_blue rounded-md">
               <img
                 src={ICONS.facebook_color}
                 className="h-5 w-5 mr-2"

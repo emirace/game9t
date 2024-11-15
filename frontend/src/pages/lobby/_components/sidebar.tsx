@@ -25,7 +25,7 @@ function Sidebar() {
     try {
       setLoading(true);
       const res = await acceptChallenge({ sessionId: session });
-      navigate(`/game/${res?.initiatedGame?._id}`);
+      navigate(`/game/${res?.initiatedGame?._id}?sessionid=${session}`);
     } catch (error: any) {
       addNotification({ message: error, error: true });
     } finally {

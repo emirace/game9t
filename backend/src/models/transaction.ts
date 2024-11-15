@@ -7,6 +7,7 @@ interface ITransaction extends Document {
   status: 'Pending' | 'Completed' | 'Failed' | 'Won' | 'Loss';
   type: 'Deposit' | 'Withdrawal' | 'Bet';
   paymentMethod: 'Credit Card' | 'Bank Transfer' | 'Crypto';
+  reference: string;
 }
 
 // Define the schema for the Transaction model
@@ -33,8 +34,11 @@ const TransactionSchema: Schema<ITransaction> = new Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ['Credit Card', 'Bank Transfer', 'Crypto'],
+      enum: ['Credit Card', 'Bank Transfer', 'Crypto', 'Wallet'],
       required: true,
+    },
+    reference: {
+      type: String,
     },
   },
   { timestamps: true },

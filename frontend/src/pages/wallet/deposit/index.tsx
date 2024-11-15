@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import ICONS from "../../assets/icons/icons";
-import IMAGES from "../../assets/images/images";
+import ICONS from "../../../assets/icons/icons";
+import IMAGES from "../../../assets/images/images";
+import Paystack from "./_component/paystack";
 
 const Deposit: React.FC = () => {
+  const [amount, setAmount] = useState("");
   return (
     <div className="bg-dark-900 text-white min-h-screen p-6 pb-40 md:px-20">
       {/* Breadcrumb */}
@@ -23,8 +25,15 @@ const Deposit: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-[2]">
           <div className="flex gap-2 items-center">
-            <input placeholder="Enter amount" className="bg-black p-2 w-1/2" />
-            <img src={ICONS.check_green} alt="" className="w-4 h-4" />
+            <input
+              placeholder="Enter amount"
+              className="bg-black p-2 w-1/2"
+              onChange={(e) => setAmount(e.target.value)}
+            />
+
+            {parseFloat(amount) >= 200 && (
+              <img src={ICONS.check_green} alt="" className="w-4 h-4" />
+            )}
           </div>
           <div className="font-jua my-4">Pay With</div>
           <div className="bg-light_blue p-4 px-8 rounded-lg mb-6">
@@ -37,9 +46,7 @@ const Deposit: React.FC = () => {
               Easily deposit and withdraw funds using Paystack's secure payment
               gateway. Accepts debit/credit cards, bank transfers, and more.
             </div>
-            <button className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors">
-              Pay Now
-            </button>
+            <Paystack amount={amount} />
           </div>
           <div className="bg-light_blue p-4 px-8 rounded-lg">
             <img

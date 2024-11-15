@@ -3,6 +3,7 @@ import Game from '../models/game';
 import GameSession from '../models/gameSession';
 import User, { IUser } from '../models/user';
 import { onlineUsers } from '../socket';
+import Wallet from '../models/wallet';
 
 export const createChallenge = async ({
   gameId,
@@ -36,6 +37,13 @@ export const createChallenge = async ({
         socket.broadcast.emit('gameSessionCancelled', {
           sessionId: session._id,
         });
+      }
+    }
+
+    if (amount) {
+      const wallet = await Wallet.findOne({ user: userId });
+      if (amount > (wallet?.balance || 0)) {
+        throw new Error('Insufficient balance, Top up wallet');
       }
     }
 
@@ -123,6 +131,13 @@ export const acceptChallenge = async ({
       )
     ) {
       throw new Error('User is already part of this game session');
+    }
+
+    if (gameSession.amount) {
+      const wallet = await Wallet.findOne({ user: userId });
+      if (gameSession.amount > (wallet?.balance || 0)) {
+        throw new Error('Insufficient balance, Top up wallet');
+      }
     }
 
     // Add the user to the players array

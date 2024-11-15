@@ -160,7 +160,7 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
         const handleAcceptChallenge = async () => {
           try {
             const res = await acceptChallenge({ sessionId: gameSession._id });
-            navigate(`/game/${res?.initiatedGame?._id}?gamesession=${res._id}`);
+            navigate(`/game/${res?.initiatedGame?._id}?sessionid=${res._id}`);
           } catch (error: any) {
             addNotification({ message: error.message, error: true });
           }
@@ -170,6 +170,25 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
             gameSession.initiatedGame.name
           }, ₦${gameSession.amount || 0}`,
           buttonText: "Accept",
+          action: () => handleAcceptChallenge(),
+        });
+      }
+    );
+    socket.on(
+      "challengeAccepted",
+      ({ gameSession }: { gameSession: IGameSession }) => {
+        const handleAcceptChallenge = async () => {
+          try {
+            navigate(
+              `/game/${gameSession?.initiatedGame?._id}?sessionid=${gameSession._id}`
+            );
+          } catch (error: any) {
+            addNotification({ message: error.message, error: true });
+          }
+        };
+        addNotification({
+          message: `${gameSession.players[0]?.username} accepted your challenge`,
+          buttonText: "Play",
           action: () => handleAcceptChallenge(),
         });
       }

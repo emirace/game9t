@@ -131,9 +131,9 @@ const Info: React.FC = () => {
             </option>
           ))}
         </select>
-        <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
+        {/* <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
           <img src={ICONS.arrow_down_cream} className="h-2" />
-        </span>
+        </span> */}
       </div>
 
       <div className="grid grid-cols-2 gap-4 mt-4">

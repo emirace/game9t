@@ -7,6 +7,8 @@ import gameplay from './gameplay';
 import transaction from './transaction';
 import wallet from './wallet';
 import gameSession from './gameSession';
+import withdrawalRequest from './withdrawalRequest';
+import admin from './admin';
 
 const router = express.Router();
 
@@ -18,5 +20,7 @@ router.use('/gameplays', gameplay);
 router.use('/transactions', transaction);
 router.use('/wallets', wallet);
 router.use('/gameSessions', gameSession);
+router.use('/withdrawal-requests', withdrawalRequest);
+router.use('/admins', admin);
 
 export default router;

@@ -1,25 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import {
-  fetchAllTransaction,
-  fetchUserTransation,
-} from "../services/transaction";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { fetchUserTransation } from "../services/transaction";
+import { ITransaction } from "../types/transaction";
 import { useUser } from "./user";
-
-interface ITransaction {
-  _id: string;
-  user: string;
-  amount: number;
-  status: "Pending" | "Completed" | "Failed" | "Won" | "Loss";
-  type: "Deposit" | "Withdrawal" | "Bet";
-  paymentMethod: "Credit Card" | "Bank Transfer" | "Crypto";
-  createdAt: string;
-}
 
 interface TransactionContextType {
   userTransactions: ITransaction[];
-  allTransactions: ITransaction[];
   fetchUserTransactions: () => Promise<void>;
-  fetchAllTransactions: () => Promise<void>;
 }
 
 // Create the ITransaction context
@@ -42,7 +28,6 @@ export const TransactionProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { user } = useUser();
   const [userTransactions, setUserTransactions] = useState<ITransaction[]>([]);
-  const [allTransactions, setAllTransactions] = useState<ITransaction[]>([]);
 
   // Function to fetch user transactions
   const fetchUserTransactions = async () => {
@@ -55,32 +40,15 @@ export const TransactionProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  // Function to fetch all transactions
-  const fetchAllTransactions = async () => {
-    try {
-      const response = await fetchAllTransaction();
-      setAllTransactions(response);
-    } catch (error) {
-      console.error("Failed to fetch all transactions:", error);
-      setAllTransactions([]);
-    }
-  };
-
   useEffect(() => {
     fetchUserTransactions();
-  }, [user]);
-
-  useEffect(() => {
-    fetchAllTransactions();
   }, [user]);
 
   return (
     <TransactionContext.Provider
       value={{
         userTransactions,
-        allTransactions,
         fetchUserTransactions,
-        fetchAllTransactions,
       }}
     >
       {children}

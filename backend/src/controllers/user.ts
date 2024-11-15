@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User from '../models/user';
+import User, { IUser } from '../models/user';
 import { AuthenticatedRequest } from '../middlewares/auth';
 import Gameplay from '../models/gameplay';
 import Bet from '../models/bet';
@@ -143,5 +143,42 @@ export const updateUserProfile = async (
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
     console.log(error);
+  }
+};
+
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const { page = 1, limit = 20, search = '' } = req.query;
+    const query: any = {};
+
+    // If search parameter is provided, add search logic
+    if (search) {
+      query.$or = [
+        { username: { $regex: search, $options: 'i' } },
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    // Pagination logic
+    const users: IUser[] = await User.find(query)
+      .select('-password')
+      .limit(+limit)
+      .skip((+page - 1) * +limit)
+      .exec();
+
+    // Get total count of users (without pagination)
+    const totalCount: number = await User.countDocuments(query);
+
+    res.json({
+      users,
+      totalPages: Math.ceil(totalCount / +limit),
+      currentPage: +page,
+      totalCount,
+    });
+  } catch (error) {
+    console.error('Error fetching all users', error);
+    res.status(500).json({ message: 'Error fetching all users', error });
   }
 };

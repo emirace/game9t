@@ -6,12 +6,15 @@ import { loginUser } from "../../services/auth";
 import Loading from "../_components/loading";
 import { useUser } from "../../context/user";
 import { useToastNotification } from "../../context/toastNotificationContext";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const { addNotification } = useToastNotification();
   const { user, getUser } = useUser();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   // Form state
   const [formData, setFormData] = useState({
     username: "",
@@ -76,6 +79,10 @@ const Login: React.FC = () => {
     }
   };
 
+  const login = useGoogleLogin({
+    onSuccess: (tokenResponse) => console.log(tokenResponse),
+  });
+
   useEffect(() => {
     const check = () => {
       if (user) {
@@ -84,6 +91,10 @@ const Login: React.FC = () => {
     };
     check();
   }, [user]);
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="min-h-screen flex relative overflow-y-auto md:overflow-y-hidden">
@@ -126,11 +137,10 @@ const Login: React.FC = () => {
 
       {/* Right Section */}
       <div className="absolute bg-medium_blue bg-opacity-90 md:bg-none p-6 md:p-0 rounded-lg top-1/2 -translate-y-1/2 md:-translate-x-0 md:-translate-y-0 left-1/2 -translate-x-1/2 md:static md:w-1/2 flex items-center justify-center ">
-        <div className="md:max-w-md w-full space-y-8">
+        <div className="md:max-w-md w-full space-y-6">
           <h2 className="text-3xl font-jua text-center ">
             Login Into Your Account
           </h2>
-
           <form className="mt-8 space-y-6" onSubmit={handleLogin}>
             <div>
               <input
@@ -142,28 +152,33 @@ const Login: React.FC = () => {
                 onChange={handleChange}
               />
             </div>
-            <div>
+            <div className="flex items-center px-4 rounded-md bg-black">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
-                className="w-full px-4 py-3  rounded-md bg-black  focus:outline-none "
+                className="w-full py-3    focus:outline-none "
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
               />
+              {showPassword ? (
+                <FiEyeOff onClick={togglePassword} />
+              ) : (
+                <FiEye onClick={togglePassword} />
+              )}
             </div>
 
             <div className="flex gap-4 items-center">
               <button
                 type="submit"
-                className=" px-12 py-2 bg-black font-jua  rounded-full hover:bg-cream flex gap-2"
+                className=" px-12 py-2 bg-black font-jua  rounded-full hover:bg-cream flex gap-2 hover:text-black"
               >
                 {loading && <Loading size="sm" />}
                 Login
               </button>
               <button
                 type="button"
-                className=" ml-4 px-12 py-2 bg-cream font-jua text-black rounded-full hover:bg-black whitespace-nowrap"
+                className=" ml-4 px-12 py-2 bg-cream font-jua text-black rounded-full hover:bg-black whitespace-nowrap hover:text-white"
                 onClick={() => navigate("/auth/register")}
               >
                 Sign Up
@@ -175,25 +190,26 @@ const Login: React.FC = () => {
                 Forgot Password?
               </Link>
             </div>
-
-            <div className="mt-6">
-              <button className="flex items-center justify-center w-full py-2 bg-light_blue  rounded-md">
-                <img src={ICONS.google} className="h-5 w-5 mr-2" alt="Google" />
-                Sign in with Google
-              </button>
-            </div>
-
-            <div className="mt-4">
-              <button className="flex items-center justify-center w-full py-2 bg-light_blue  rounded-md">
-                <img
-                  src={ICONS.facebook_color}
-                  className="h-5 w-5 mr-2"
-                  alt="Facebook"
-                />
-                Sign in with Facebook
-              </button>
-            </div>
           </form>
+          <div className="mt-6">
+            <button
+              onClick={() => login()}
+              className="flex items-center justify-center w-full py-2 bg-light_blue hover:bg-medium_blue  rounded-md"
+            >
+              <img src={ICONS.google} className="h-5 w-5 mr-2" alt="Google" />
+              Sign in with Google
+            </button>
+          </div>
+          <div className="mt-2">
+            <button className="flex items-center justify-center w-full py-2 bg-light_blue hover:bg-medium_blue rounded-md">
+              <img
+                src={ICONS.facebook_color}
+                className="h-5 w-5 mr-2"
+                alt="Facebook"
+              />
+              Sign in with Facebook
+            </button>
+          </div>
         </div>
       </div>
     </div>

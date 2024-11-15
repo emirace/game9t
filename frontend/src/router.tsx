@@ -3,7 +3,6 @@ import Layout from "./pages";
 import Home from "./pages/home";
 import Game from "./pages/game";
 import Wallet from "./pages/wallet";
-import Deposit from "./pages/wallet/deposit";
 import Withdraw from "./pages/wallet/withdraw";
 import Lobby from "./pages/lobby";
 import Leaderboard from "./pages/leaderboard";
@@ -38,6 +37,7 @@ import Site from "./pages/admin/site";
 import SettingAdmin from "./pages/admin/settingAdmin";
 import Protected from "./pages/protected";
 import Main from "./pages/main";
+import Deposit from "./pages/wallet/deposit";
 
 export const router = createBrowserRouter([
   {

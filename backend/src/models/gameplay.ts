@@ -15,7 +15,6 @@ interface IGameplay extends Document {
   };
   multiplayer: boolean;
   active: boolean;
-  startTime: Date;
   endTime?: Date;
   bet?: mongoose.Types.ObjectId;
   session: mongoose.Types.ObjectId;
@@ -64,10 +63,6 @@ const GameplaySchema: Schema<IGameplay> = new Schema(
     active: {
       type: Boolean,
       default: true,
-    },
-    startTime: {
-      type: Date,
-      default: Date.now,
     },
     endTime: Date,
     bet: {

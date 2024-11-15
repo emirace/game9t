@@ -26,7 +26,7 @@ const Hero: React.FC = () => {
         <div className="flex flex-col items-end md:w-2/12">
           <button
             onClick={() => navigate(user ? "/lobby" : "/auth/login")}
-            className="px-6 py-3 w-full bg-black text-white font-semibold rounded-full hover:bg-cream transition-colors mb-20"
+            className="px-6 py-3 w-full bg-black text-white font-semibold rounded-full hover:bg-cream transition-colors duration-300 mb-20"
           >
             Play Now
           </button>

@@ -97,7 +97,7 @@ function BrowseGame() {
             <div
               onClick={() => router(`/game/${game._id}`)}
               key={index}
-              className="bg-light_blue bg-opacity-35 mb-4"
+              className="bg-light_blue bg-opacity-35 mb-4 cursor-pointer hover:scale-105 transition-all duration-300 "
             >
               <div className="relative">
                 <img src={imageUrl + game.image} alt="game" />

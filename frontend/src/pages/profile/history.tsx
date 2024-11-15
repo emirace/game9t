@@ -61,7 +61,7 @@ function History() {
 
                 // Determine win/loss status
                 const didWin = his.winner && his.winner._id === user?._id;
-                const result = didWin ? "Win" : "Loss";
+                const result = !his.winner ? "Draw" : didWin ? "Win" : "Loss";
                 return (
                   <tr
                     key={index}
@@ -72,7 +72,7 @@ function History() {
                     <td className="p-4">{his._id}</td>
                     <td className="p-4">{his.game.name}</td>
                     <td className="p-4">{opponent?.username}</td>
-                    <td className="p-4">{moment(his.startTime).calendar()}</td>
+                    <td className="p-4">{moment(his.createdAt).calendar()}</td>
                     <td className="p-4">{result}</td>
                     <td className="p-4">
                       {his.bet ? `₦${his.bet.amount}` : 0}

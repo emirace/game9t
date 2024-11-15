@@ -7,6 +7,7 @@ import { GameProvider } from "./context/game";
 import { WalletProvider } from "./context/wallet";
 import { TransactionProvider } from "./context/transaction";
 import { SocketProvider } from "./context/socket";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
   return (
@@ -14,12 +15,14 @@ function App() {
       <UserProvider>
         <SocketProvider>
           <GameProvider>
-            <WalletProvider>
-              <TransactionProvider>
-                <ToastNotification />
-                <RouterProvider router={router} />
-              </TransactionProvider>
-            </WalletProvider>
+            <TransactionProvider>
+              <WalletProvider>
+                <GoogleOAuthProvider clientId="<your_client_id>">
+                  <ToastNotification />
+                  <RouterProvider router={router} />
+                </GoogleOAuthProvider>
+              </WalletProvider>
+            </TransactionProvider>
           </GameProvider>
         </SocketProvider>
       </UserProvider>

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-interface IGameSession extends Document {
+export interface IGameSession extends Document {
   players: mongoose.Types.ObjectId[];
   initiatedGame: mongoose.Types.ObjectId;
   active: boolean;

@@ -19,6 +19,7 @@ var textMultiplayerDisplay = {
   findingPlayerTimer: "\n([TIMER])",
   connectionTimeout: "No players found...",
   noSession: "Create or challegde a player",
+  noBalance: "InSufficient balance",
   enterNameTitle: "ENTER YOUR NAME",
   enterNameError: "Enter your name to proceed.",
   selectRoomTitle: "SELECT ROOMS",
@@ -173,6 +174,13 @@ function initSocket(game) {
     if (status == "nosession") {
       toggleSocketLoader(false);
       updateGameLog(textMultiplayerDisplay.noSession);
+      setTimeout(function () {
+        goPage("main");
+      }, 3000);
+    }
+    if (status == "nobalance") {
+      toggleSocketLoader(false);
+      updateGameLog(textMultiplayerDisplay.noBalance);
       setTimeout(function () {
         goPage("main");
       }, 3000);
@@ -340,6 +348,10 @@ function exitSocketRoom() {
 
 function postSocketCloseRoom() {
   socket.emit("closeroom");
+}
+
+function exitSocketGame(status, score) {
+  socket.emit("exitGame", { status, score });
 }
 
 //games

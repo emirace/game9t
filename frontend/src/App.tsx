@@ -8,24 +8,27 @@ import { WalletProvider } from "./context/wallet";
 import { TransactionProvider } from "./context/transaction";
 import { SocketProvider } from "./context/socket";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { BrandingProvider } from "./context/branding";
 
 function App() {
   return (
     <ToastNotificationProvider>
-      <UserProvider>
-        <SocketProvider>
-          <GameProvider>
-            <TransactionProvider>
-              <WalletProvider>
-                <GoogleOAuthProvider clientId="<your_client_id>">
-                  <ToastNotification />
-                  <RouterProvider router={router} />
-                </GoogleOAuthProvider>
-              </WalletProvider>
-            </TransactionProvider>
-          </GameProvider>
-        </SocketProvider>
-      </UserProvider>
+      <BrandingProvider>
+        <UserProvider>
+          <SocketProvider>
+            <GameProvider>
+              <TransactionProvider>
+                <WalletProvider>
+                  <GoogleOAuthProvider clientId="<your_client_id>">
+                    <ToastNotification />
+                    <RouterProvider router={router} />
+                  </GoogleOAuthProvider>
+                </WalletProvider>
+              </TransactionProvider>
+            </GameProvider>
+          </SocketProvider>
+        </UserProvider>
+      </BrandingProvider>
     </ToastNotificationProvider>
   );
 }

@@ -22,3 +22,9 @@
       url("./assets/fonts/Roboto/Roboto-Regular.ttf");
   }
 }
+
+:root {
+  --primary-color: #03346e;
+  --font-family: "Roboto";
+  --font-size: 14px;
+}

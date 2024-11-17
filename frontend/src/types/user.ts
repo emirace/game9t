@@ -84,6 +84,7 @@ export interface IUser {
   totalWins: number;
   totalLosses: number;
   totalBets: number;
+  totalGamesWithoutBetToday: number;
 }
 
 export interface IProfileData {

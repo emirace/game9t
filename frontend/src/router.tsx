@@ -33,11 +33,11 @@ import GameManage from "./pages/admin/game";
 import Walletpayment from "./pages/admin/walletpayment";
 import Betting from "./pages/admin/betting";
 import Leaderboards from "./pages/admin/leaderboard";
-import Site from "./pages/admin/site";
-import SettingAdmin from "./pages/admin/settingAdmin";
 import Protected from "./pages/protected";
 import Main from "./pages/main";
 import Deposit from "./pages/wallet/deposit";
+import Site from "./pages/admin/site";
+import SettingAdmin from "./pages/admin/settingAdmin";
 
 export const router = createBrowserRouter([
   {

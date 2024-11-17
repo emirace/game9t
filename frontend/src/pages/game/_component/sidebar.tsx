@@ -11,12 +11,12 @@ import Loading from "../../_components/loading";
 import { useToastNotification } from "../../../context/toastNotificationContext";
 import { IGameSession } from "../../../types/gameSession";
 import { useGameSession } from "../../../context/gameSession";
-
-const amounts = ["200", "500", "1000", "2000", "5000", "10000"];
+import { useBranding } from "../../../context/branding";
 
 const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const { user } = useUser();
   const { balance } = useWallet();
+  const { branding } = useBranding();
   const { socket } = useSocket();
   const { createChallenge, onlineUsers } = useSocket();
   const { cancelChallenge } = useGameSession();
@@ -110,9 +110,38 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
         </div>
         <p className="mb-2 font-jua">Free Game Access</p>
         <div className="flex items-center bg-white bg-opacity-20 p-1 px-2 rounded-lg text-xs font-jua mb-4">
-          <div className="flex-1 text-center">Day 1</div>
-          <div className="flex-1 text-center"> Day 2</div>
-          <div className="flex-1 text-center"> Day 3</div>
+          <div
+            className={`flex-1 text-center ${
+              user?.totalGamesWithoutBetToday &&
+              user?.totalGamesWithoutBetToday > 1
+                ? "bg-green"
+                : ""
+            }`}
+          >
+            Day 1
+          </div>
+          <div
+            className={`flex-1 text-center ${
+              user?.totalGamesWithoutBetToday &&
+              user?.totalGamesWithoutBetToday > 2
+                ? "bg-green"
+                : ""
+            }`}
+          >
+            {" "}
+            Day 2
+          </div>
+          <div
+            className={`flex-1 text-center ${
+              user?.totalGamesWithoutBetToday &&
+              user?.totalGamesWithoutBetToday > 3
+                ? "bg-green"
+                : ""
+            }`}
+          >
+            {" "}
+            Day 3
+          </div>
         </div>
         <p className="text-xs">
           (Once you reach the limit, you can't play free games)
@@ -141,7 +170,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
       </div>
       <div className="bg-light_blue p-4">
         <div className="grid grid-cols-3 gap-2 mb-4">
-          {amounts.map((amount) => (
+          {branding?.predefinedBets.map((amount) => (
             <button
               key={amount}
               onClick={() => setSelectedAmount(amount)}

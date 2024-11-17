@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ICONS from "../../assets/icons/icons";
-import IMAGES from "../../assets/images/images";
 import SideModel from "./sideModel";
 import Notification from "./notification";
 import Sidebar from "./sidebar";
@@ -9,10 +8,13 @@ import Gamesbar from "./gamesbar";
 import { useUser } from "../../context/user";
 import { useWallet } from "../../context/wallet";
 import Loading from "./loading";
+import { useBranding } from "../../context/branding";
+import { imageUrl } from "../../services/api";
 
 function Header() {
   const navigate = useNavigate();
   const { user, loading } = useUser();
+  const { branding } = useBranding();
   const { balance, loading: loadingBalance } = useWallet();
   const [showNotification, setShowNotification] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -24,8 +26,8 @@ function Header() {
           onClick={() => navigate("/")}
           className="flex items-center gap-2 cursor-pointer"
         >
-          <img src={IMAGES.logo} alt="logo" className="w-8 h-8" />
-          <div className="font-jua  text-xl">Game9t</div>
+          <img src={imageUrl + branding?.logo} alt="logo" className="w-8 h-8" />
+          <div className="font-jua  text-xl">{branding?.name}</div>
         </div>
         <div className="md:flex items-center gap-8 hidden">
           <div

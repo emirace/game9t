@@ -44,6 +44,16 @@ export const getUserProfile = async (
       },
     });
 
+    // Fetch total games played today without a bet
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0); // Set to 12:00 AM of today
+
+    const totalGamesWithoutBetToday = await Gameplay.countDocuments({
+      $or: [{ 'player1.userId': user._id }, { 'player2.userId': user._id }],
+      bet: { $exists: false }, // Exclude games with a bet
+      endTime: { $gte: startOfToday }, // Games that ended today
+    });
+
     // Create a single user object with the additional statistics
     const userProfile = {
       ...user.toObject(),
@@ -51,11 +61,12 @@ export const getUserProfile = async (
       totalWins,
       totalLosses,
       totalBets,
+      totalGamesWithoutBetToday,
     };
 
     res.json(userProfile);
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching user profile:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

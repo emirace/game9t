@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ICONS from "../../../assets/icons/icons";
-import IMAGES from "../../../assets/images/images";
 import SideModel from "../../_components/sideModel";
 import Notification from "../../_components/notification";
 import Sidebar from "../../_components/sidebar";
 import { useUser } from "../../../context/user";
 import { imageUrl } from "../../../services/api";
+import { useBranding } from "../../../context/branding";
 
 function Header() {
   const { user } = useUser();
   const navigate = useNavigate();
+  const { branding } = useBranding();
   const [showNotification, setShowNotification] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   return (
@@ -20,8 +21,8 @@ function Header() {
           onClick={() => navigate("/")}
           className="flex items-center gap-2 cursor-pointer"
         >
-          <img src={IMAGES.logo} alt="logo" className="w-8 h-8" />
-          <div className="font-jua  text-xl">Game9t</div>
+          <img src={imageUrl + branding?.logo} alt="logo" className="w-8 h-8" />
+          <div className="font-jua  text-xl">{branding?.name}</div>
         </div>
         <div className="text-xl font-bold text-cream">Admin Control Panel</div>
         <div className="flex items-center gap-4">

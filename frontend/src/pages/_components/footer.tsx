@@ -1,6 +1,8 @@
 import React from "react";
 import IMAGES from "../../assets/images/images";
 import ICONS from "../../assets/icons/icons";
+import { useBranding } from "../../context/branding";
+import { imageUrl } from "../../services/api";
 
 // Data for the footer sections
 const features = [
@@ -34,14 +36,14 @@ const contactInfo = {
   address: "123 Gaming Street, City, Country",
 };
 
-const socialLinks = [
-  { icon: ICONS.x, href: "#" },
-  { icon: ICONS.instagram, href: "#" },
-  { icon: ICONS.facebook, href: "#" },
-  { icon: ICONS.bot, href: "#" },
-];
-
 const Footer: React.FC = () => {
+  const { branding } = useBranding();
+  const socialLinks = [
+    { icon: ICONS.x, href: branding?.socialMedia.twitter },
+    { icon: ICONS.instagram, href: branding?.socialMedia.instagram },
+    { icon: ICONS.facebook, href: branding?.socialMedia.facebook },
+    { icon: ICONS.bot, href: "#" },
+  ];
   return (
     <footer className="relative bg-dark pt-10 pb-16 md:pb-20">
       <img
@@ -72,16 +74,14 @@ const Footer: React.FC = () => {
         {/* About */}
         <div className="col-span-2">
           <div className="flex items-center gap-2 mb-8">
-            <img src={IMAGES.logo} alt="logo" className="w-8 h-8" />
-            <div className="font-jua  text-xl">Game9t</div>
+            <img
+              src={imageUrl + branding?.logo}
+              alt="logo"
+              className="w-8 h-8"
+            />
+            <div className="font-jua  text-xl">{branding?.name}</div>
           </div>
-          <p className="">
-            Website offers an exciting platform where players can compete in
-            real-time across a variety of games like Chess, Connect Four, and
-            Tic Tac Toe. Featuring both single-player and multiplayer modes,
-            users can challenge opponents, place bets, and win real money in a
-            secure and seamless environment.
-          </p>
+          <p className="">{branding?.aboutUs}</p>
         </div>
 
         {/* Quick Links */}
@@ -108,8 +108,14 @@ const Footer: React.FC = () => {
         <div className="col-span-1 ">
           <h4 className="font-jua text-lg mb-4">Contact Us</h4>
           <ul className="space-y-2">
-            <li>Email: {contactInfo.email}</li>
-            <li>Phone: {contactInfo.phone}</li>
+            <li>
+              Email:{" "}
+              {branding?.adminSettings?.support?.email || contactInfo.email}
+            </li>
+            <li>
+              Phone:{" "}
+              {branding?.adminSettings?.support?.phone || contactInfo.phone}
+            </li>
             <li>Address: {contactInfo.address}</li>
           </ul>
         </div>
@@ -131,7 +137,7 @@ const Footer: React.FC = () => {
 
       {/* Footer Bottom */}
       <div className="mt-8 text-center bg-[#333333] p-3 absolute bottom-0 left-0 right-0">
-        <p>Copyright@. Online Gaming.com, All Rights Reserved</p>
+        <p>{branding?.copyright}</p>
       </div>
     </footer>
   );

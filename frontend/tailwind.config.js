@@ -6,9 +6,10 @@ export default {
       fontFamily: {
         jua: ["Jua", "sans-serif"],
         roboto: ["Roboto"],
+        brand: ["var(--font-family)", "Roboto", "sans-serif"],
       },
       colors: {
-        light_blue: "#03346E",
+        light_blue: "var(--primary-color)",
         dark_blue: "#021526",
         medium_blue: "#022650",
         cream: "#E2E2B6",

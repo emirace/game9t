@@ -56,9 +56,36 @@ function Sidebar() {
         </div>
         <p className="mb-2 font-jua">Free Game Access</p>
         <div className="flex items-center bg-white bg-opacity-20 p-1 px-2 rounded-lg text-xs font-jua mb-4">
-          <div className="flex-1 text-center">Day 1</div>
-          <div className="flex-1 text-center"> Day 2</div>
-          <div className="flex-1 text-center"> Day 3</div>
+          <div
+            className={`flex-1 text-center ${
+              user?.totalGamesWithoutBetToday &&
+              user?.totalGamesWithoutBetToday >= 1
+                ? "bg-green"
+                : ""
+            }`}
+          >
+            Game 1
+          </div>
+          <div
+            className={`flex-1 text-center ${
+              user?.totalGamesWithoutBetToday &&
+              user?.totalGamesWithoutBetToday >= 2
+                ? "bg-green"
+                : ""
+            }`}
+          >
+            Game 2
+          </div>
+          <div
+            className={`flex-1 text-center ${
+              user?.totalGamesWithoutBetToday &&
+              user?.totalGamesWithoutBetToday >= 3
+                ? "bg-green"
+                : ""
+            }`}
+          >
+            Game 3
+          </div>
         </div>
         <p className="text-xs">
           (Once you reach the limit, you can't play free games)

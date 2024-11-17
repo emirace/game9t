@@ -113,34 +113,32 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
           <div
             className={`flex-1 text-center ${
               user?.totalGamesWithoutBetToday &&
-              user?.totalGamesWithoutBetToday > 1
+              user?.totalGamesWithoutBetToday >= 1
                 ? "bg-green"
                 : ""
             }`}
           >
-            Day 1
+            Game 1
           </div>
           <div
             className={`flex-1 text-center ${
               user?.totalGamesWithoutBetToday &&
-              user?.totalGamesWithoutBetToday > 2
+              user?.totalGamesWithoutBetToday >= 2
                 ? "bg-green"
                 : ""
             }`}
           >
-            {" "}
-            Day 2
+            Game 2
           </div>
           <div
             className={`flex-1 text-center ${
               user?.totalGamesWithoutBetToday &&
-              user?.totalGamesWithoutBetToday > 3
+              user?.totalGamesWithoutBetToday >= 3
                 ? "bg-green"
                 : ""
             }`}
           >
-            {" "}
-            Day 3
+            Game 3
           </div>
         </div>
         <p className="text-xs">

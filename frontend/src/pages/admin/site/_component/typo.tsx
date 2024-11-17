@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useBranding } from "../../../../context/branding";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
 
 function Typo() {
   const { branding, updateBranding } = useBranding();
+  const { addNotification } = useToastNotification();
 
   // Initialize local state for typography settings
   const [formData, setFormData] = useState({
@@ -34,9 +36,10 @@ function Typo() {
   };
 
   // Handle form submission to update typography
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateBranding({ font: formData });
+    await updateBranding({ font: formData });
+    addNotification({ message: "Updated successfully" });
   };
 
   // Check if any field has changed

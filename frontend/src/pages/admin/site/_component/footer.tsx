@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import ICONS from "../../../../assets/icons/icons";
 import { useBranding } from "../../../../context/branding";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
 
 function Footer() {
   const { branding, updateBranding } = useBranding();
+  const { addNotification } = useToastNotification();
 
   // Initialize local state for form fields
   const [formData, setFormData] = useState({
@@ -63,9 +65,10 @@ function Footer() {
   };
 
   // Handle form submission to update footer
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateBranding(formData);
+    await updateBranding(formData);
+    addNotification({ message: "Updated successfully" });
   };
 
   // Check if any field has changed

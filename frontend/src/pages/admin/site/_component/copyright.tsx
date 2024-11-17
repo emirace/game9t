@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useBranding } from "../../../../context/branding";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
 
 function Copyright() {
   const { branding, updateBranding } = useBranding();
+  const {addNotification}=useToastNotification()
 
   // Initialize local state for the copyright (website name)
   const [formData, setFormData] = useState({
@@ -33,9 +35,11 @@ function Copyright() {
   };
 
   // Handle form submission to update copyright information
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =async (e: React.FormEvent) => {
+
     e.preventDefault();
-    updateBranding(formData);
+    await updateBranding(formData);
+    addNotification({message:'Updated successfully'})
   };
 
   // Check if any field has changed

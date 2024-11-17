@@ -48,9 +48,10 @@ function Logo() {
   };
 
   // Handle form submission to update branding
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateBranding(formData);
+    await updateBranding(formData);
+    addNotification({ message: "Updated successfully" });
   };
 
   const [loading, setLoading] = useState(false);

@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useBranding } from "../../../../context/branding";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
 
 function Payment() {
   const { branding, updateBranding } = useBranding();
+  const { addNotification } = useToastNotification();
 
   // Initialize local state for the payment settings
   const [formData, setFormData] = useState({
@@ -39,11 +41,12 @@ function Payment() {
   };
 
   // Handle form submission to update payment settings
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateBranding({
+    await updateBranding({
       adminSettings: { ...branding!.adminSettings, ...formData },
     });
+    addNotification({ message: "Updated successfully" });
   };
 
   // Check if any field has changed

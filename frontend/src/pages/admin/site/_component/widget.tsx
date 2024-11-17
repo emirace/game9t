@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import ICONS from "../../../../assets/icons/icons";
 import { useBranding } from "../../../../context/branding";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
 
 function Widget() {
   const { branding, updateBranding } = useBranding();
+  const { addNotification } = useToastNotification();
 
   // State for widget block names
   const [blockNames, setBlockNames] = useState<string[]>(["", "", "", ""]);
@@ -30,9 +32,10 @@ function Widget() {
   };
 
   // Submit updated block names
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateBranding({ widgetBlocks: blockNames });
+    await updateBranding({ widgetBlocks: blockNames });
+    addNotification({ message: "Updated successfully" });
   };
 
   // Check if there are any changes

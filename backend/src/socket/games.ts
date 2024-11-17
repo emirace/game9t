@@ -503,7 +503,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
 
     if (
       socket.data.gameType == 'tictactoe' ||
-      socket.data.gameType == 'connectFour' ||
+      socket.data.gameType == 'connectfour' ||
       socket.data.gameType == 'wordsearch'
     ) {
       if (status == 'start') {
@@ -529,6 +529,25 @@ export const games = (io: SocketIOServer, socket: Socket) => {
           targetArray[roomIndex].userTurn == 1 ? 0 : 1;
         targetArray[roomIndex].turn =
           targetArray[roomIndex].userTurn == 1 ? 0 : 1;
+        returnUserTurn(getRoomInfo, true, status);
+        return;
+      }
+    } else if (socket.data.gameType == 'snakesandladders') {
+      if (status == 'start') {
+        let randomTurn = Math.floor(
+          Math.random() * targetArray[roomIndex].users.length,
+        );
+        targetArray[roomIndex].turn = randomTurn;
+        let postData = {
+          turn: randomTurn,
+          index: targetArray[roomIndex].users[randomTurn].index,
+          username: targetArray[roomIndex].users[randomTurn].username,
+        };
+        io.sockets
+          .in(targetArray[roomIndex].name)
+          .emit('updateSocketGame', status, postData, getTimeStamp());
+        return;
+      } else if (status == 'nextplayer') {
         returnUserTurn(getRoomInfo, true, status);
         return;
       }

@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useBranding } from "../../../../context/branding";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
 
 function Bet() {
   const { branding, updateBranding } = useBranding();
+  const { addNotification } = useToastNotification();
 
   // Local state for bet amounts
   const [betAmounts, setBetAmounts] = useState<string[]>([
@@ -36,9 +38,10 @@ function Bet() {
   };
 
   // Submit updated bet amounts
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateBranding({ predefinedBets: betAmounts });
+    await updateBranding({ predefinedBets: betAmounts });
+    addNotification({ message: "Updated successfully" });
   };
 
   // Check if there are any changes

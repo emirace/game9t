@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useBranding } from "../../../../context/branding";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
 
 function Notification() {
   const { branding, updateBranding } = useBranding();
+  const { addNotification } = useToastNotification();
 
   // Initialize local state for notification settings
   const [formData, setFormData] = useState({
@@ -39,9 +41,9 @@ function Notification() {
   };
 
   // Handle form submission to update notification settings
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateBranding({
+    await updateBranding({
       adminSettings: {
         ...branding!.adminSettings,
         notifications: {
@@ -55,6 +57,7 @@ function Notification() {
         },
       },
     });
+    addNotification({ message: "Updated successfully" });
   };
 
   // Check if any field has changed

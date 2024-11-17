@@ -1,0 +1,130 @@
+<div id="editWrapper">
+    <div id="floatForm">
+    	<input id='toggleShowOption' name="toggleOption" type="button" value="Hide Edit Option" />
+        
+        <div id="panelWrapper">
+            <div id='selectBoardWrapper'>
+                Select boards:<br/>
+                <select id="boardslist" name="boardslist">
+                </select><br/>
+                <input id="prevBoard" name="prevBoard" class="button" type="button" value="Prev Board">
+                <input id="nextBoard" name="nextBoard" class="button" type="button" value="Next Board">
+                <br/><br/>
+            </div>
+            
+            <div id='editBoardWrapper'>
+                <input id='removeBoard' name="removeBoard" type="button" value="Remove Board" />
+                <input id='moveBoardUp' name="moveBoardUp" type="button" value="Move Board Up" />
+                <input id='moveBoardDown' name="moveBoardDown" type="button" value="Move Board Down" />
+                <input id='addBoard' name="addBoard" type="button" value="Add Board" />
+                
+                <br/><br/>
+                Edit board:<br/>
+                <input id="editBoard" name="editBoard" type="button" value="Edit Board">
+                <input id="editPath" name="editPath" type="button" value="Edit Path">
+                <br/><br/>
+                Generate and replace array:
+                <input id='generateArray' name="generateArray" type="button" value="Generate Array" />
+                <textarea id="outputArray" name="outputArray" cols="" rows="10"></textarea>
+            </div>
+            
+            <div id="boardEditWrapper">
+            	<div class="formRowLong extraHeight">
+                Edit board details:<br/>
+            	<label>Thumbnail:</label>
+                <input id="thumbnail" name="thumbnail" type="text" />
+                </div>
+                <div class="formRowLong extraHeight">
+                    <label>Image:</label>
+                    <input id="image" name="image" type="text" />
+                </div>
+                <div class="formRow">
+                    <label>Start X:</label>
+                    <input id="startX" name="startX" type="text" />
+                </div>
+                <div class="formRow">
+                    <label>Start Y:</label>
+                    <input id="startY" name="startY" type="text" />
+                </div>
+                <br/>
+                <input id="updateImage" name="updateImage" type="button" value="Update Board">
+                <input id='boardBack' name="boardBack" type="button" value="Done" />
+            </div>
+            
+            <div id="pathEditWrapper">
+            	Edit board path:<br/>
+                Select paths:<br/>
+                <select id="pathlist" name="pathlist">
+                </select><br/>
+                <input id="prevPath" name="prevPath" class="button" type="button" value="Prev Path">
+                <input id="nextPath" name="nextPath" class="button" type="button" value="Next Path">
+                <br/><br/>
+                
+                <input id='movePathUp' name="movePathUp" type="button" value="Move Path Up" />
+                <input id='movePathDown' name="movePathDown" type="button" value="Move Path Down" />
+                <!--<input id='addPath' name="addPath" type="button" value="Add Path" />-->
+                <br/><br/>
+                
+                <div id="pathWrapper">
+                    Double click on stage to add new path<br/>
+                    <input id='removePath' name="removePath" type="button" value="Remove Path" />
+                    <br/><br/>
+                    <div class="formRow">
+                        <label class="button">Position X:</label>
+                        <input id="pathX" name="pathX" class="button" type="text" />
+                    </div>
+                    <div class="formRow">
+                        <label class="button">Position Y:</label>
+                        <input id="pathY" name="pathY" class="button" type="text" />
+                    </div>
+                    <input id='updatePath' name="updatePath" type="button" value="Update" />
+                </div>
+                <br/>
+                *Action path is when the user slide up or slide down for current step.<br/>
+                <input id='editActionPath' name="editActionPath" type="button" value="Edit Action Path" />
+                <br/><br/>
+                <input id='pathBack' name="pathBack" type="button" value="Done" />
+            </div>
+            
+            <div id="pathActionEditWrapper">
+            	Edit action path:<br/>
+                <div id="actionStatus">There are no action path, build a new action path to start.<br/><br/></div>
+                <!--<input id='addActionPath' name="addActionPath" type="button" value="Add Action Path" />-->
+                Double click on stage to add new path<br/>
+                <input id='removeActionPath' name="removeActionPath" type="button" value="Remove Action Path" />
+                
+                <br/><br/>
+                <select id="actionType" name="actionType">
+                    <option value="0">Slide Up</option>
+                    <option value="1">Slide down</option>
+                </select>
+                <br/><br/>
+                <div class="formRow">
+                    <label class="button">Position X:</label>
+                    <input id="actionPathX" name="actionPathX" class="button" type="text" />
+                </div>
+                <div class="formRow">
+                    <label class="button">Position Y:</label>
+                    <input id="actionPathY" name="actionPathY" class="button" type="text" />
+                </div>
+                <!--<div class="formRow">
+                    <label class="button">Curve X:</label>
+                    <input id="actionPathCurveX" name="actionPathCurveX" class="button" type="text" />
+                </div>
+                <div class="formRow">
+                    <label class="button">Curve Y:</label>
+                    <input id="actionPathCurveY" name="actionPathCurveY" class="button" type="text" />
+                </div>-->
+                <div class="formRow">
+                    <label class="button">Speed:</label>
+                    <input id="actionSpeed" name="actionSpeed" class="button" type="text" />
+                </div>
+                <br/>
+                <input id='updateActionPath' name="updateActionPath" type="button" value="Update" />
+                <input id='testAnimation' name="testAnimation" type="button" value="Test Animation" />
+                <br/><br/>
+                <input id='actionPathBack' name="actionPathBack" type="button" value="Done" />
+            </div>
+         </div>
+    </div>
+</div>

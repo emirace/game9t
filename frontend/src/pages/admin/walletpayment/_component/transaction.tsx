@@ -56,7 +56,7 @@ function Transaction() {
                 {moment(transaction.createdAt).calendar()}
               </td>
               <td className="p-4">{transaction.type}</td>
-              <td className="p-4">₦{transaction.amount}</td>
+              <td className="p-4"> {transaction.amount}</td>
               <td className="p-4">{transaction.status}</td>
               <td className="p-4 font-bold">
                 <div className="flex items-center justify-center gap-3">

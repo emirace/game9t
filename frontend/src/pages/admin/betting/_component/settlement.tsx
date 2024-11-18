@@ -29,7 +29,7 @@ function Settlement() {
               <td className="p-4">player 1</td>
               <td className="p-4">player 2</td>
               <td className="p-4">player 1</td>
-              <td className="p-4">₦800</td>
+              <td className="p-4"> 800</td>
               <td className="p-4">Pending</td>
               <td className="p-4 font-bold">
                 <div className="flex items-center justify-center gap-3">

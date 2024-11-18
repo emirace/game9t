@@ -168,7 +168,7 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
         addNotification({
           message: `${gameSession.players[0]?.username} challenge you to a ${
             gameSession.initiatedGame.name
-          }, ₦${gameSession.amount || 0}`,
+          },  ${gameSession.amount || 0}`,
           buttonText: "Accept",
           action: () => handleAcceptChallenge(),
         });

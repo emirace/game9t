@@ -30,7 +30,7 @@ function OnGoingBet() {
               <td className="p-4">250</td>
               <td className="p-4">180/70</td>
               <td className="p-4">15,000</td>
-              <td className="p-4">₦100,000</td>
+              <td className="p-4"> 100,000</td>
               <td className="p-4 font-bold">
                 <div className="flex items-center justify-center gap-3">
                   <button className="bg-cream text-black text-xs p-1 px-4 rounded-full">

@@ -29,7 +29,7 @@ function History() {
               <td className="p-4">player 1</td>
               <td className="p-4">player 2</td>
               <td className="p-4">player 1</td>
-              <td className="p-4">₦800</td>
+              <td className="p-4"> 800</td>
               <td className="p-4">2024-10-07</td>
               <td className="p-4 font-bold text-center">Settled</td>
             </tr>

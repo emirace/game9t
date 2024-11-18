@@ -37,7 +37,7 @@ function Transaction() {
                   </td>
                   <td className="p-4">{transaction.type}</td>
                   <td className="p-4">{transaction.paymentMethod}</td>
-                  <td className="p-4">₦{transaction.amount}</td>
+                  <td className="p-4"> {transaction.amount}</td>
                   <td className="p-4">{transaction.amount}</td>
                 </tr>
               ))}

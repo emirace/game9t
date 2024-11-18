@@ -9,6 +9,7 @@ import { TransactionProvider } from "./context/transaction";
 import { SocketProvider } from "./context/socket";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { BrandingProvider } from "./context/branding";
+import { NotificationProvider } from "./context/notification";
 
 function App() {
   return (
@@ -19,10 +20,12 @@ function App() {
             <GameProvider>
               <TransactionProvider>
                 <WalletProvider>
-                  <GoogleOAuthProvider clientId="<your_client_id>">
-                    <ToastNotification />
-                    <RouterProvider router={router} />
-                  </GoogleOAuthProvider>
+                  <NotificationProvider>
+                    <GoogleOAuthProvider clientId="<your_client_id>">
+                      <ToastNotification />
+                      <RouterProvider router={router} />
+                    </GoogleOAuthProvider>
+                  </NotificationProvider>
                 </WalletProvider>
               </TransactionProvider>
             </GameProvider>

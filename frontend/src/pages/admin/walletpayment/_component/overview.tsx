@@ -1,7 +1,7 @@
 const stats = [
   { name: "Total Users", value: "5,000" },
-  { name: "Total Funds Deposit", value: "₦1,200,000" },
-  { name: "Total Funds Withdrawn", value: "₦800,000" },
+  { name: "Total Funds Deposit", value: " 1,200,000" },
+  { name: "Total Funds Withdrawn", value: " 800,000" },
   { name: "Pending Withdrawals", value: "12" },
 ];
 

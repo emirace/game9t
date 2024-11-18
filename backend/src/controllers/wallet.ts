@@ -4,7 +4,8 @@ import { AuthenticatedRequest } from '../middlewares/auth';
 import mongoose from 'mongoose';
 import Transaction from '../models/wallet';
 import paystack from 'paystack';
-import { secretKey } from '../config/env';
+import { ipnSecret, secretKey } from '../config/env';
+import crypto from 'crypto';
 
 const paystackInstance = paystack(secretKey as string);
 
@@ -145,4 +146,65 @@ export const getAllWallets = async (req: Request, res: Response) => {
     console.error('Error fetching wallets requests:', error);
     res.status(500).json({ message: 'Error fetching wallets requests', error });
   }
+};
+
+export const ipn = async (req: Request, res: Response) => {
+  try {
+    const ipnSignature = req.headers['x-nowpayments-sig'] as string;
+
+    // Verify that the IPN signature is present
+    if (!ipnSignature) {
+      res.status(400).json({ message: 'IPN signature missing' });
+      return;
+    }
+
+    // Validate the IPN signature
+    const isValidSignature = verifyIpnSignature(ipnSignature, req.body);
+    if (!isValidSignature) {
+      res.status(401).json({ message: 'Invalid IPN signature' });
+      return;
+    }
+
+    // Extract the payment details from the IPN payload
+    const { payment_id, order_id, price_amount, pay_currency, payment_status } =
+      req.body;
+
+    console.log('IPN Received:', req.body);
+
+    // Process the payment status
+    switch (payment_status) {
+      case 'waiting':
+        console.log(`Payment ${payment_id} is waiting for confirmation.`);
+        // Handle "waiting" status if needed
+        break;
+      case 'confirmed':
+        console.log(`Payment ${payment_id} is confirmed.`);
+        // Update the order status in your database to "confirmed"
+        break;
+      case 'failed':
+        console.log(`Payment ${payment_id} has failed.`);
+        // Update the order status in your database to "failed"
+        break;
+      case 'finished':
+        console.log(`Payment ${payment_id} is completed.`);
+        // Update the order status in your database to "completed"
+        break;
+      default:
+        console.log(`Unhandled payment status: ${payment_status}`);
+    }
+
+    // Respond to NOWPayments
+    res.status(200).json({ message: 'IPN received successfully' });
+  } catch (error) {
+    console.error('Error handling IPN:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const verifyIpnSignature = (signature: string, body: any): boolean => {
+  const bodyString = JSON.stringify(body);
+  const hmac = crypto.createHmac('sha512', ipnSecret);
+  hmac.update(bodyString);
+  const computedSignature = hmac.digest('hex');
+  return computedSignature === signature;
 };

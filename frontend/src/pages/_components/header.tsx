@@ -84,7 +84,7 @@ function Header() {
             >
               <img src={ICONS.wallet} alt="faq" className="w-4 h-4" />
               <div className="font-jua  text-lg text-cream">
-                {loadingBalance ? <Loading size="sm" /> : `₦${balance}`}
+                {loadingBalance ? <Loading size="sm" /> : ` ${balance}`}
               </div>
             </div>
           </div>

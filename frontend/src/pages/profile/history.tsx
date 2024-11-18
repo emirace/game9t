@@ -75,7 +75,7 @@ function History() {
                     <td className="p-4">{moment(his.createdAt).calendar()}</td>
                     <td className="p-4">{result}</td>
                     <td className="p-4">
-                      {his.bet ? `₦${his.bet.amount}` : 0}
+                      {his.bet ? ` ${his.bet.amount}` : 0}
                     </td>
                     <td className="p-4">
                       {currentUserScore} - {opponentScore}

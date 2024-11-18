@@ -32,7 +32,7 @@ app.get('/', (req: Request, res: Response) => {
 const server = createServer(app);
 
 // Initialize Socket.IO
-const io = new SocketIOServer(server, {
+export const io = new SocketIOServer(server, {
   cors: {
     origin: '*', // Configure allowed origins here
     methods: ['GET', 'POST'],

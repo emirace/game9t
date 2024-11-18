@@ -73,7 +73,7 @@ const Withdraw: React.FC = () => {
                 <span className="text-cream">$</span> Current Balance :
               </span>
               <span className="bg-cream text-black px-4 py-1 rounded-md ml-2 font-jua">
-                ₦{balance}
+                {balance}
               </span>
             </h2>
             <span className="bg-red text-xs px-4 py-1 rounded-lg cursor-pointer">
@@ -83,10 +83,10 @@ const Withdraw: React.FC = () => {
           <div className="mb-8">
             <div className="font-jua mb-2 text-xl">Withdraw Limit</div>
             <div className="">
-              <b>Minimun Withdraw:</b> ₦200
+              <b>Minimun Withdraw:</b> 200
             </div>
             <div className="">
-              <b>Maximun Withdraw:</b> ₦100,000 per transaction
+              <b>Maximun Withdraw:</b> 100,000 per transaction
             </div>
           </div>
 

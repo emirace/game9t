@@ -74,7 +74,7 @@ function Withdrawal() {
             >
               <td className="p-4">{request._id}</td>
               <td className="p-4">{request.user.username}</td>
-              <td className="p-4">₦{request.amount}</td>
+              <td className="p-4"> {request.amount}</td>
               <td className="p-4">{moment(request.createdAt).calendar()}</td>
               <td className="p-4">{request.status}</td>
               <td className="p-4 font-bold">

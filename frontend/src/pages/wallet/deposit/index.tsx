@@ -3,9 +3,12 @@ import { Link } from "react-router-dom";
 import ICONS from "../../../assets/icons/icons";
 import IMAGES from "../../../assets/images/images";
 import Paystack from "./_component/paystack";
+import Model from "../../_components/model";
+import Nowpayment from "./_component/nowpayment";
 
 const Deposit: React.FC = () => {
   const [amount, setAmount] = useState("");
+  const [showNowpayment, setShowNowpayment] = useState(false);
   return (
     <div className="bg-dark-900 text-white min-h-screen p-6 pb-40 md:px-20">
       {/* Breadcrumb */}
@@ -58,7 +61,10 @@ const Deposit: React.FC = () => {
               Make quick and secure deposits and withdrawals using NOWPayments,
               supporting a wide range of cryptocurrencies
             </div>
-            <button className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors">
+            <button
+              onClick={() => setShowNowpayment(true)}
+              className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors"
+            >
               Pay Now
             </button>
           </div>
@@ -103,6 +109,9 @@ const Deposit: React.FC = () => {
           </div>
         </div>
       </div>
+      <Model isOpen={showNowpayment} onClose={() => setShowNowpayment(false)}>
+        <Nowpayment />
+      </Model>
     </div>
   );
 };

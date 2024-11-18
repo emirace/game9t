@@ -34,7 +34,7 @@ const Wallet: React.FC = () => {
             <span className="text-cream">$</span> Current Balance :
           </span>
           <div className="bg-cream flex items-center text-black px-4 py-1 rounded-md ml-2">
-            {loading ? <Loading size="md" color="black" /> : `₦${balance}`}
+            {loading ? <Loading size="md" color="black" /> : ` ${balance}`}
           </div>
         </h2>
         {user?.verified ? (
@@ -77,7 +77,7 @@ const Wallet: React.FC = () => {
               <th className="p-4 font-jua whitespace-nowrap">
                 Transaction Type
               </th>
-              <th className="p-4 font-jua whitespace-nowrap">Amount (₦)</th>
+              <th className="p-4 font-jua whitespace-nowrap">Amount ( )</th>
               <th className="p-4 font-jua">Method</th>
               <th className="p-4 font-jua">Status</th>
             </tr>

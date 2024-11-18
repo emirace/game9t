@@ -4,6 +4,8 @@ import GameSession from '../models/gameSession';
 import User, { IUser } from '../models/user';
 import { onlineUsers } from '../socket';
 import Wallet from '../models/wallet';
+import Notification from '../models/notification';
+import { createNotification } from '../utils/notification';
 
 export const createChallenge = async ({
   gameId,
@@ -18,6 +20,7 @@ export const createChallenge = async ({
 }) => {
   try {
     const userId = (socket.request as any).user._id;
+    const username = (socket.request as any).user.username;
 
     const game = await Game.findById(gameId);
     if (!game) {
@@ -72,6 +75,14 @@ export const createChallenge = async ({
         (user) => user.userId.toString() === (opponent._id as any).toString(),
       );
 
+      await createNotification({
+        recipient: (opponent._id as any).toString(),
+        sender: userId,
+        type: 'Challenge Received',
+        message: `You have received a challenge from ${username} ${gameSession.amount ? 'with a bet of ' + gameSession.amount : ''}`,
+        link: `/game/${gameSession.initiatedGame._id}?sessionid=${gameSession._id}`,
+      });
+
       if (!isUserOnline) throw new Error('User is not online');
 
       socket
@@ -109,14 +120,18 @@ export const acceptChallenge = async ({
 }) => {
   try {
     const userId = (socket.request as any).user._id;
+    const username = (socket.request as any).user.username;
 
     // Find the game session by ID
-    const gameSession = await GameSession.findById(sessionId)
+    const gameSession = await GameSession.findOne({
+      _id: sessionId,
+      active: true,
+    })
       .populate({ path: 'initiatedGame', select: 'name' })
       .populate({ path: 'players', select: 'personalInfo.profilePictureUrl' });
 
     if (!gameSession) {
-      throw new Error('Game session not found');
+      throw new Error('Game session not found or ended');
     }
 
     // Check if the game session is still active and not private
@@ -152,6 +167,19 @@ export const acceptChallenge = async ({
     });
     socket.emit('acceptChallengeResponse', { gameSession });
 
+    const opponent = gameSession.players.find(
+      (player: any) => player._id.toString() !== userId,
+    );
+    if (opponent) {
+      console.log('opponent', opponent);
+      await createNotification({
+        recipient: (opponent._id as any).toString(),
+        sender: userId,
+        type: 'Challenge Accepted',
+        message: `${username} accepted your challedge`,
+        link: `/game/${gameSession.initiatedGame._id}?sessionid=${gameSession._id}`,
+      });
+    }
     // Add the user to the game session room
     await socket.join(sessionId);
   } catch (err: any) {
@@ -169,6 +197,8 @@ export const cancelChallenge = async ({
 }) => {
   try {
     const userId = (socket.request as any).user._id;
+    const username = (socket.request as any).user.username;
+
     // Find the active game session that the user is trying to cancel
     const gameSession = await GameSession.findOne({
       _id: sessionId,
@@ -184,11 +214,18 @@ export const cancelChallenge = async ({
     gameSession.active = false;
     await gameSession.save();
     // Notify any other players in the session about the cancellation
-    gameSession.players.forEach((player: any) => {
+    gameSession.players.forEach(async (player: any) => {
       // Skip notifying the user who canceled
       if (player.toString() !== userId.toString()) {
         const opponentUser = onlineUsers.get(player.toString());
         if (opponentUser) {
+          await createNotification({
+            recipient: player.toString(),
+            sender: userId,
+            type: 'Challenge Cancelled',
+            message: `${username} cancelled the challenge`,
+            link: `/game/${gameSession.initiatedGame._id}?sessionid=${gameSession._id}`,
+          });
           socket.to(opponentUser.socketId).emit('challengeCancelled', {
             sessionId,
             message: `Challenge canceled by ${(socket.request as any).user.username}`,
@@ -208,5 +245,36 @@ export const cancelChallenge = async ({
   } catch (err: any) {
     // Emit an error if something goes wrong
     socket.emit('cancelChallengeError', { error: err.message });
+  }
+};
+
+export const markNotificationAsRead = async ({
+  notificationId,
+  socket,
+}: {
+  notificationId: string;
+  socket: Socket;
+}) => {
+  try {
+    if (!notificationId) {
+      throw new Error('Invalid data provided');
+    }
+
+    // Find the notification and mark it as read
+    const notification = await Notification.findById(notificationId);
+
+    if (!notification) {
+      throw new Error('Notification not found');
+    }
+
+    notification.read = true;
+    await notification.save();
+
+    socket.emit('notificationRead', {
+      notificationId,
+      read: true,
+    });
+  } catch (error) {
+    console.log(error);
   }
 };

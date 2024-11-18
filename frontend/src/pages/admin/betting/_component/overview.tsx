@@ -1,6 +1,6 @@
 const stats = [
   { name: "Total Bets Placed", value: "8,500" },
-  { name: "Total Amount Bet:", value: "₦2,400,000" },
+  { name: "Total Amount Bet:", value: " 2,400,000" },
   { name: "Total Bets Settled:", value: "6,400" },
   { name: "Pending Bets:", value: "2,300" },
 ];

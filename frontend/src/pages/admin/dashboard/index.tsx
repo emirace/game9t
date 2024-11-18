@@ -33,7 +33,7 @@ function Dashboard() {
           title="Revenue Growth"
           categories={categories}
           series={userGrowthData}
-          yAxisTitle="Revenue(₦)"
+          yAxisTitle="Revenue( )"
         />
         <BarChart
           title="Active Games"

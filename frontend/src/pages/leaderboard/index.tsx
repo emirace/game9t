@@ -31,9 +31,7 @@ function Leaderboard() {
           </div>
         </div>
         <span className="font-jua text-3xl"> My Earnings</span>
-        <span className="bg-cream text-black px-4 py-1 rounded-md ml-2">
-          ₦0
-        </span>
+        <span className="bg-cream text-black px-4 py-1 rounded-md ml-2">0</span>
       </h2>
       <div className="flex items-center justify-between my-6">
         <div className="w-14" />
@@ -82,7 +80,7 @@ function Leaderboard() {
                 <td className="p-4">300</td>
                 <td className="p-4">120</td>
                 <td className="p-4">80%</td>
-                <td className="p-4">₦25,000</td>
+                <td className="p-4"> 25,000</td>
               </tr>
             ))}
           </tbody>

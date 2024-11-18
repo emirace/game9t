@@ -146,7 +146,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
         </p>
         <div className="flex items-center gap-4 mt-2 ">
           <button className="border flex items-center gap-2 font-jua px-1 text-lg rounded-md">
-            <img src={ICONS.wallet} alt="wallet" className="w-4 h-4" />₦
+            <img src={ICONS.wallet} alt="wallet" className="w-4 h-4" />
             {balance}
           </button>
           <Link to="/wallet/deposit" className="font-jua">
@@ -176,7 +176,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
                 selectedAmount === amount ? "bg-cream text-black" : null
               }`}
             >
-              ₦{amount}
+              {amount}
             </button>
           ))}
         </div>

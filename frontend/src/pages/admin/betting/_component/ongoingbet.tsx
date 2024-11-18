@@ -27,7 +27,7 @@ function OnGoingBet() {
               <td className="p-4">Ludo</td>
               <td className="p-4">Johndoe</td>
               <td className="p-4">janesmith</td>
-              <td className="p-4">₦800</td>
+              <td className="p-4"> 800</td>
               <td className="p-4">Ongoing</td>
               <td className="p-4 font-bold">
                 <div className="flex items-center justify-center gap-3">

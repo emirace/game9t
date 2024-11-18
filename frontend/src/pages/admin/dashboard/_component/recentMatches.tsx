@@ -26,7 +26,7 @@ function RecentMatches() {
               <td className="p-3">Janesmith123</td>
               <td className="p-3">Tic Tac Toe</td>
               <td className="p-3">Player 1 wins</td>
-              <td className="p-3">₦500</td>
+              <td className="p-3"> 500</td>
             </tr>
           ))}
         </tbody>

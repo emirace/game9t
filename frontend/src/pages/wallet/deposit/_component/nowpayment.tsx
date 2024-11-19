@@ -28,7 +28,7 @@ const PointsToCurrency: React.FC = () => {
         pay_currency: selectedCurrency,
         order_id: `order-${Date.now()}`,
         order_description: "Top up wallet",
-        ipn_callback_url: import.meta.env.BACKEND_URL + "/api/wallets/ipn",
+        ipn_callback_url: import.meta.env.VITE_BACKEND_URL + "/api/wallets/ipn",
       };
 
       const payment = await createPayment(paymentDetails);

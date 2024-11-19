@@ -1,6 +1,6 @@
 export interface IMinAmountParams {
   currencyFrom: string;
-  currencyTo: string;
+  currencyTo?: string;
   fiatEquivalent?: string; // Default: 'usd'
   isFixedRate?: boolean; // Default: false
   isFeePaidByUser?: boolean; // Default: false

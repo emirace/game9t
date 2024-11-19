@@ -3,6 +3,7 @@ import {
   createPayment,
   getConversionEstimate,
   getCurrenciesWithFixedRate,
+  getMinAmount,
 } from "../../../../services/nowpayment";
 import QRCode from "react-qr-code";
 import { FaRegCopy } from "react-icons/fa";
@@ -19,6 +20,7 @@ const PointsToCurrency: React.FC = () => {
   const [address, setAddress] = useState("");
   const [copied, setCopied] = useState(false);
   const [showSelect, setShowSelect] = useState(false);
+  const [minimalAmount, setMinimalAmount] = useState(0);
 
   const handleCreatePayment = async () => {
     try {
@@ -76,6 +78,17 @@ const PointsToCurrency: React.FC = () => {
   }, [selectedCurrency, usdAmount]);
 
   useEffect(() => {
+    const fetchMinimalAmount = async () => {
+      if (!selectedCurrency) return;
+      const minAmount = await getMinAmount({
+        currencyFrom: selectedCurrency,
+      });
+      setMinimalAmount(parseFloat(minAmount.min_amount) / POINT_TO_USD_RATE);
+    };
+    fetchMinimalAmount();
+  }, [selectedCurrency]);
+
+  useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredCurrencies(currencies);
     } else {
@@ -111,7 +124,7 @@ const PointsToCurrency: React.FC = () => {
           {/* Points Input */}
           <div className="mb-4">
             <label htmlFor="points" className="block mb-2">
-              Enter Points: (100 - 100,000)
+              Enter Points: (Max 100,000)
             </label>
             <input
               type="number"
@@ -120,6 +133,7 @@ const PointsToCurrency: React.FC = () => {
               onChange={(e) => setPoints(Number(e.target.value))}
               className="border p-2 rounded w-full bg-black"
             />
+            {minimalAmount && <p>Minimal amount: {minimalAmount}</p>}
           </div>
           <div className="mb-4 relative">
             <label htmlFor="currency" className="block mb-2">

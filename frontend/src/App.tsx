@@ -21,7 +21,7 @@ function App() {
               <TransactionProvider>
                 <WalletProvider>
                   <NotificationProvider>
-                    <GoogleOAuthProvider clientId="<your_client_id>">
+                    <GoogleOAuthProvider clientId="466890716370-e5srktqi1k90ejf3vbdmkrg38fbdb8a9.apps.googleusercontent.com">
                       <ToastNotification />
                       <RouterProvider router={router} />
                     </GoogleOAuthProvider>

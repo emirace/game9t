@@ -93,14 +93,15 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
       return;
     }
     // Update wallet balance
-    wallet.balance += parseFloat(amount);
+    const topUpAmount = parseFloat(amount) / 5;
+    wallet.balance += topUpAmount;
     await wallet.save({ session });
 
     // Record the transaction
     const transaction = new Transaction({
       type: 'Deposit',
       user: userId,
-      amount,
+      amount: topUpAmount,
       status: 'Completed',
       reference: transactionId,
       paymentMethod: 'Credit Card',

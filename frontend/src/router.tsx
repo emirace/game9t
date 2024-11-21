@@ -25,7 +25,6 @@ import Payment from "./pages/settings/payment";
 import Gameplay from "./pages/settings/gameplay";
 import Friends from "./pages/settings/friends";
 import Delete from "./pages/settings/delete";
-import Support from "./pages/support";
 import Admin from "./pages/admin";
 import Dashboard from "./pages/admin/dashboard";
 import Users from "./pages/admin/users";
@@ -38,6 +37,7 @@ import Main from "./pages/main";
 import Deposit from "./pages/wallet/deposit";
 import Site from "./pages/admin/site";
 import SettingAdmin from "./pages/admin/settingAdmin";
+import Support from "./pages/support";
 
 export const router = createBrowserRouter([
   {

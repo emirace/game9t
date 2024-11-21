@@ -6,10 +6,10 @@ function startSocketGame() {
 }
 
 function updateSocketGame(status, data, time) {
-  if (multiplayerSettings.game == "connectfour") {
+  if (multiplayerSettings.game == "snakesandladders") {
     if (status == "init") {
       toggleSocketLoader(false);
-      socketData.socketGameLogs = [];
+      socketData.socketGamelogs = [];
       gameLogsTxt.text = "";
       if (data[0].index == socketData.index) {
         socketData.host = true;
@@ -27,91 +27,96 @@ function updateSocketGame(status, data, time) {
             );
           }
         }
-        $.players["gamePlayer" + n].text = data[n].username;
       }
       gameData.totalplayers = data.length;
-      postSocketUpdate("custom");
-    } else if (status == "custom") {
-      gameData.custom.column = customSettings.columnMin;
-      gameData.custom.row = customSettings.rowMin;
-      gameData.custom.connect = customSettings.connectMin;
-      checkCustomSettings();
-      goPage("custom");
+      if (socketData.host) {
+        postSocketUpdate("level");
+      }
+    } else if (status == "level") {
+      goPage("level");
+      selectBoardThumbs(0);
+      selectPage(1);
       if (!socketData.host) {
         gameLogsTxt.visible = true;
         toggleSocketLoader(true, textMultiplayerDisplay.waitingHost);
       }
-    } else if (status == "updatecustom") {
-      gameData.custom.row = data.row;
-      gameData.custom.column = data.column;
-      gameData.custom.connect = data.connect;
-      checkCustomSettings();
-    } else if (status == "players") {
-      goPage("players");
-      if (!socketData.host) {
-        gameLogsTxt.visible = true;
-        toggleSocketLoader(true, textMultiplayerDisplay.waitingHost);
-      }
-    } else if (status == "updateplayers") {
-      gameData.icon = data.icon;
-      gameData.switch = data.switch;
-      gameData.icons = data.icons;
-      displayPlayerIcon();
+    } else if (status == "updatelevel") {
+      selectPage(data);
+    } else if (status == "updatethumb") {
+      selectBoardThumbs(data);
     } else if (status == "start") {
       toggleSocketLoader(false);
-      goPage("game");
-
       socketData.turn = false;
       if (data.index == socketData.index) {
         socketData.turn = true;
         updateGameSocketLog(time + textMultiplayerDisplay.youStart);
-        gameData.player = socketData.host == true ? 0 : 1;
+        playerTurnTxt.text = textMultiplayerDisplay.youStart;
       } else {
         updateGameSocketLog(
           time +
             textMultiplayerDisplay.playerStart.replace("[USER]", data.username)
         );
-        gameData.player = socketData.host == true ? 1 : 0;
+        playerTurnTxt.text = textMultiplayerDisplay.playerStart.replace(
+          "[USER]",
+          data.username
+        );
+      }
+      goPage("game");
+      gameData.player = data.turn;
+      prepareArrow();
+    } else if (status == "dice") {
+      gameData.diceNum = data;
+      diceAnimate.gotoAndStop(gameData.diceNum);
+    } else if (status == "roll") {
+      animateDice(data);
+    } else if (status == "rollcomplete") {
+      socketData.loaded = [];
+      updateAnimateDiceComplete();
+    } else if (status == "extraturn") {
+      var loadedIndex = socketData.loaded.indexOf(data);
+      if (loadedIndex == -1) {
+        socketData.loaded.push(data);
       }
 
-      displayPlayerTurn();
-    } else if (status == "updatetimer") {
-      timeData.timer = data;
-      updateTimer();
-    } else if (status == "updatemove") {
-      placeMove(data.column);
-    } else if (status == "updatemovecomplete") {
+      if (
+        socketData.loaded.length == gameData.totalplayers &&
+        socketData.host
+      ) {
+        if (socketData.turn) {
+          animateDice();
+        }
+      }
+    } else if (status == "movecomplete") {
+      var loadedIndex = socketData.loaded.indexOf(data);
+      if (loadedIndex == -1) {
+        socketData.loaded.push(data);
+      }
+
+      if (
+        socketData.loaded.length == gameData.totalplayers &&
+        socketData.host
+      ) {
+        postSocketUpdate("nextplayer");
+      }
+    } else if (status == "nextplayer") {
       socketData.turn = false;
+      socketData.winner = data.username;
       if (data.index == socketData.index) {
         socketData.turn = true;
         updateGameSocketLog(time + textMultiplayerDisplay.yourTurn);
-        gameData.player = socketData.host == true ? 0 : 1;
+        playerTurnTxt.text = textMultiplayerDisplay.yourTurn;
       } else {
         updateGameSocketLog(
           time +
             textMultiplayerDisplay.playerTurn.replace("[USER]", data.username)
         );
-        gameData.player = socketData.host == true ? 1 : 0;
-      }
-
-      gameData.moving = false;
-      displayPlayerTurn();
-    } else if (status == "updateroundcomplete") {
-      socketData.turn = false;
-      if (data.index == socketData.index) {
-        socketData.turn = true;
-        updateGameSocketLog(time + textMultiplayerDisplay.yourTurn);
-        gameData.player = socketData.host == true ? 0 : 1;
-      } else {
-        updateGameSocketLog(
-          time +
-            textMultiplayerDisplay.playerTurn.replace("[USER]", data.username)
+        playerTurnTxt.text = textMultiplayerDisplay.playerTurn.replace(
+          "[USER]",
+          data.username
         );
-        gameData.player = socketData.host == true ? 1 : 0;
       }
-
-      gameData.moving = false;
-      displayPlayerTurn();
+      gameData.player = data.turn;
+      prepareArrow();
     }
   }
 }

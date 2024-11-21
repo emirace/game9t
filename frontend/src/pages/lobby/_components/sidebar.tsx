@@ -34,7 +34,7 @@ function Sidebar() {
   };
 
   return (
-    <aside className="bg-medium_blue w-full md:w-96 rounded-md ">
+    <aside className="bg-medium_blue w-full rounded-md ">
       {/* Profile Section */}
       <div className="flex items-center gap-4 p-4">
         <img src={ICONS.profile_outline} alt="profile" className="w-5 h-5" />

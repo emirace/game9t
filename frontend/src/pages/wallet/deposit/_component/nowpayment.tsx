@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   createPayment,
   getConversionEstimate,
@@ -7,9 +7,11 @@ import {
 } from "../../../../services/nowpayment";
 import QRCode from "react-qr-code";
 import { FaRegCopy } from "react-icons/fa";
+import Loading from "../../../_components/loading";
+
+export const POINT_TO_USD_RATE = 0.003; // Conversion rate: 1 point = 0.003 USD
 
 const PointsToCurrency: React.FC = () => {
-  const POINT_TO_USD_RATE = 0.003; // Conversion rate: 1 point = 0.003 USD
   const [currencies, setCurrencies] = useState<string[]>([]);
   const [filteredCurrencies, setFilteredCurrencies] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -21,6 +23,8 @@ const PointsToCurrency: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [showSelect, setShowSelect] = useState(false);
   const [minimalAmount, setMinimalAmount] = useState(0);
+  const ref = useRef<any>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleCreatePayment = async () => {
     try {
@@ -32,11 +36,14 @@ const PointsToCurrency: React.FC = () => {
         order_description: "Top up wallet",
         ipn_callback_url: import.meta.env.VITE_BACKEND_URL + "/api/wallets/ipn",
       };
-
+      setLoading(true);
       const payment = await createPayment(paymentDetails);
       setAddress(payment.pay_address);
+      ref.current && ref?.current.scrollIntoView();
     } catch (error) {
       console.error("Error creating payment:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,7 +65,7 @@ const PointsToCurrency: React.FC = () => {
     setUsdAmount(points * POINT_TO_USD_RATE);
   }, [points]);
 
-  // Fetch estimated cryptocurrency amount when currency or USD amount changes
+  // Fetch estimated cryptocurrency amount with debounce
   useEffect(() => {
     const fetchCryptoAmount = async () => {
       if (!selectedCurrency || usdAmount < 0.3) return;
@@ -74,7 +81,12 @@ const PointsToCurrency: React.FC = () => {
         setCryptoAmount(null);
       }
     };
-    fetchCryptoAmount();
+
+    const debounceTimeout = setTimeout(() => {
+      fetchCryptoAmount();
+    }, 300); // 300ms debounce delay
+
+    return () => clearTimeout(debounceTimeout); // Clear timeout on cleanup or dependency change
   }, [selectedCurrency, usdAmount]);
 
   useEffect(() => {
@@ -121,20 +133,6 @@ const PointsToCurrency: React.FC = () => {
       <h1 className="text-2xl mb-4 font-jua">Fund Wallet</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
         <div>
-          {/* Points Input */}
-          <div className="mb-4">
-            <label htmlFor="points" className="block mb-2">
-              Enter Points: (Max 100,000)
-            </label>
-            <input
-              type="number"
-              id="points"
-              value={points}
-              onChange={(e) => setPoints(Number(e.target.value))}
-              className="border p-2 rounded w-full bg-black"
-            />
-            {minimalAmount && <p>Minimal amount: {minimalAmount}</p>}
-          </div>
           <div className="mb-4 relative">
             <label htmlFor="currency" className="block mb-2">
               Select Payment Currency:
@@ -162,6 +160,20 @@ const PointsToCurrency: React.FC = () => {
               </ul>
             )}
           </div>
+          {/* Points Input */}
+          <div className="mb-4">
+            <label htmlFor="points" className="block mb-2">
+              Enter Points: (Max 100,000)
+            </label>
+            <input
+              type="number"
+              id="points"
+              value={points}
+              onChange={(e) => setPoints(Number(e.target.value))}
+              className="border p-2 rounded w-full bg-black"
+            />
+            {minimalAmount ? <p>Minimal amount: {minimalAmount}</p> : null}
+          </div>
 
           {/* Display USD and Crypto Amounts */}
           <div className="mb-4">
@@ -185,56 +197,69 @@ const PointsToCurrency: React.FC = () => {
           <button
             onClick={handleCreatePayment}
             className="px-4 py-2 min-w-48 bg-cream text-black font-semibold rounded-full hover:bg-dark_blue transition-colors disabled:bg-gray-400"
-            disabled={!selectedCurrency || !usdAmount}
+            disabled={
+              !selectedCurrency ||
+              !usdAmount ||
+              points < minimalAmount ||
+              loading
+            }
           >
             Pay Now
           </button>
         </div>
-        <div className="flex flex-col gap-4 justify-center items-center">
-          {address && (
-            <div className="flex flex-col items-center ">
-              <div className="font-jua text-xl mb-4">
-                Make payment to this address
-              </div>
+        <div
+          ref={ref}
+          className="flex flex-col gap-4 justify-center items-center"
+        >
+          {loading ? (
+            <Loading />
+          ) : (
+            address && (
+              <div className="flex flex-col items-center ">
+                <div className="font-jua text-xl mb-4">
+                  Make payment to this address
+                </div>
 
-              <p className="mb-2 text-xs">
-                Always double-check the address and the amount before sending.
-                We cannot recover funds sent to the wrong address. The final
-                amount is calculated once your deposit confirms on the network.
-              </p>
-              <p className="text-xs mb-2">
-                Scan the QR code or copy the address and send your desired
-                amount. Your deposit will be confirmed after 1 confirmation on
-                the network.
-              </p>
-              <div className="bg-white h-[178px] w-[178px] p-1 flex justify-center items-center">
-                <QRCode
-                  value={address}
-                  style={{ height: "170px", width: "170px" }}
-                />
-              </div>
-
-              <div className="flex items-center gap-4 bg-secondary w-full rounded-full p-4">
-                <>
-                  <input
-                    type="text"
-                    id="trxAddress"
+                <p className="mb-2 text-xs">
+                  Always double-check the address and the amount before sending.
+                  We cannot recover funds sent to the wrong address. The final
+                  amount is calculated once your deposit confirms on the
+                  network.
+                </p>
+                <p className="text-xs mb-2">
+                  Scan the QR code or copy the address and send your desired
+                  amount. Your deposit will be confirmed after 1 confirmation on
+                  the network.
+                </p>
+                <div className="bg-white h-[178px] w-[178px] p-1 flex justify-center items-center">
+                  <QRCode
                     value={address}
-                    readOnly
-                    className="bg-transparent outline-none w-full text-white placeholder-gray-400"
+                    style={{ height: "170px", width: "170px" }}
                   />
-                  {copied ? (
-                    <span className="text-primary ml-2">Copied!</span>
-                  ) : (
-                    <FaRegCopy
-                      className="text-white"
-                      onClick={handleCopy}
-                      size={24}
+                </div>
+
+                <div className="flex items-center gap-4 bg-secondary w-full rounded-full p-4">
+                  <>
+                    <input
+                      type="text"
+                      id="trxAddress"
+                      value={address}
+                      readOnly
+                      className="bg-transparent outline-none w-full text-white placeholder-gray-400"
                     />
-                  )}
-                </>
+                    {copied ? (
+                      <span className="text-primary ml-2">Copied!</span>
+                    ) : (
+                      <FaRegCopy
+                        className="text-white"
+                        onClick={handleCopy}
+                        size={24}
+                      />
+                    )}
+                  </>
+                </div>
               </div>
-            </div>
+            )
           )}
         </div>
       </div>

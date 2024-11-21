@@ -6,7 +6,7 @@ function startSocketGame() {
 }
 
 function updateSocketGame(status, data, time) {
-  if (multiplayerSettings.game == "connectfour") {
+  if (multiplayerSettings.game == "wordsearch") {
     if (status == "init") {
       toggleSocketLoader(false);
       socketData.socketGameLogs = [];
@@ -30,11 +30,20 @@ function updateSocketGame(status, data, time) {
         $.players["gamePlayer" + n].text = data[n].username;
       }
       gameData.totalplayers = data.length;
-      postSocketUpdate("custom");
+      postSocketUpdate("category");
+    } else if (status == "category") {
+      categoryData.page = 1;
+      goPage("category");
+      if (!socketData.host) {
+        gameLogsTxt.visible = true;
+        toggleSocketLoader(true, textMultiplayerDisplay.waitingHost);
+      }
+    } else if (status == "updatecategory") {
+      selectCategoryPage(data);
     } else if (status == "custom") {
       gameData.custom.column = customSettings.columnMin;
       gameData.custom.row = customSettings.rowMin;
-      gameData.custom.connect = customSettings.connectMin;
+      gameData.custom.words = customSettings.wordsMin;
       checkCustomSettings();
       goPage("custom");
       if (!socketData.host) {
@@ -44,19 +53,8 @@ function updateSocketGame(status, data, time) {
     } else if (status == "updatecustom") {
       gameData.custom.row = data.row;
       gameData.custom.column = data.column;
-      gameData.custom.connect = data.connect;
+      gameData.custom.words = data.words;
       checkCustomSettings();
-    } else if (status == "players") {
-      goPage("players");
-      if (!socketData.host) {
-        gameLogsTxt.visible = true;
-        toggleSocketLoader(true, textMultiplayerDisplay.waitingHost);
-      }
-    } else if (status == "updateplayers") {
-      gameData.icon = data.icon;
-      gameData.switch = data.switch;
-      gameData.icons = data.icons;
-      displayPlayerIcon();
     } else if (status == "start") {
       toggleSocketLoader(false);
       goPage("game");
@@ -74,13 +72,21 @@ function updateSocketGame(status, data, time) {
         gameData.player = socketData.host == true ? 1 : 0;
       }
 
-      displayPlayerTurn();
+      checkPlayerTurn();
     } else if (status == "updatetimer") {
-      timeData.timer = data;
+      timeData.timer = data.timer;
+      timeData.playerTimer = data.playerTimer;
       updateTimer();
-    } else if (status == "updatemove") {
-      placeMove(data.column);
+    } else if (status == "updatepuzzle") {
+      gameData.puzzle = data.puzzle;
+      gameData.solve = data.solve;
+      gameData.words = data.words;
+      drawPuzzle();
+      drawPuzzleWords();
     } else if (status == "updatemovecomplete") {
+      togglePlayer();
+      stopStroke();
+
       socketData.turn = false;
       if (data.index == socketData.index) {
         socketData.turn = true;
@@ -94,8 +100,35 @@ function updateSocketGame(status, data, time) {
         gameData.player = socketData.host == true ? 1 : 0;
       }
 
-      gameData.moving = false;
-      displayPlayerTurn();
+      checkPlayerTurn();
+    } else if (status == "startstroke") {
+      gameData.strokeObj = $.puzzle[data.row + "_" + data.column];
+      gameData.strokeColor = data.strokeColor;
+      gameData.strokeDrawing = true;
+      gameData.strokeStart = $.puzzle[data.row + "_" + data.column].pos;
+
+      if (puzzleSettings.multiplayerStrokeColor) {
+        gameData.strokeColor =
+          puzzleSettings.multiplayerStrokeColors[gameData.player];
+      }
+      createNewStroke();
+      playSound("soundHover");
+    } else if (status == "updatestroke") {
+      drawStroke(
+        data.strokeIndex,
+        data.strokeColor,
+        data.sx,
+        data.sy,
+        data.ex,
+        data.ey
+      );
+      loopStrokeLetter(data.ex, data.ey);
+    } else if (status == "removestroke") {
+      playSound("soundError");
+      stopStroke();
+    } else if (status == "completestroke") {
+      completeStroke(data.wordIndex, data.row, data.column);
+      updateCurWord("");
     } else if (status == "updateroundcomplete") {
       socketData.turn = false;
       if (data.index == socketData.index) {
@@ -109,9 +142,7 @@ function updateSocketGame(status, data, time) {
         );
         gameData.player = socketData.host == true ? 1 : 0;
       }
-
-      gameData.moving = false;
-      displayPlayerTurn();
+      checkPlayerTurn();
     }
   }
 }

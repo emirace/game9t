@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ICONS from "../assets/icons/icons";
+import ICONS from "../../assets/icons/icons";
 
 const features = [
   {

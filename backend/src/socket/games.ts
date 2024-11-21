@@ -503,7 +503,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
 
     if (
       socket.data.gameType == 'tictactoe' ||
-      socket.data.gameType == 'connectfour' ||
+      socket.data.gameType == 'connectFour' ||
       socket.data.gameType == 'wordsearch'
     ) {
       if (status == 'start') {

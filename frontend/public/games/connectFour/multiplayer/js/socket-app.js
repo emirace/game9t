@@ -6,7 +6,7 @@ function startSocketGame() {
 }
 
 function updateSocketGame(status, data, time) {
-  if (multiplayerSettings.game == "connectfour") {
+  if (multiplayerSettings.game == "connectFour") {
     if (status == "init") {
       toggleSocketLoader(false);
       socketData.socketGameLogs = [];

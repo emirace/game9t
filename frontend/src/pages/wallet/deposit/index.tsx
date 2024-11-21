@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ICONS from "../../../assets/icons/icons";
 import IMAGES from "../../../assets/images/images";
@@ -6,9 +6,21 @@ import Paystack from "./_component/paystack";
 import Model from "../../_components/model";
 import Nowpayment from "./_component/nowpayment";
 
+const POINT_TO_NGN_RATE = 5;
+
 const Deposit: React.FC = () => {
   const [amount, setAmount] = useState("");
   const [showNowpayment, setShowNowpayment] = useState(false);
+  const [points, setPoints] = useState("");
+
+  useEffect(() => {
+    if (points) {
+      setAmount(`${parseFloat(points) * POINT_TO_NGN_RATE}`);
+    } else {
+      setAmount("");
+    }
+  }, [points]);
+
   return (
     <div className="bg-dark-900 text-white min-h-screen p-6 pb-40 md:px-20">
       {/* Breadcrumb */}
@@ -31,13 +43,16 @@ const Deposit: React.FC = () => {
             <input
               placeholder="Enter amount"
               className="bg-black p-2 w-1/2"
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => setPoints(e.target.value)}
             />
 
             {parseFloat(amount) >= 200 && (
               <img src={ICONS.check_green} alt="" className="w-4 h-4" />
             )}
           </div>
+
+          {!!amount && <div>Amount charge: ₦{amount}</div>}
+
           <div className="font-jua my-4">Pay With</div>
           <div className="bg-light_blue p-4 px-8 rounded-lg mb-6">
             <img

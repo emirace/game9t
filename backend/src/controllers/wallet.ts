@@ -54,7 +54,7 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
     }
 
     const response = await paystackInstance.transaction.verify(transactionId);
-
+    console.log('res', response);
     if (response.data.status !== 'success') {
       await session.abortTransaction();
       session.endSession();

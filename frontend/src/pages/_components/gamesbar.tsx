@@ -1,20 +1,52 @@
 import { Link } from "react-router-dom";
-import ICONS from "../../assets/icons/icons";
 
-const sidelists = [
-  { icon: ICONS.games, label: "Free Games", path: "/" },
-  { icon: ICONS.games, label: "Paid Games", path: "/" },
+const quickLinks = [
+  { name: "Home", path: "/" },
+  { name: "Games", path: "/lobby" },
+  { name: "Leaderboard", path: "/leaderboard" },
+  { name: "Wallet", path: "/wallet" },
+  { name: "Challenges", path: "/lobby" },
+  { name: "Support", path: "/support" },
+  { name: "FAQ", path: "/support/faq" },
 ];
-function Gamesbar() {
+
+const legalLinks = [
+  "Terms",
+  "Disclaimer",
+  "Privacy Policy",
+  "Terms & Conditions",
+  "Responsible Gaming",
+];
+
+function Gamesbar({ onClick }: { onClick?: () => void }) {
   return (
     <div className="overflow-y-auto h-screen ">
-      <div className="py-6 flex flex-col gap-6">
-        {sidelists.map((item, index) => (
-          <Link to={item.path} key={index} className="flex items-center gap-1">
-            <img src={item.icon} alt="close" className="w-4 h-4 " />
-            <div className="font-jua">{item.label}</div>
-          </Link>
-        ))}
+      {/* Quick Links */}
+      <div className="md:hidden mb-6">
+        <h4 className=" text-lg font-jua mb-2">Quick Links</h4>
+        <ul className="space-y-2">
+          {quickLinks.map((link, index) => (
+            <li>
+              <Link
+                onClick={() => (onClick ? onClick() : null)}
+                to={link.path}
+                key={index}
+              >
+                {link.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Legal */}
+      <div className="md:hidden mb-6">
+        <h4 className="font-jua text-lg mb-2">Legal</h4>
+        <ul className="space-y-2">
+          {legalLinks.map((link, index) => (
+            <li key={index}>{link}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );

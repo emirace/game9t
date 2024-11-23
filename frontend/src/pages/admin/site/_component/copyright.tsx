@@ -4,7 +4,7 @@ import { useToastNotification } from "../../../../context/toastNotificationConte
 
 function Copyright() {
   const { branding, updateBranding } = useBranding();
-  const {addNotification}=useToastNotification()
+  const { addNotification } = useToastNotification();
 
   // Initialize local state for the copyright (website name)
   const [formData, setFormData] = useState({
@@ -35,11 +35,10 @@ function Copyright() {
   };
 
   // Handle form submission to update copyright information
-  const handleSubmit =async (e: React.FormEvent) => {
-
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await updateBranding(formData);
-    addNotification({message:'Updated successfully'})
+    addNotification({ message: "Updated successfully" });
   };
 
   // Check if any field has changed
@@ -50,7 +49,7 @@ function Copyright() {
     <div>
       <h2 className="font-jua text-xl mb-4 mt-8">Copyright Information</h2>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           <div>
             <div className="text-sm mb-2">Copyright message</div>
             <input

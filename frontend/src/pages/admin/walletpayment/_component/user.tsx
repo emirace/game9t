@@ -27,46 +27,49 @@ function User() {
   return (
     <div>
       <div className="font-jua text-lg mb-4">Users Wallet Management</div>
-
-      <table className="min-w-full table-auto rounded-lg">
-        <thead>
-          <tr className="bg-dark text-white text-left">
-            <th className="p-4 font-jua">User ID</th>
-            <th className="p-4 font-jua">Username</th>
-            <th className="p-4 font-jua">Wallet Balance</th>
-            <th className="p-4 font-jua">Status</th>
-            <th className="p-4 font-jua text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {wallets.map((wallet, index) => (
-            <tr
-              key={index}
-              className={`${
-                index % 2 ? "bg-light_blue" : null
-              } text-white hover:bg-dark_blue`}
-            >
-              <td className="p-4">{wallet._id}</td>
-              <td className="p-4">{wallet.user?.username}</td>
-              <td className="p-4">{wallet.balance}</td>
-              <td className="p-4">{wallet.isActive ? "Active" : "Inactive"}</td>
-              <td className="p-4 font-bold">
-                <div className="flex items-center justify-center gap-3">
-                  <button className="bg-cream text-black text-xs p-1 px-4 rounded-full">
-                    View Transactions
-                  </button>
-                  <button className="bg-cream text-black text-xs p-1 px-4 rounded-full">
-                    Adjust Balance
-                  </button>
-                  <button className="bg-cream text-black text-xs p-1 px-4 rounded-full">
-                    Block User
-                  </button>
-                </div>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto rounded-lg">
+          <thead>
+            <tr className="bg-dark text-white text-left">
+              <th className="p-4 font-jua">User ID</th>
+              <th className="p-4 font-jua">Username</th>
+              <th className="p-4 font-jua">Wallet Balance</th>
+              <th className="p-4 font-jua">Status</th>
+              <th className="p-4 font-jua text-center">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {wallets.map((wallet, index) => (
+              <tr
+                key={index}
+                className={`${
+                  index % 2 ? "bg-light_blue" : null
+                } text-white hover:bg-dark_blue`}
+              >
+                <td className="p-4">{wallet._id}</td>
+                <td className="p-4">{wallet.user?.username}</td>
+                <td className="p-4">{wallet.balance}</td>
+                <td className="p-4">
+                  {wallet.isActive ? "Active" : "Inactive"}
+                </td>
+                <td className="p-4 font-bold">
+                  <div className="flex items-center justify-center gap-3">
+                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                      View Transactions
+                    </button>
+                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                      Adjust Balance
+                    </button>
+                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                      Block User
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="flex justify-between items-center mt-6 mb-16 ">
         <span>
           Showing: {wallets.length} / {totalCount}

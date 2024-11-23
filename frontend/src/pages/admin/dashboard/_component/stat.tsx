@@ -29,7 +29,7 @@ function Stat() {
   }, []);
 
   return (
-    <div className="grid grid-cols-3 gap-6 mb-5">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6 mb-5">
       {stats.map((item, index) => (
         <div key={index} className="bg-light_blue p-4 rounded-md">
           <div className="flex items-center gap-2">

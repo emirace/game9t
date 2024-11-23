@@ -49,7 +49,7 @@ function Typo() {
     <div>
       <h2 className="font-jua text-xl mb-4 mt-8">Typography</h2>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
           {/* Select Font */}
           <div>
             <div className="text-sm mb-2">Select Font</div>
@@ -90,7 +90,7 @@ function Typo() {
           </div>
 
           {/* Heading Style */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <div className="text-sm mb-2">Heading Style</div>
             <select
               name="headingStyle"

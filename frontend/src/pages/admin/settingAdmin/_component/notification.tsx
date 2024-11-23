@@ -68,7 +68,7 @@ function Notification() {
     <div>
       <h2 className="font-jua text-xl mb-4 mt-8">Notification Settings</h2>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
           {/* Email Notification */}
           <div>
             <div className="text-sm mb-2">Email Notification</div>
@@ -98,7 +98,7 @@ function Notification() {
           </div>
 
           {/* Live Chat */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <div className="text-sm mb-2">Live Chat</div>
             <select
               name="liveChat"

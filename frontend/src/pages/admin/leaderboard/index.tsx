@@ -9,7 +9,7 @@ function Leaderboards() {
       <Overview />
       <OnGoingBet />
       <div className="text-lg font-jua ">Reset Leaderboards </div>
-      <div className="flex items-center gap-4 mt-4 mb-6">
+      <div className="flex flex-wrap items-center gap-4 mt-4 mb-6">
         <button className="bg-white text-black text-xs p-1 px-4 rounded-md">
           Reset Monthly LeaderBoard
         </button>
@@ -19,7 +19,7 @@ function Leaderboards() {
       </div>
 
       <div className="text-lg font-jua ">Admin Actions</div>
-      <div className="flex items-center gap-4 mt-2">
+      <div className="flex flex-wrap items-center gap-4 mt-2">
         <button className="bg-white text-black text-xs p-1 px-4 rounded-md">
           Generate Leaderboard Report
         </button>

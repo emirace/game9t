@@ -27,7 +27,7 @@ function Walletpayment() {
       </div>
 
       <div className="text-lg font-jua ">Admin Actions</div>
-      <div className="flex items-center gap-4 mt-2">
+      <div className="flex flex-wrap items-center gap-4 mt-2">
         <button className="bg-white text-black text-xs p-1 px-4 rounded-md">
           Generate Financial Report
         </button>

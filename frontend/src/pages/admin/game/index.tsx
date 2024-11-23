@@ -55,7 +55,7 @@ function GameManage() {
     <div>
       <h1 className="font-jua text-xl">Game Management</h1>
       <div className="text-sm mb-6">Manage Your Games</div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
         <div className="font-jua text-lg">All Games ({games.totalGames})</div>
         <div className="flex items-center gap-3">
           <img src={ICONS.filter} className="w-4" />
@@ -81,9 +81,9 @@ function GameManage() {
       ) : games.games.length <= 0 ? (
         <div>No games available</div>
       ) : (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-3 gap-4">
           {games.games.map((game) => (
-            <div key={game._id} className="   ">
+            <div key={game._id} className=" rounded-lg overflow-hidden  ">
               <div className="flex-1 relative h-40">
                 <img
                   src={imageUrl + game.image}

@@ -74,17 +74,17 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
   }, [socket]);
 
   return (
-    <div className="px-20">
+    <div className=" px-0 md:px-20">
       <h2 className="font-jua text-2xl mb-6 text-center ">Search Players</h2>
 
       <div className="bg-black p-2 flex gap-2 items-center rounded-md mb-6">
         <img src={ICONS.search} alt="search" className="w-4 h-4" />
-        <input placeholder="Search players..." className="bg-black" />
+        <input placeholder="Search players..." className="bg-black w-full" />
       </div>
       {onlineUsers.length <= 0 && (
         <div className="p-4">No player available</div>
       )}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid md:grid-cols-4 gap-4">
         {onlineUsers.map((player) => (
           <div
             key={player.userId}

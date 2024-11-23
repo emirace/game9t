@@ -38,6 +38,10 @@ import Deposit from "./pages/wallet/deposit";
 import Site from "./pages/admin/site";
 import SettingAdmin from "./pages/admin/settingAdmin";
 import Support from "./pages/support";
+import ContactUs from "./pages/support/contactUs";
+import Faq from "./pages/support/faq";
+import Chat from "./pages/support/chat";
+import Ticket from "./pages/support/ticket";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +55,10 @@ export const router = createBrowserRouter([
           { path: "/", element: <Home /> },
           { path: "/leaderboard", element: <Leaderboard /> },
           { path: "/support", element: <Support /> },
+          { path: "/support/contact", element: <ContactUs /> },
+          { path: "/support/faq", element: <Faq /> },
+          { path: "/support/chat", element: <Chat /> },
+          { path: "/support/ticket", element: <Ticket /> },
           {
             path: "/",
             element: <Protected />,

@@ -85,7 +85,7 @@ function Logo() {
     <div>
       <h2 className="font-jua text-xl mb-4">Logo & Branding</h2>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
           {/* Website Name */}
           <div>
             <div className="text-sm mb-2">Website Name</div>
@@ -129,7 +129,7 @@ function Logo() {
           </div>
 
           {/* Website Favicon */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <div className="text-sm mb-2">Website Favicon</div>
             <div className="relative">
               <input
@@ -158,7 +158,7 @@ function Logo() {
           </div>
 
           {/* Brand Color */}
-          <div>
+          <div className="">
             <div className="text-sm mb-2">Brand Color</div>
             <div className="relative">
               <div className="w-full p-4 bg-black rounded-md flex gap-3">
@@ -167,7 +167,7 @@ function Logo() {
                   name="color"
                   value={formData.color}
                   onChange={handleChange}
-                  className="w-8 h-8"
+                  className="w-4 h-4"
                 />
                 <div>{formData.color}</div>
               </div>
@@ -195,7 +195,7 @@ function Logo() {
           </div>
 
           {/* Default Language */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <div className="text-sm mb-2">Default Language</div>
             <select
               name="language"

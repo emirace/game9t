@@ -7,38 +7,45 @@ const features = [
     title: "Contact Us",
     description:
       "Permanently delete your account. Warning: All data will be lost.",
+    path: "/support/contact",
   },
   {
     image: ICONS.faq,
     title: "FAQ",
     description:
       "Find answers to frequently asked questions to help you navigate and enjoy our platform with ease.",
+    path: "/support/faq",
   },
   {
     image: ICONS.article,
     title: "Help Articles",
     description:
       "Find answers to frequently asked questions to help you navigate and enjoy our platform with ease.",
+    path: "/support/#",
   },
   {
     image: ICONS.support2,
     title: "Support Ticket",
     description:
       "Find answers to frequently asked questions to help you navigate and enjoy our platform with ease.",
+    path: "/support/ticket",
   },
   {
     image: ICONS.users,
     title: "Community Forum",
     description:
       "Find answers to frequently asked questions to help you navigate and enjoy our platform with ease.",
+    path: "/support/#",
   },
   {
     image: ICONS.chat,
     title: "Live Chat",
     description:
       "Find answers to frequently asked questions to help you navigate and enjoy our platform with ease.",
+    path: "/support/chat",
   },
 ];
+
 function Support() {
   return (
     <div className="px-4 md:px-20 py-10">
@@ -66,14 +73,15 @@ function Support() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
         {features.map((item, index) => (
-          <div
+          <Link
             key={index}
-            className="flex flex-col gap-2 bg-light_blue p-4 rounded-md"
+            className="flex flex-col gap-2 bg-light_blue p-4 rounded-md "
+            to={item.path}
           >
             <img src={item.image} className="w-4" alt="star" />
             <div className="text-xl font-jua">{item.title}</div>
             <div className="text-sm ">{item.description}</div>
-          </div>
+          </Link>
         ))}
       </div>
       <div className="text-center my-16">

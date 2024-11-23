@@ -20,10 +20,10 @@ function Admin() {
     <div className=" text-white bg-dark_blue font-roboto text-sm md:text-base h-screen overflow-hidden">
       <Header />
       <div className="flex gap-4 h-full">
-        <div className="flex-1">
+        <div className="flex-1 hidden md:block">
           <Sidebar />
         </div>
-        <div className="flex-[4] p-4 pb-20 overflow-y-auto">
+        <div className="flex-1 md:flex-[4] p-4 pb-20 overflow-y-auto">
           <Outlet />
         </div>
       </div>

@@ -78,7 +78,7 @@ function Footer() {
     <div>
       <h2 className="font-jua text-xl mb-4 mt-8">Footer Customization</h2>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-3 md:gap-8">
           {/* About Us */}
           <div>
             <div className="text-sm mb-2">About Us</div>

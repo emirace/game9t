@@ -57,7 +57,7 @@ function Payment() {
     <div>
       <h2 className="font-jua text-xl mb-4 mt-8">Payment Settings</h2>
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
           {/* Payment Gateway */}
           <div>
             <div className="text-sm mb-2">Payment Gateway</div>
@@ -96,7 +96,7 @@ function Payment() {
           </div>
 
           {/* Transaction Limit Per Day */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <div className="text-sm mb-2">Transaction Limit Per Day</div>
             <select
               name="dailyTransactionLimit"

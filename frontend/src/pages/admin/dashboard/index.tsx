@@ -22,7 +22,7 @@ function Dashboard() {
     <div>
       <Stat />
       <div className="font-jua mt-6 mb-2 text-lg">Overview</div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="space-y-3 md:grid md:grid-cols-3 gap-3">
         <BarChart
           title="User Growth"
           categories={categories}

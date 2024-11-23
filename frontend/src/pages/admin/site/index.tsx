@@ -14,7 +14,7 @@ function Site() {
       <Logo />
 
       <h2 className="font-jua text-xl mb-4 mt-8">Navigation Menu</h2>
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-wrap gap-4 items-center">
         {["Home", "Games", "Leaderboard", "FAQ"].map((menu) => (
           <div className="p-3 bg-black rounded-md min-w-28">{menu}</div>
         ))}

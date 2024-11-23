@@ -49,54 +49,55 @@ function Withdrawal() {
   return (
     <div>
       <div className="font-jua text-lg mb-4">Withdrawal Requests</div>
-
-      <table className="min-w-full table-auto rounded-lg">
-        <thead>
-          <tr className="bg-dark text-white text-left">
-            <th className="p-4 font-jua">Request ID</th>
-            <th className="p-4 font-jua">User ID</th>
-            <th className="p-4 font-jua">Amount</th>
-            <th className="p-4 font-jua">Requested Date</th>
-            <th className="p-4 font-jua">Status</th>
-            <th className="p-4 font-jua text-center">Actions</th>
-          </tr>
-        </thead>
-        {requests.length <= 0 && (
-          <div className="p-5">No withdrawal request</div>
-        )}
-        <tbody>
-          {requests.map((request, index) => (
-            <tr
-              key={request._id}
-              className={`${
-                index % 2 ? "bg-light_blue" : null
-              } text-white hover:bg-dark_blue`}
-            >
-              <td className="p-4">{request._id}</td>
-              <td className="p-4">{request.user.username}</td>
-              <td className="p-4"> {request.amount}</td>
-              <td className="p-4">{moment(request.createdAt).calendar()}</td>
-              <td className="p-4">{request.status}</td>
-              <td className="p-4 font-bold">
-                <div className="flex items-center justify-center gap-3">
-                  <button
-                    onClick={() => handleApprove(request._id)}
-                    className="bg-cream text-black text-xs p-1 px-4 rounded-full"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleDecline(request._id)}
-                    className="bg-cream text-black text-xs p-1 px-4 rounded-full"
-                  >
-                    Reject
-                  </button>
-                </div>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto rounded-lg">
+          <thead>
+            <tr className="bg-dark text-white text-left">
+              <th className="p-4 font-jua">Request ID</th>
+              <th className="p-4 font-jua">User ID</th>
+              <th className="p-4 font-jua">Amount</th>
+              <th className="p-4 font-jua">Requested Date</th>
+              <th className="p-4 font-jua">Status</th>
+              <th className="p-4 font-jua text-center">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          {requests.length <= 0 && (
+            <div className="p-5">No withdrawal request</div>
+          )}
+          <tbody>
+            {requests.map((request, index) => (
+              <tr
+                key={request._id}
+                className={`${
+                  index % 2 ? "bg-light_blue" : null
+                } text-white hover:bg-dark_blue`}
+              >
+                <td className="p-4">{request._id}</td>
+                <td className="p-4">{request.user.username}</td>
+                <td className="p-4"> {request.amount}</td>
+                <td className="p-4">{moment(request.createdAt).calendar()}</td>
+                <td className="p-4">{request.status}</td>
+                <td className="p-4 font-bold">
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      onClick={() => handleApprove(request._id)}
+                      className="bg-cream text-black text-xs p-1 px-4 rounded-full"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleDecline(request._id)}
+                      className="bg-cream text-black text-xs p-1 px-4 rounded-full"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="flex justify-between items-center mt-6 mb-16 ">
         <span>
           Showing: {requests.length} / {totalCount}

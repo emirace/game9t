@@ -9,7 +9,7 @@ function Overview() {
   return (
     <div className="mb-6">
       <div className="font-jua text-lg mb-2">Wallet Overview</div>
-      <div className="grid grid-cols-4 gap-6 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6 mb-5">
         {stats.map((item, index) => (
           <div key={index} className="bg-light_blue p-4 rounded-md">
             <div className="flex items-center gap-2">

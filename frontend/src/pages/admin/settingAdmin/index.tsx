@@ -16,7 +16,7 @@ function SettingAdmin() {
       <Bet />
 
       <h2 className="font-jua text-xl mb-4 mt-8">Security Settings</h2>
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
         <div>
           <div className="text-sm mb-2">Admin Email</div>
           <input
@@ -40,7 +40,7 @@ function SettingAdmin() {
             </button>
           </div>
         </div>
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <div className="text-sm mb-2">Set New Password</div>
           <input
             type="text"

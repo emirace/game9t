@@ -36,13 +36,14 @@ const tabs = [
   },
 ];
 
-function Sidebar() {
+function Sidebar({ onClick }: { onClick?: () => void }) {
   return (
     <div className="flex flex-col gap-2 bg-dark px-4 py-8 h-full">
       {tabs.map((tab, index) => (
         <NavLink
           to={tab.path}
           end
+          onClick={() => (onClick ? onClick() : null)}
           key={index}
           className={({ isActive }) =>
             `flex items-center justify-between p-3 px-6 ${

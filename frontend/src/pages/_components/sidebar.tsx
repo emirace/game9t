@@ -12,24 +12,6 @@ const sidelists = [
   { icon: ICONS.support, label: "Support", path: "/support" },
 ];
 
-const quickLinks = [
-  "Home",
-  "Games",
-  "Leaderboard",
-  "Wallet",
-  "Challenges",
-  "Support",
-  "FAQ",
-];
-
-const legalLinks = [
-  "Terms",
-  "Disclaimer",
-  "Privacy Policy",
-  "Terms & Conditions",
-  "Responsible Gaming",
-];
-
 interface Props {
   onClose: () => void;
 }
@@ -76,26 +58,6 @@ const Sidebar: React.FC<Props> = ({ onClose }) => {
           <img src={ICONS.logout} alt="close" className="w-4 h-4 " />
           <div className="font-jua">Logout</div>
         </div>
-      </div>
-
-      {/* Quick Links */}
-      <div className="md:hidden mb-6">
-        <h4 className=" text-lg font-jua mb-2">Quick Links</h4>
-        <ul className="space-y-2">
-          {quickLinks.map((link, index) => (
-            <li key={index}>{link}</li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Legal */}
-      <div className="md:hidden mb-6">
-        <h4 className="font-jua text-lg mb-2">Legal</h4>
-        <ul className="space-y-2">
-          {legalLinks.map((link, index) => (
-            <li key={index}>{link}</li>
-          ))}
-        </ul>
       </div>
     </div>
   );

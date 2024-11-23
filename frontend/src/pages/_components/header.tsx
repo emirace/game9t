@@ -51,7 +51,10 @@ function Header() {
             <img src={ICONS.badge} alt="leaderboard" className="w-4 h-4" />
             <div className="font-jua  text-lg">Leaderboard</div>
           </div>
-          <div className="flex items-center gap-2 cursor-pointer">
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate("/support/faq")}
+          >
             <img src={ICONS.faq} alt="faq" className="w-4 h-4" />
             <div className="font-jua  text-lg">FAQ</div>
           </div>
@@ -104,7 +107,7 @@ function Header() {
         <Sidebar onClose={() => setShowSidebar(false)} />
       </SideModel>
       <SideModel isOpen={showGames} onClose={() => setShowGames(false)}>
-        <Gamesbar />
+        <Gamesbar onClick={() => setShowGames(false)} />
       </SideModel>
     </div>
   );

@@ -47,9 +47,10 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
     if (existTransaction) {
       await session.abortTransaction();
       session.endSession();
-      return res
+      res
         .status(400)
         .json({ status: false, message: 'Possible duplicate transaction' });
+      return;
     }
 
     // Verify payment
@@ -57,17 +58,19 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
     if (response.data.status !== 'success') {
       await session.abortTransaction();
       session.endSession();
-      return res
+      res
         .status(400)
         .json({ status: false, message: 'Payment verification failed' });
+      return;
     }
 
     if (amount * 100 !== response.data.amount) {
       await session.abortTransaction();
       session.endSession();
-      return res
+      res
         .status(400)
         .json({ status: false, message: 'Invalid transaction amount' });
+      return;
     }
 
     // Ensure wallet is retrieved or created atomically
@@ -80,9 +83,10 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
     if (!wallet.isActive) {
       await session.abortTransaction();
       session.endSession();
-      return res
+      res
         .status(400)
         .json({ status: false, message: 'Wallet is currently inactive' });
+      return;
     }
 
     // Update wallet balance

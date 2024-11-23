@@ -63,7 +63,7 @@ Ensure you have the following installed:
     npm install
 ```
 
-    Set up environment variables:
+Set up environment variables:
 
 4. Create a .env file in the backend folder.
    Add the following variables:

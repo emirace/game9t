@@ -83,14 +83,13 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
 
     // Update wallet balance
     const topUpAmount = parseFloat(amount) / 5;
-    wallet.balance += topUpAmount;
 
     console.log('update', wallet);
     await Wallet.findOneAndUpdate(
       { user: userId },
       { $inc: { balance: topUpAmount } },
     );
-
+    console.log('updated', wallet);
     // Record the transaction
     const transaction = new Transaction({
       type: 'Deposit',

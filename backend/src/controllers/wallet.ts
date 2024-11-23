@@ -38,61 +38,53 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
   session.startTransaction();
   try {
     const userId = req.user?._id!;
-
     const { amount, transactionId } = req.body;
 
+    // Check if transaction already exists
     const existTransaction = await Transaction.findOne({
       reference: transactionId,
     });
     if (existTransaction) {
       await session.abortTransaction();
       session.endSession();
-      res
+      return res
         .status(400)
-        .json({ status: false, message: 'Possible dublicate wallet' });
-      return;
+        .json({ status: false, message: 'Possible duplicate transaction' });
     }
 
+    // Verify payment
     const response = await paystackInstance.transaction.verify(transactionId);
-    console.log('res', response);
     if (response.data.status !== 'success') {
       await session.abortTransaction();
       session.endSession();
-      res
+      return res
         .status(400)
         .json({ status: false, message: 'Payment verification failed' });
-      return;
     }
 
     if (amount * 100 !== response.data.amount) {
       await session.abortTransaction();
       session.endSession();
-
-      const errorMessage = 'Invalid transaction amount';
-
-      res.status(400).json({ status: false, message: errorMessage });
-      return;
+      return res
+        .status(400)
+        .json({ status: false, message: 'Invalid transaction amount' });
     }
 
-    var wallet;
-    wallet = await Wallet.findOne({
-      user: userId,
-    }).session(session);
-    console.log('old', wallet);
-
-    if (!wallet) {
-      wallet = new Wallet({
-        user: userId,
-      });
-      console.log('new', wallet);
-    }
+    // Ensure wallet is retrieved or created atomically
+    let wallet = await Wallet.findOneAndUpdate(
+      { user: userId },
+      { $setOnInsert: { user: userId, balance: 0, isActive: true } },
+      { new: true, upsert: true, session },
+    );
 
     if (!wallet.isActive) {
-      res
+      await session.abortTransaction();
+      session.endSession();
+      return res
         .status(400)
         .json({ status: false, message: 'Wallet is currently inactive' });
-      return;
     }
+
     // Update wallet balance
     const topUpAmount = parseFloat(amount) / 5;
     wallet.balance += topUpAmount;
@@ -109,6 +101,7 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
     });
     await transaction.save({ session });
 
+    // Commit transaction
     await session.commitTransaction();
     session.endSession();
 
@@ -116,6 +109,8 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
       .status(200)
       .json({ status: true, message: 'Wallet funded successfully' });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error('Error funding wallet:', error);
     res
       .status(500)

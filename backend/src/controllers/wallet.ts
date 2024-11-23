@@ -96,8 +96,11 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
     wallet.balance += topUpAmount;
 
     console.log('update', wallet);
-
-    await wallet.save({ session });
+    await Wallet.findOneAndUpdate(
+      { user: userId },
+      { $inc: { balance: topUpAmount } },
+      { session },
+    );
 
     // Record the transaction
     const transaction = new Transaction({

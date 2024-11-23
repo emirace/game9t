@@ -12,7 +12,6 @@ const WalletSchema: Schema<IWallet> = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-      unique: true,
     },
     isActive: { type: Boolean, default: true },
     balance: {

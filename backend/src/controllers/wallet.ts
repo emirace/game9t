@@ -73,12 +73,14 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
       return;
     }
 
-    // Ensure wallet is retrieved or created atomically
-    let wallet = await Wallet.findOneAndUpdate(
-      { user: userId },
-      { $setOnInsert: { user: userId, balance: 0, isActive: true } },
-      { new: true, upsert: true, session },
-    );
+    // Retrieve or create wallet atomically
+    let wallet = await Wallet.findOne({ user: userId }).session(session); // Scoped to the session
+    console.log('old', wallet);
+    if (!wallet) {
+      wallet = new Wallet({ user: userId, balance: 0, isActive: true });
+      await wallet.save({ session }); // Insert the wallet in the same transaction
+      console.log('new', wallet);
+    }
 
     if (!wallet.isActive) {
       await session.abortTransaction();
@@ -92,6 +94,9 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
     // Update wallet balance
     const topUpAmount = parseFloat(amount) / 5;
     wallet.balance += topUpAmount;
+
+    console.log('update', wallet);
+
     await wallet.save({ session });
 
     // Record the transaction

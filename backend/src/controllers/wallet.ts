@@ -78,12 +78,13 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
     wallet = await Wallet.findOne({
       user: userId,
     }).session(session);
+    console.log('old', wallet);
 
     if (!wallet) {
       wallet = new Wallet({
         user: userId,
       });
-      wallet.save({ session });
+      console.log('new', wallet);
     }
 
     if (!wallet.isActive) {

@@ -1,12 +1,60 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
-import IMAGES from "../../assets/images/images";
 import { useWallet } from "../../context/wallet";
+import { useUser } from "../../context/user";
+import { createWithdrawalRequest } from "../../services/withdrawalRequest";
+import { useToastNotification } from "../../context/toastNotificationContext";
 
 const Withdraw: React.FC = () => {
   const { balance } = useWallet();
-  const [amount, setAmount] = useState("");
+  const { user } = useUser();
+  const { addNotification } = useToastNotification();
+  const [formData, setFormData] = useState({
+    type: "",
+    amount: "",
+    crypto: user?.paymentMethods.details.crypto?.currency,
+    network: user?.paymentMethods.details.crypto?.network,
+    bankName: user?.paymentMethods.details.bankTransfer?.bankName,
+    accountNumber: user?.paymentMethods.details.bankTransfer?.accountNumber,
+    accountName: user?.paymentMethods.details.bankTransfer?.accountHolderName,
+    address: user?.paymentMethods.details.crypto?.walletAddress,
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    if (!formData.type) {
+      addNotification({ message: "Select withdrawal type", error: true });
+      return;
+    }
+    if (!formData.amount) {
+      addNotification({ message: "Enter an amount", error: true });
+      return;
+    }
+    try {
+      await createWithdrawalRequest(formData);
+      addNotification({ message: "Withdrawal request sent successfully" });
+    } catch (err: any) {
+      addNotification({ message: err, error: true });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-dark-900 text-white min-h-screen p-6 pb-40 md:px-20">
       {/* Breadcrumb */}
@@ -25,52 +73,150 @@ const Withdraw: React.FC = () => {
       </div>
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-[2]">
-          <div className="flex gap-2 items-center">
-            <input
-              placeholder="Enter amount"
-              className="bg-black p-2 w-1/2"
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            {parseFloat(amount) >= 200 && (
-              <img src={ICONS.check_green} alt="" className="w-4 h-4" />
-            )}
-            <div>(5% Admin Fees Will be deducted)</div>
-          </div>
-          <div className="font-jua my-4">Withdraw in</div>
-          <div className="bg-light_blue p-4 px-8 rounded-lg mb-6">
-            <img
-              src={IMAGES.paystack}
-              alt="paystack"
-              className="w-auto h-12 mb-4"
-            />
-            <div className="text-sm max-w-xl mb-4">
-              Easily deposit and withdraw funds using Paystack's secure payment
-              gateway. Accepts debit/credit cards, bank transfers, and more.
+          <div className="bg-[#142635] flex-1 rounded-md p-4 md:p-12 md:w-3/4">
+            <div className="mb-4">
+              <select
+                name="type"
+                value={formData.type}
+                onChange={handleInputChange}
+                className="w-full p-4 bg-black rounded-md focus:outline-none"
+              >
+                <option value="" disabled>
+                  Select Withdrawal Method
+                </option>
+                <option value="Naira">Naira</option>
+                <option value="Cryptocurrency">Cryptocurrency</option>
+              </select>
             </div>
-            <button className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors">
-              Pay Now
-            </button>
-          </div>
-          <div className="bg-light_blue p-4 px-8 rounded-lg">
-            <img
-              src={IMAGES.nowpayment}
-              alt="paystack"
-              className="w-auto h-12 mb-4"
-            />
-            <div className="text-sm max-w-xl mb-4">
-              Make quick and secure deposits and withdrawals using NOWPayments,
-              supporting a wide range of cryptocurrencies
+
+            {formData.type === "Naira" ? (
+              <>
+                <div className="mb-4">
+                  <select
+                    name="bankName"
+                    value={formData.bankName}
+                    onChange={handleInputChange}
+                    className="w-full p-4 bg-black rounded-md focus:outline-none"
+                  >
+                    <option value="" disabled>
+                      Bank Name
+                    </option>
+                    <option value="First Bank">First Bank</option>
+                    <option value="Zenith Bank">Zenith Bank</option>
+                  </select>
+                </div>
+
+                <div className="my-4 relative">
+                  <input
+                    type="text"
+                    name="accountNumber"
+                    value={formData.accountNumber}
+                    onChange={handleInputChange}
+                    placeholder="Enter Account Number"
+                    className="p-3 bg-black rounded-md focus:outline-none w-full "
+                  />
+                  {user?.paymentMethods.details.bankTransfer?.accountNumber && (
+                    <img
+                      src={ICONS.check_green}
+                      className="h-4 w-auto absolute top-1/2 -translate-y-1/2 right-4"
+                    />
+                  )}
+                </div>
+
+                <div className="my-4 relative">
+                  <input
+                    type="text"
+                    name="accountName"
+                    value={formData.accountName}
+                    onChange={handleInputChange}
+                    placeholder="Enter Amount (Min 1000 Points)"
+                    className="p-3 bg-black rounded-md focus:outline-none w-full "
+                  />
+
+                  {user?.paymentMethods.details.bankTransfer?.accountNumber && (
+                    <img
+                      src={ICONS.check_green}
+                      className="h-4 w-auto absolute top-1/2 -translate-y-1/2 right-4"
+                    />
+                  )}
+                </div>
+              </>
+            ) : formData.type === "Cryptocurrency" ? (
+              <>
+                <div className="mb-4">
+                  <select
+                    name="crypto"
+                    value={formData.crypto}
+                    onChange={handleInputChange}
+                    className="w-full p-4 bg-black rounded-md focus:outline-none"
+                  >
+                    <option value="" disabled>
+                      Select Cryptocurrency
+                    </option>
+                    <option value="USDT">USDT</option>
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <select
+                    name="network"
+                    value={formData.network}
+                    onChange={handleInputChange}
+                    className="w-full p-4 bg-black rounded-md focus:outline-none"
+                  >
+                    <option value="" disabled>
+                      Select Network
+                    </option>
+                    <option value="TRC20">TRC20</option>
+                  </select>
+                </div>
+
+                <div className="my-4">
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    placeholder="Enter Wallet Address"
+                    className="p-3 bg-black rounded-md focus:outline-none w-full "
+                  />
+
+                  {user?.paymentMethods.details.crypto?.walletAddress && (
+                    <img
+                      src={ICONS.check_green}
+                      className="h-4 w-auto absolute top-1/2 -translate-y-1/2 right-4"
+                    />
+                  )}
+                </div>
+              </>
+            ) : null}
+
+            <div className="my-4">
+              <input
+                type="text"
+                name="amount"
+                value={formData.amount}
+                onChange={handleInputChange}
+                placeholder="Enter Amount (Min 1000 Points)"
+                className="p-3 bg-black rounded-md focus:outline-none w-full "
+              />
             </div>
-            <button className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors">
-              Pay Now
+
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="px-8 py-3 min-w-48 bg-black text-white font-jua rounded-full hover:bg-dark_blue transition-colors"
+            >
+              Send Request
             </button>
           </div>
         </div>
         <div className="flex-1 text-sm">
           <div className="rounded-lg mb-8">
-            <h2 className="text-2xl mb-2">
-              <span className="font-jua">
-                <span className="text-cream">$</span> Current Balance :
+            <h2 className="text-2xl mb-2 flex items-center">
+              <span className="font-jua flex gap-2">
+                <img src={ICONS.coin_cream} alt="coin" className="w-auto h-6" />
+                Current Balance :
               </span>
               <span className="bg-cream text-black px-4 py-1 rounded-md ml-2 font-jua">
                 {balance}

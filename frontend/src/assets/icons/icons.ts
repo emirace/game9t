@@ -60,6 +60,9 @@ const ICONS = {
   article: new URL("./article.png", import.meta.url).href,
   filter: new URL("./filter.png", import.meta.url).href,
   bell_blue: new URL("./bell_blue.png", import.meta.url).href,
+  coin: new URL("./coin.png", import.meta.url).href,
+  coin_black: new URL("./coin_black.png", import.meta.url).href,
+  coin_cream: new URL("./coin_cream.png", import.meta.url).href,
 };
 
 export default ICONS;

@@ -10,8 +10,6 @@ import Login from "./pages/auth/login";
 import Auth from "./pages/auth";
 import Register from "./pages/auth/register";
 import Profile from "./pages/profile";
-import Bio from "./pages/profile/bio";
-import Social from "./pages/profile/social";
 import Info from "./pages/profile/info";
 import Payments from "./pages/profile/payments";
 import History from "./pages/profile/history";
@@ -42,6 +40,7 @@ import ContactUs from "./pages/support/contactUs";
 import Faq from "./pages/support/faq";
 import Chat from "./pages/support/chat";
 import Ticket from "./pages/support/ticket";
+import ForgotPassword from "./pages/auth/forgotPassword";
 
 export const router = createBrowserRouter([
   {
@@ -72,9 +71,9 @@ export const router = createBrowserRouter([
                 path: "/profile",
                 element: <Profile />,
                 children: [
-                  { path: "/profile", element: <Bio /> },
-                  { path: "social", element: <Social /> },
-                  { path: "info", element: <Info /> },
+                  // { path: "/profile", element: <Bio /> },
+                  // { path: "social", element: <Social /> },
+                  { path: "/profile", element: <Info /> },
                   { path: "payments", element: <Payments /> },
                   { path: "history", element: <History /> },
                   { path: "transactions", element: <Transaction /> },
@@ -118,6 +117,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "login", element: <Login /> },
           { path: "register", element: <Register /> },
+          { path: "forgot-password", element: <ForgotPassword /> },
         ],
       },
     ],

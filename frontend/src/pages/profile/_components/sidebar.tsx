@@ -2,17 +2,17 @@ import { NavLink } from "react-router-dom";
 import ICONS from "../../../assets/icons/icons";
 
 const tabs = [
-  {
-    name: "Biography",
-    path: "/profile",
-  },
-  {
-    name: "Social",
-    path: "social",
-  },
+  // {
+  //   name: "Biography",
+  //   path: "/profile",
+  // },
+  // {
+  //   name: "Social",
+  //   path: "social",
+  // },
   {
     name: "Personal Information",
-    path: "info",
+    path: "/profile",
   },
   {
     name: "Payment Methods",

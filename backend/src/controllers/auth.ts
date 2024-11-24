@@ -171,6 +171,7 @@ export const sendVerificationEmail = async (
   const verificationUrl = `${req.protocol}://${req.get('host')}/api/users/verifyemail/${verificationToken}`;
 
   const message = `Click the link to verify your email: \n\n${verificationUrl}`;
+  console.log(message);
   // await sendEmail({
   //   email: user.email,
   //   subject: 'Email Verification',

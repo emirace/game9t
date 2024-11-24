@@ -53,7 +53,7 @@ function Bet() {
       <h2 className="font-jua text-xl mb-4 mt-8">Predefined Bets</h2>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-3 md:grid-cols-7 gap-3 md:gap-8">
-          {["1", "2", "3", "4", "5", "6"].map((number, index) => (
+          {["1", "2", "3", "4", "5"].map((number, index) => (
             <div key={number}>
               <div className="text-sm mb-2">Bet {number}</div>
               <input

@@ -7,6 +7,7 @@ import moment from "moment";
 import { useState } from "react";
 import { useToastNotification } from "../../context/toastNotificationContext";
 import Loading from "../_components/loading";
+import IMAGES from "../../assets/images/images";
 
 function Profile() {
   const { user, updateUser, logout } = useUser();
@@ -61,7 +62,7 @@ function Profile() {
             <div className="flex flex-col md:flex-row items-center  space-x-4 mb-4">
               <div className="flex flex-row md:flex-col items-center gap-2">
                 <img
-                  src={user?.image}
+                  src={user?.image || IMAGES.user2}
                   alt="Profile"
                   className="w-12 h-12 rounded-full bg-white"
                 />

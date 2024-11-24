@@ -32,12 +32,6 @@ export interface IUser {
   paymentMethods: {
     preferredMethod: string;
     details: {
-      creditCard?: {
-        cardNumber: string;
-        expiryDate: string;
-        cardHolderName: string;
-        cvv: string;
-      };
       bankTransfer?: {
         accountNumber: string;
         bankName: string;
@@ -47,6 +41,7 @@ export interface IUser {
       crypto?: {
         walletAddress: string;
         currency: string;
+        network: string;
       };
     };
   };

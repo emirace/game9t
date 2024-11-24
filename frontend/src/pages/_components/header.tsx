@@ -10,15 +10,19 @@ import { useWallet } from "../../context/wallet";
 import Loading from "./loading";
 import { useBranding } from "../../context/branding";
 import { imageUrl } from "../../services/api";
+import { useNotifications } from "../../context/notification";
 
 function Header() {
   const navigate = useNavigate();
   const { user, loading } = useUser();
+  const { notifications } = useNotifications();
   const { branding } = useBranding();
   const { balance, loading: loadingBalance } = useWallet();
   const [showNotification, setShowNotification] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [showGames, setShowGames] = useState(false);
+
+  const unreadCount = notifications.filter((not) => !not.read);
   return (
     <div className="relative">
       <div className="flex items-center justify-between bg-light_blue p-3 md:px-20">
@@ -69,12 +73,17 @@ function Header() {
               onClick={() => setShowSidebar(true)}
               className="w-4 h-4 cursor-pointer"
             />
-            <img
-              src={ICONS.bell}
-              onClick={() => setShowNotification(true)}
-              alt="faq"
-              className="w-4 h-4 cursor-pointer"
-            />
+            <div className="relative">
+              <img
+                src={ICONS.bell}
+                onClick={() => setShowNotification(true)}
+                alt="faq"
+                className="w-4 h-4 cursor-pointer"
+              />
+              {unreadCount.length > 0 && (
+                <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-red" />
+              )}
+            </div>
             <img
               src={ICONS.menu}
               onClick={() => setShowGames(true)}

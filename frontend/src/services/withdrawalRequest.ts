@@ -27,6 +27,17 @@ export const approveWithdrawalRequest = async (
   return response.data;
 };
 
+// Create a withdrawal request
+export const createWithdrawalRequest = async (
+  metaData: Record<string, any> = {}
+): Promise<{ message: string }> => {
+  const response = await api.post(`/withdrawal-requests`, {
+    ...metaData,
+  });
+
+  return response.data;
+};
+
 export const declineWithdrawalRequest = async (
   id: string
 ): Promise<IWithdrawalRequest> => {

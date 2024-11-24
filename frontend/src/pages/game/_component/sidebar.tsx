@@ -28,6 +28,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const [success, setSuccess] = useState(false);
   const [gameSession, setGameSession] = useState<IGameSession | null>(null);
   const [cancelling, setCancelling] = useState(false);
+  const [showCustom, setShowCustom] = useState(false);
 
   const handleChallenge = async (compete?: string) => {
     if (!gameId) return;
@@ -172,14 +173,39 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
             <button
               key={amount}
               onClick={() => setSelectedAmount(amount)}
-              className={`bg-black hover:bg-cream hover:text-black font-bold py-2 rounded-full ${
+              className={`bg-black flex items-center justify-center gap-1 hover:bg-cream hover:text-black font-bold py-2 rounded-full ${
                 selectedAmount === amount ? "bg-cream text-black" : null
               }`}
             >
+              <img
+                src={
+                  selectedAmount === amount
+                    ? ICONS.coin_black
+                    : ICONS.coin_cream
+                }
+                alt="coin"
+                className="w-auto h-3"
+              />
               {amount}
             </button>
           ))}
+          <button
+            onClick={() => setShowCustom(!showCustom)}
+            className={`bg-black flex items-center justify-center gap-1 hover:bg-cream hover:text-black font-bold py-2 rounded-full ${
+              showCustom ? "bg-cream text-black" : null
+            }`}
+          >
+            Custom
+          </button>
         </div>
+        {showCustom && (
+          <input
+            placeholder="Enter amount(100 - 100,000)"
+            className="bg-black p-2 rounded-full w-full"
+            onChange={(e) => setSelectedAmount(e.target.value)}
+          />
+        )}
+
         <button
           onClick={() => handleChallenge()}
           className="flex items-center justify-center gap-2 text-white font-bold py-2 px-4 rounded-md w-full"

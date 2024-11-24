@@ -4,6 +4,7 @@ interface IWithdrawalRequest extends Document {
   user: Types.ObjectId;
   amount: number;
   status: 'pending' | 'approved' | 'rejected' | 'completed';
+  metaData?: Record<string, any>;
 }
 
 const WithdrawalRequestSchema: Schema = new Schema(
@@ -24,6 +25,7 @@ const WithdrawalRequestSchema: Schema = new Schema(
       default: 'pending',
       required: true,
     },
+    metaData: { type: Schema.Types.Mixed },
   },
   {
     timestamps: true,

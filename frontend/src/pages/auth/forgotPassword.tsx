@@ -1,30 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import IMAGES from "../../assets/images/images";
 import ICONS from "../../assets/icons/icons";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { loginUser } from "../../services/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { forgotPassword } from "../../services/auth";
 import Loading from "../_components/loading";
-import { useUser } from "../../context/user";
 import { useToastNotification } from "../../context/toastNotificationContext";
-import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useGoogleLogin } from "@react-oauth/google";
 
-const Login: React.FC = () => {
+const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
   const { addNotification } = useToastNotification();
-  const { user, getUser } = useUser();
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   // Form state
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
+    email: "",
   });
 
   // Error state
   const [errors, setErrors] = useState<Record<string, string | null>>({
-    username: null,
-    password: null,
     general: null,
   });
 
@@ -34,7 +26,7 @@ const Login: React.FC = () => {
     setErrors({ ...errors, [name]: null });
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({
       username: null,
@@ -45,12 +37,8 @@ const Login: React.FC = () => {
     const newErrors: Record<string, string | null> = {};
 
     // Validation
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = "Password is required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
     }
 
     if (Object.values(newErrors).some((error) => error)) {
@@ -60,40 +48,17 @@ const Login: React.FC = () => {
 
     try {
       setLoading(true);
-      const res = await loginUser({
-        username: formData.username,
-        password: formData.password,
-      });
-      localStorage.setItem("authToken", res.token);
-      await getUser();
+      await forgotPassword(formData.email);
       setFormData({
-        username: "",
-        password: "",
+        email: "",
       });
-      navigate("/profile");
+      addNotification({ message: "Reset link sent to your email" });
     } catch (error: any) {
       setErrors({ ...errors, general: error });
       addNotification({ message: error, error: true });
     } finally {
       setLoading(false);
     }
-  };
-
-  const login = useGoogleLogin({
-    onSuccess: (tokenResponse) => console.log(tokenResponse),
-  });
-
-  useEffect(() => {
-    const check = () => {
-      if (user) {
-        return <Navigate to="/" />;
-      }
-    };
-    check();
-  }, [user]);
-
-  const togglePassword = () => {
-    setShowPassword(!showPassword);
   };
 
   return (
@@ -138,34 +103,17 @@ const Login: React.FC = () => {
       {/* Right Section */}
       <div className="absolute bg-medium_blue bg-opacity-90 md:bg-none p-6 md:p-0 rounded-lg top-1/2 -translate-y-1/2 md:-translate-x-0 md:-translate-y-0 left-1/2 -translate-x-1/2 md:static md:w-1/2 flex items-center justify-center ">
         <div className="md:max-w-md w-full space-y-6">
-          <h2 className="text-3xl font-jua text-center ">
-            Login Into Your Account
-          </h2>
-          <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+          <h2 className="text-3xl font-jua text-center ">Forgot Password</h2>
+          <form className="mt-8 space-y-6" onSubmit={handleForgotPassword}>
             <div>
               <input
                 type="text"
-                name="username"
+                name="email"
                 className="w-full px-4 py-3  rounded-md bg-black  focus:outline-none "
                 placeholder="Username"
-                value={formData.username}
+                value={formData.email}
                 onChange={handleChange}
               />
-            </div>
-            <div className="flex items-center px-4 rounded-md bg-black">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                className="w-full py-3  bg-black  focus:outline-none "
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {showPassword ? (
-                <FiEyeOff onClick={togglePassword} />
-              ) : (
-                <FiEye onClick={togglePassword} />
-              )}
             </div>
 
             <div className="flex gap-4 items-center">
@@ -174,49 +122,14 @@ const Login: React.FC = () => {
                 className=" px-12 py-2 bg-black font-jua  rounded-full hover:bg-cream flex gap-2 hover:text-black"
               >
                 {loading && <Loading size="sm" />}
-                Login
+                Send Link
               </button>
-              <button
-                type="button"
-                className=" ml-4 px-12 py-2 bg-cream font-jua text-black rounded-full hover:bg-black whitespace-nowrap hover:text-white"
-                onClick={() => navigate("/auth/register")}
-              >
-                Sign Up
-              </button>
-            </div>
-
-            <div className=" my-4">
-              <Link
-                to="/auth/forgot-password"
-                className=" text-xs font-light underline"
-              >
-                Forgot Password?
-              </Link>
             </div>
           </form>
-          <div className="mt-6">
-            <button
-              onClick={() => login()}
-              className="flex items-center justify-center w-full py-2 bg-light_blue hover:bg-medium_blue  rounded-md"
-            >
-              <img src={ICONS.google} className="h-5 w-5 mr-2" alt="Google" />
-              Sign in with Google
-            </button>
-          </div>
-          <div className="mt-2">
-            <button className="flex items-center justify-center w-full py-2 bg-light_blue hover:bg-medium_blue rounded-md">
-              <img
-                src={ICONS.facebook_color}
-                className="h-5 w-5 mr-2"
-                alt="Facebook"
-              />
-              Sign in with Facebook
-            </button>
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default ForgotPassword;

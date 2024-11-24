@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import { useWallet } from "../../context/wallet";
@@ -6,12 +6,30 @@ import Loading from "../_components/loading";
 import { useUser } from "../../context/user";
 import { useTransaction } from "../../context/transaction";
 import moment from "moment";
+import { useToastNotification } from "../../context/toastNotificationContext";
+import { sendVerificationEmail } from "../../services/auth";
 
 const Wallet: React.FC = () => {
   const { balance, loading } = useWallet();
   const { userTransactions } = useTransaction();
+  const { addNotification } = useToastNotification();
   const { user } = useUser();
   const navigate = useNavigate();
+  const [verifying, setVerifying] = useState(false);
+
+  const handleVerify = async () => {
+    try {
+      setVerifying(true);
+      await sendVerificationEmail();
+      addNotification({
+        message: "A verification link has been sent to your email",
+      });
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   return (
     <div className="bg-dark-900 text-white min-h-screen p-6 pb-40 md:px-20">
@@ -30,8 +48,9 @@ const Wallet: React.FC = () => {
       {/* Current Balance */}
       <div className=" p-6 rounded-lg flex flex-col md:flex-row justify-center items-center gap-6">
         <h2 className="text-2xl flex items-center">
-          <span className="font-jua">
-            <span className="text-cream">$</span> Current Balance :
+          <span className="font-jua flex items-center gap-1">
+            <img src={ICONS.coin_cream} alt="coin" className="w-auto h-6" />
+            Current Balance :
           </span>
           <div className="bg-cream flex items-center text-black px-4 py-1 rounded-md ml-2">
             {loading ? <Loading size="md" color="black" /> : ` ${balance}`}
@@ -62,9 +81,17 @@ const Wallet: React.FC = () => {
         >
           Withdraw Funds
         </button>
-        <button className="bg-black py-2 px-4 font-jua rounded-full">
-          Verify
-        </button>
+        {verifying ? (
+          <Loading size="sm" />
+        ) : (
+          <button
+            className="bg-black py-2 px-4 font-jua rounded-full disabled:bg-gray-300"
+            disabled={user?.verified}
+            onClick={handleVerify}
+          >
+            Verify
+          </button>
+        )}
       </div>
 
       {/* Transaction History */}

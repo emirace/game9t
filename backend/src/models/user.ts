@@ -34,12 +34,6 @@ export interface IUser extends Document {
   paymentMethods: {
     preferredMethod: string;
     details: {
-      creditCard?: {
-        cardNumber: string;
-        expiryDate: string;
-        cardHolderName: string;
-        cvv: string;
-      };
       bankTransfer?: {
         accountNumber: string;
         bankName: string;
@@ -49,6 +43,7 @@ export interface IUser extends Document {
       crypto?: {
         walletAddress: string;
         currency: string;
+        network: string;
       };
     };
   };
@@ -128,12 +123,6 @@ const UserSchema: Schema<IUser> = new Schema(
         default: 'creditCard',
       },
       details: {
-        creditCard: {
-          cardNumber: { type: String },
-          expiryDate: { type: String },
-          cardHolderName: { type: String },
-          cvv: { type: String },
-        },
         bankTransfer: {
           accountNumber: { type: String },
           bankName: { type: String },
@@ -143,6 +132,7 @@ const UserSchema: Schema<IUser> = new Schema(
         crypto: {
           walletAddress: { type: String },
           currency: { type: String },
+          network: { type: String },
         },
       },
     },

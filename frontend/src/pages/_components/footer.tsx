@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import IMAGES from "../../assets/images/images";
 import ICONS from "../../assets/icons/icons";
 import { useBranding } from "../../context/branding";
@@ -30,20 +30,37 @@ const legalLinks = [
   "Responsible Gaming",
 ];
 
-const contactInfo = {
-  email: "support@gamingwebsite.com",
-  phone: "+123-456-7890",
-  address: "123 Gaming Street, City, Country",
-};
+// const contactInfo = {
+//   email: "support@gamingwebsite.com",
+//   phone: "+123-456-7890",
+//   address: "123 Gaming Street, City, Country",
+// };
 
 const Footer: React.FC = () => {
   const { branding } = useBranding();
-  const socialLinks = [
-    { icon: ICONS.x, href: branding?.socialMedia.twitter },
-    { icon: ICONS.instagram, href: branding?.socialMedia.instagram },
-    { icon: ICONS.facebook, href: branding?.socialMedia.facebook },
-    { icon: ICONS.bot, href: "#" },
-  ];
+  // const socialLinks = [
+  //   { icon: ICONS.x, href: branding?.socialMedia.twitter },
+  //   { icon: ICONS.instagram, href: branding?.socialMedia.instagram },
+  //   { icon: ICONS.facebook, href: branding?.socialMedia.facebook },
+  //   { icon: ICONS.bot, href: "#" },
+  // ];
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   return (
     <footer className="relative bg-dark pt-10 pb-16 md:pb-20">
       <img
@@ -105,7 +122,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Contact Us */}
-        <div className="col-span-1 ">
+        {/* <div className="col-span-1 ">
           <h4 className="font-jua text-lg mb-4">Contact Us</h4>
           <ul className="space-y-2">
             <li>
@@ -132,6 +149,42 @@ const Footer: React.FC = () => {
               />
             ))}
           </ul>
+        </div> */}
+        <div className="col-span-2">
+          <h4 className=" text-lg mb-4 font-jua">Contact Us</h4>
+          <div className="mt-4">
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Enter Name"
+              className="p-2 bg-black rounded-md focus:outline-none w-full "
+            />
+          </div>
+          <div className="my-2">
+            <input
+              type="text"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Email Address"
+              className="p-2 bg-black rounded-md focus:outline-none w-full "
+            />
+          </div>
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleInputChange}
+            placeholder="Enter Your Message Here"
+            className="p-2 mb-4 bg-black text-white flex-1 w-full rounded-md focus:outline-none h-20 "
+          />
+          <button
+            //   onClick={onButtonClick}
+            className="px-8 py-3 min-w-48 bg-black text-white font-jua rounded-full hover:bg-dark_blue transition-colors"
+          >
+            Send
+          </button>
         </div>
       </div>
 

@@ -4,15 +4,20 @@ import { useUser } from "../../../../context/user";
 import { PaystackResponse } from "../../../../types/payment";
 import { useWallet } from "../../../../context/wallet";
 import { useToastNotification } from "../../../../context/toastNotificationContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ICONS from "../../../../assets/icons/icons";
 
-const Paystack: React.FC<{ amount: string }> = ({ amount }) => {
+const POINT_TO_NGN_RATE = 5;
+
+const Paystack: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { user } = useUser();
   const { fund } = useWallet();
   const { addNotification } = useToastNotification();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [points, setPoints] = useState("");
+  const [amount, setAmount] = useState("");
 
   const config: HookConfig = {
     reference:
@@ -31,6 +36,7 @@ const Paystack: React.FC<{ amount: string }> = ({ amount }) => {
       setLoading(true);
       await fund(amount, reference.reference);
       addNotification({ message: "Wallet funded successfully" });
+      onClose();
       navigate("/wallet");
     } catch (error: any) {
       addNotification({ message: error, error: true });
@@ -39,30 +45,51 @@ const Paystack: React.FC<{ amount: string }> = ({ amount }) => {
     }
   };
 
-  const onClose = () => {
-    console.log("closed");
-    // onClose();
-  };
-
   const initializePayment = usePaystackPayment(config);
+
+  useEffect(() => {
+    if (points) {
+      setAmount(`${parseFloat(points) * POINT_TO_NGN_RATE}`);
+    } else {
+      setAmount("");
+    }
+  }, [points]);
+
   return (
-    <button
-      onClick={() => {
-        if (!amount || parseFloat(amount) < 200) {
-          addNotification({
-            message: "Please enter a valid amount",
-            error: true,
-          });
-          return;
-        }
-        setLoading(true);
-        initializePayment({ onSuccess, onClose });
-      }}
-      className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors disabled:bg-gray-500"
-      disabled={loading}
-    >
-      Pay Now
-    </button>
+    <div className="p-6">
+      <h1 className="text-2xl mb-4 font-jua">Fund Wallet</h1>
+      <div className="flex gap-2 items-center mb-6">
+        <input
+          placeholder="Enter amount"
+          className="bg-black p-2 w-1/2"
+          onChange={(e) => setPoints(e.target.value)}
+        />
+
+        {parseFloat(amount) >= 200 && (
+          <img src={ICONS.check_green} alt="" className="w-4 h-4" />
+        )}
+      </div>
+
+      {!!amount && <div>Amount charge: ₦{amount}</div>}
+
+      <button
+        onClick={() => {
+          if (!amount || parseFloat(amount) < 200) {
+            addNotification({
+              message: "Please enter a valid amount",
+              error: true,
+            });
+            return;
+          }
+          setLoading(true);
+          initializePayment({ onSuccess, onClose });
+        }}
+        className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors disabled:bg-gray-500"
+        disabled={loading}
+      >
+        Pay Now
+      </button>
+    </div>
   );
 };
 

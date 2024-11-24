@@ -1,25 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ICONS from "../../../assets/icons/icons";
-import IMAGES from "../../../assets/images/images";
 import Paystack from "./_component/paystack";
 import Model from "../../_components/model";
 import Nowpayment from "./_component/nowpayment";
 
-const POINT_TO_NGN_RATE = 5;
-
 const Deposit: React.FC = () => {
-  const [amount, setAmount] = useState("");
   const [showNowpayment, setShowNowpayment] = useState(false);
-  const [points, setPoints] = useState("");
-
-  useEffect(() => {
-    if (points) {
-      setAmount(`${parseFloat(points) * POINT_TO_NGN_RATE}`);
-    } else {
-      setAmount("");
-    }
-  }, [points]);
+  const [showPaystack, setShowPaystack] = useState(false);
 
   return (
     <div className="bg-dark-900 text-white min-h-screen p-6 pb-40 md:px-20">
@@ -39,42 +27,26 @@ const Deposit: React.FC = () => {
       </div>
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-[2]">
-          <div className="flex gap-2 items-center">
-            <input
-              placeholder="Enter amount"
-              className="bg-black p-2 w-1/2"
-              onChange={(e) => setPoints(e.target.value)}
-            />
-
-            {parseFloat(amount) >= 200 && (
-              <img src={ICONS.check_green} alt="" className="w-4 h-4" />
-            )}
-          </div>
-
-          {!!amount && <div>Amount charge: ₦{amount}</div>}
-
           <div className="font-jua my-4">Pay With</div>
           <div className="bg-light_blue p-4 px-8 rounded-lg mb-6">
-            <img
-              src={IMAGES.paystack}
-              alt="paystack"
-              className="w-auto h-12 mb-4"
-            />
+            <div className="font-jua my-4 text-xl">Naira</div>
+
             <div className="text-sm max-w-xl mb-4">
-              Easily deposit and withdraw funds using Paystack's secure payment
-              gateway. Accepts debit/credit cards, bank transfers, and more.
+              Easily deposit and withdraw funds using secure payment gateway.
+              Accepts debit/credit cards, bank transfers, and more.
             </div>
-            <Paystack amount={amount} />
+
+            <button
+              onClick={() => setShowPaystack(true)}
+              className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors"
+            >
+              Pay Now
+            </button>
           </div>
           <div className="bg-light_blue p-4 px-8 rounded-lg">
-            <img
-              src={IMAGES.nowpayment}
-              alt="paystack"
-              className="w-auto h-12 mb-4"
-            />
+            <div className="font-jua text-xl my-4">Crypto</div>
             <div className="text-sm max-w-xl mb-4">
-              Make quick and secure deposits and withdrawals using NOWPayments,
-              supporting a wide range of cryptocurrencies
+              Make quick and secure deposits and withdrawals using stable coin
             </div>
             <button
               onClick={() => setShowNowpayment(true)}
@@ -87,11 +59,15 @@ const Deposit: React.FC = () => {
         <div className="flex-1 text-sm">
           <div className="mb-8">
             <div className="font-jua mb-2 text-xl">Deposit Limit</div>
-            <div className="">
-              <b>Minimun Deposit:</b> ₦200
+            <div className="flex gap-2 items-center">
+              <b>Minimun Deposit:</b>
+              <img src={ICONS.coin} alt="coin" className="w-auto h-3" />
+              200
             </div>
-            <div className="">
-              <b>Maximun Deposit:</b> ₦100,000 per transaction
+            <div className="flex gap-2 items-center">
+              <b>Maximun Deposit:</b>
+              <img src={ICONS.coin} alt="coin" className="w-auto h-3" />
+              100,000 per transaction
             </div>
           </div>
 
@@ -124,6 +100,9 @@ const Deposit: React.FC = () => {
           </div>
         </div>
       </div>
+      <Model isOpen={showPaystack} onClose={() => setShowPaystack(false)}>
+        <Paystack onClose={() => setShowPaystack(false)} />
+      </Model>
       <Model isOpen={showNowpayment} onClose={() => setShowNowpayment(false)}>
         <Nowpayment />
       </Model>

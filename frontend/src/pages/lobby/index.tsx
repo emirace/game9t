@@ -6,6 +6,8 @@ import SaerchPlayer from "./_components/saerchPlayer";
 import { useUser } from "../../context/user";
 import { useState } from "react";
 import SideModel from "../_components/sideModel";
+import IMAGES from "../../assets/images/images";
+import { imageUrl } from "../../services/api";
 
 function Lobby() {
   const { user, logout } = useUser();
@@ -28,7 +30,10 @@ function Lobby() {
               <div className=" flex items-center justify-between">
                 <div className="flex items-center space-x-4 mb-4">
                   <img
-                    src={user?.image}
+                    src={
+                      imageUrl + user?.personalInfo.profilePictureUrl ||
+                      IMAGES.user2
+                    }
                     alt="Profile"
                     className="w-12 h-12 rounded-full bg-white"
                   />

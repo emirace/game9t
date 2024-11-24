@@ -6,6 +6,7 @@ import { onlineUsers } from '../socket';
 import Wallet from '../models/wallet';
 import Notification from '../models/notification';
 import { createNotification } from '../utils/notification';
+import Message from '../models/message';
 
 export const createChallenge = async ({
   gameId,
@@ -276,5 +277,28 @@ export const markNotificationAsRead = async ({
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const sendMessage = async ({
+  content,
+  socket,
+}: {
+  content: string;
+  socket: Socket;
+}) => {
+  try {
+    const userId = (socket.request as any).user._id;
+
+    const newMessage = new Message({
+      user: userId,
+      content,
+    });
+    await newMessage.save();
+    const populatedMessage = await newMessage.populate('user', 'username');
+
+    socket.emit('message:update', { newMessage: populatedMessage });
+  } catch (error) {
+    console.error('Error saving message:', error);
   }
 };

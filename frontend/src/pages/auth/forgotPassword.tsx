@@ -110,7 +110,7 @@ const ForgotPassword: React.FC = () => {
                 type="text"
                 name="email"
                 className="w-full px-4 py-3  rounded-md bg-black  focus:outline-none "
-                placeholder="Username"
+                placeholder="username/email"
                 value={formData.email}
                 onChange={handleChange}
               />

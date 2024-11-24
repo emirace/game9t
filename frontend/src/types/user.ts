@@ -8,7 +8,6 @@ export interface IUser {
   verified: boolean;
   email: string;
   bio: string;
-  image: string;
   personalInfo: {
     firstName: string;
     lastName: string;

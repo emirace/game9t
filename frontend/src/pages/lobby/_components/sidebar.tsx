@@ -9,17 +9,22 @@ import { useState } from "react";
 import Loading from "../../_components/loading";
 import SaerchPlayer from "./saerchPlayer";
 import Model from "../../_components/model";
+import { useMessage } from "../../../context/message";
+import { useSocket } from "../../../context/socket";
 
 // const amounts = ["200", "500", "1000", "2000", "5000", "10000"];
 
 function Sidebar() {
   const { user } = useUser();
   const { balance } = useWallet();
+  const { messages, sendMessage } = useMessage();
+  const { isOnline } = useSocket();
   const { addNotification } = useToastNotification();
   const { gameSessions, acceptChallenge } = useGameSession();
   const [loading, setLoading] = useState(false);
   const [showSearchPlayer, setShowSearchPlayer] = useState(false);
   const navigate = useNavigate();
+  const [message, setMessage] = useState("");
 
   const handleAcceptChallenge = async (session: string) => {
     try {
@@ -33,6 +38,11 @@ function Sidebar() {
     }
   };
 
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendMessage(message);
+    setMessage("");
+  };
   return (
     <aside className="bg-medium_blue w-full rounded-md ">
       {/* Profile Section */}
@@ -43,7 +53,7 @@ function Sidebar() {
       <div className="bg-light_blue p-4  ">
         <div className="flex items-center space-x-4 mb-4">
           <img
-            src={imageUrl + user?.image}
+            src={imageUrl + user?.personalInfo.profilePictureUrl}
             alt="Profile"
             className="w-12 h-12 rounded-full"
           />
@@ -162,21 +172,45 @@ function Sidebar() {
       </div>
       <div className="p-4 bg-light_blue">
         <div className="bg-dark p-4 rounded-md">
-          {[].map(() => (
-            <div className="flex items-center gap-4 mb-4">
-              <div>
-                <p className="font-jua">MrYogesh</p>
-                <p className="text-xs font-light">
-                  <span className="text-green">●</span> online
-                </p>
-              </div>
-              <div>: Ready to play ?</div>
-            </div>
-          ))}
-          <input
-            placeholder="Type message here..."
-            className="bg-black py-1 p-4 rounded-full w-full mt-12"
-          />
+          <div className="h-40 overflow-y-auto flex flex-col-reverse">
+            {messages
+              .slice()
+              .reverse()
+              .map((msg) => (
+                <div className="flex items-center gap-4 mb-4">
+                  <div>
+                    <p className="font-jua">{msg.user.username}</p>
+                    <p className="text-xs font-light">
+                      {isOnline(msg.user._id) || msg.user._id === user?._id ? (
+                        <>
+                          <span className="text-green">●</span> online
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-yellow-400">●</span> offline
+                        </>
+                      )}
+                    </p>
+                  </div>
+                  <div>: {msg.content}</div>
+                </div>
+              ))}
+          </div>
+          <form className="relative mt-4" onSubmit={handleSendMessage}>
+            <input
+              placeholder="Type message here..."
+              className="bg-black py-1 p-4 rounded-full w-full "
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <button
+              className="absolute top-1/2 -translate-y-1/2 right-4 "
+              disabled={!message}
+              type="submit"
+            >
+              Send
+            </button>
+          </form>
         </div>
       </div>
 

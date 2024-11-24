@@ -11,6 +11,7 @@ function Layout() {
     >
       <Header />
       <Outlet />
+      <div className="h-40" />
       {/* <Newsletter /> */}
       <Footer />
     </div>

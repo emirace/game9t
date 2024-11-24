@@ -3,6 +3,7 @@ import IMAGES from "../../assets/images/images";
 import ICONS from "../../assets/icons/icons";
 import { useBranding } from "../../context/branding";
 import { imageUrl } from "../../services/api";
+import { Link } from "react-router-dom";
 
 // Data for the footer sections
 const features = [
@@ -13,13 +14,12 @@ const features = [
 ];
 
 const quickLinks = [
-  "Home",
-  "Games",
-  "Leaderboard",
-  "Wallet",
-  "Challenges",
-  "Support",
-  "FAQ",
+  { name: "Home", path: "/" },
+  { name: "Games", path: "/lobby" },
+  { name: "Leaderboard", path: "/leaderboard" },
+  { name: "Wallet", path: "/wallet" },
+  { name: "Support", path: "/support" },
+  { name: "FAQ", path: "/support/faq" },
 ];
 
 const legalLinks = [
@@ -63,16 +63,18 @@ const Footer: React.FC = () => {
   };
   return (
     <footer className="relative bg-dark pt-10 pb-16 md:pb-20">
-      <img
-        src={IMAGES.diceblur}
-        className="absolute right-0 w-1/2 opacity-10 bottom-0 z-0 "
-        alt="stat"
-      />
-      <img
-        src={IMAGES.chess_back}
-        className="absolute left-0 w-1/2 opacity-10 bottom-0 z-0 "
-        alt="stat"
-      />
+      <div>
+        <img
+          src={IMAGES.diceblur}
+          className="absolute right-0 w-1/2 opacity-10 bottom-0 "
+          alt="stat"
+        />
+        <img
+          src={IMAGES.chess_back}
+          className="absolute left-0 w-1/2 opacity-10 bottom-0 "
+          alt="stat"
+        />
+      </div>
       <div className="absolute left-1/2 -translate-x-1/2 -top-1/4 translate-y-1/5 md:translate-y-3/4 w-full  grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-8 px-4 md:px-20">
         {features.map((feature, index) => (
           <div key={index} className="bg-light_blue rounded-md p-4">
@@ -102,11 +104,13 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Quick Links */}
-        <div className="col-span-1 hidden md:block">
+        <div className="col-span-1 hidden md:block z-50">
           <h4 className=" text-lg mb-4 font-jua">Quick Links</h4>
           <ul className="space-y-2">
             {quickLinks.map((link, index) => (
-              <li key={index}>{link}</li>
+              <li key={index}>
+                <Link to={link.path}>{link.name}</Link>
+              </li>
             ))}
           </ul>
         </div>
@@ -150,7 +154,7 @@ const Footer: React.FC = () => {
             ))}
           </ul>
         </div> */}
-        <div className="col-span-2">
+        <div className="col-span-2 z-50">
           <h4 className=" text-lg mb-4 font-jua">Contact Us</h4>
           <div className="mt-4">
             <input

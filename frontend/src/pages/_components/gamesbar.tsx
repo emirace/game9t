@@ -22,7 +22,7 @@ function Gamesbar({ onClick }: { onClick?: () => void }) {
   return (
     <div className="overflow-y-auto h-screen ">
       {/* Quick Links */}
-      <div className="md:hidden mb-6">
+      <div className="md:hidden mb-6 z-30">
         <h4 className=" text-lg font-jua mb-2">Quick Links</h4>
         <ul className="space-y-2">
           {quickLinks.map((link, index) => (

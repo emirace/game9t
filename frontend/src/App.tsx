@@ -10,6 +10,7 @@ import { SocketProvider } from "./context/socket";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { BrandingProvider } from "./context/branding";
 import { NotificationProvider } from "./context/notification";
+import { MessageProvider } from "./context/message";
 
 function App() {
   return (
@@ -21,10 +22,12 @@ function App() {
               <TransactionProvider>
                 <WalletProvider>
                   <NotificationProvider>
-                    <GoogleOAuthProvider clientId="466890716370-e5srktqi1k90ejf3vbdmkrg38fbdb8a9.apps.googleusercontent.com">
-                      <ToastNotification />
-                      <RouterProvider router={router} />
-                    </GoogleOAuthProvider>
+                    <MessageProvider>
+                      <GoogleOAuthProvider clientId="466890716370-e5srktqi1k90ejf3vbdmkrg38fbdb8a9.apps.googleusercontent.com">
+                        <ToastNotification />
+                        <RouterProvider router={router} />
+                      </GoogleOAuthProvider>
+                    </MessageProvider>
                   </NotificationProvider>
                 </WalletProvider>
               </TransactionProvider>

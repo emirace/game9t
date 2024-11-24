@@ -22,7 +22,7 @@ const Sidebar: React.FC<Props> = ({ onClose }) => {
       <div className="flex items-center gap-4 bg-black px-6 p-4 absolute top-0 left-0 right-0 ">
         <div>
           <img
-            src={imageUrl + user?.image}
+            src={imageUrl + user?.personalInfo.profilePictureUrl}
             className="h-10 w-10 rounded-full bg-white"
             alt="user"
           />

@@ -7,6 +7,7 @@ import {
   cancelChallenge,
   createChallenge,
   markNotificationAsRead,
+  sendMessage,
 } from '../controllers/socket';
 import { games } from './games';
 
@@ -77,6 +78,10 @@ export const setupSockets = (io: SocketIOServer) => {
 
     socket.on('markNotificationAsRead', ({ notificationId }) => {
       markNotificationAsRead({ notificationId, socket });
+    });
+
+    socket.on('message:send', ({ content }) => {
+      sendMessage({ content, socket });
     });
 
     // HTML5 SOCKETS -----------------

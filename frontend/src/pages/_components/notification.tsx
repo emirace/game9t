@@ -4,7 +4,8 @@ import { INotification } from "../../types/notification";
 import Loading from "./loading";
 
 function Notification() {
-  const { notifications, loading, markAsRead } = useNotifications();
+  const { notifications, loading, markAsRead, deleteNotifications } =
+    useNotifications();
   const navigate = useNavigate();
 
   const handleOnclick = (not: INotification) => {
@@ -41,7 +42,9 @@ function Notification() {
             ))
           )}
         </div>
-        <div className="mt-4">Clear All</div>
+        <div onClick={deleteNotifications} className="mt-4 cursor-pointer">
+          Clear All
+        </div>
       </div>
     </div>
   );

@@ -49,7 +49,7 @@ function Header() {
             className="w-4 h-4 cursor-pointer"
           />
           <img
-            src={imageUrl + user?.image}
+            src={imageUrl + user?.personalInfo.profilePictureUrl}
             alt="faq"
             onClick={() => setShowSidebar(true)}
             className="w-8 h-8 cursor-pointer"

@@ -11,6 +11,7 @@ import withdrawalRequest from './withdrawalRequest';
 import admin from './admin';
 import branding from './branding';
 import notification from './notification';
+import message from './message';
 
 const router = express.Router();
 
@@ -26,5 +27,6 @@ router.use('/withdrawal-requests', withdrawalRequest);
 router.use('/admins', admin);
 router.use('/brandings', branding);
 router.use('/notifications', notification);
+router.use('/messages', message);
 
 export default router;

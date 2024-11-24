@@ -8,6 +8,8 @@ import { useState } from "react";
 import { useToastNotification } from "../../context/toastNotificationContext";
 import Loading from "../_components/loading";
 import IMAGES from "../../assets/images/images";
+import { compressImageUpload } from "../../utils/image";
+import { imageUrl } from "../../services/api";
 
 function Profile() {
   const { user, updateUser, logout } = useUser();
@@ -17,6 +19,7 @@ function Profile() {
   const [email, setEmail] = useState(user?.email);
   const [editEmail, setEditEmail] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const handleSubmit = async () => {
     try {
@@ -45,6 +48,23 @@ function Profile() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const imageurl = await compressImageUpload(file, 2048);
+      await updateUser({ personalInfo: { profilePictureUrl: imageurl } });
+
+      addNotification({ message: "Image uploaded successfully" });
+    } catch (error) {
+      addNotification({ message: "Image upload failed", error: true });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="px-4 md:px-20 py-10">
       <nav className="mb-6 flex items-center gap-2">
@@ -62,13 +82,28 @@ function Profile() {
             <div className="flex flex-col md:flex-row items-center  space-x-4 mb-4">
               <div className="flex flex-row md:flex-col items-center gap-2">
                 <img
-                  src={user?.image || IMAGES.user2}
+                  src={
+                    imageUrl + user?.personalInfo.profilePictureUrl ||
+                    IMAGES.user2
+                  }
                   alt="Profile"
                   className="w-12 h-12 rounded-full bg-white"
                 />
-                <button className=" bg-white rounded-full text-xs py-1 px-2 text-black">
+                <label
+                  htmlFor="image"
+                  className=" bg-white rounded-full text-xs py-1 px-2 text-black"
+                >
+                  <input
+                    type="file"
+                    id="image"
+                    onChange={(e) => handleImageUpload(e)}
+                    className="sr-only"
+                    accept="image/*"
+                    disabled={uploading}
+                  />
                   Upload/Change Photo
-                </button>
+                </label>
+                {uploading && <Loading size="sm" />}
               </div>
               <table>
                 <tbody>

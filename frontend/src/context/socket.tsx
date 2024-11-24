@@ -11,6 +11,7 @@ interface SocketContextType {
   socket: Socket | null;
   onlineUsers: IOnlineUser[];
   createChallenge: (data: createGameData) => Promise<IGameSession>;
+  isOnline: (id: string) => boolean;
 }
 
 // Create the context with a default value of null
@@ -25,6 +26,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const { user } = useUser();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [onlineUsers, setOnlineUsers] = useState<IOnlineUser[]>([]);
+
+  const isOnline = (userId: string) => {
+    return onlineUsers.some((user) => user?.userId === userId);
+  };
 
   const createChallenge = async ({
     gameId,
@@ -107,7 +112,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   }, [user]);
 
   return (
-    <SocketContext.Provider value={{ socket, onlineUsers, createChallenge }}>
+    <SocketContext.Provider
+      value={{ socket, onlineUsers, createChallenge, isOnline }}
+    >
       {children}
     </SocketContext.Provider>
   );

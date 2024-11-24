@@ -41,8 +41,8 @@ const Withdraw: React.FC = () => {
       addNotification({ message: "Select withdrawal type", error: true });
       return;
     }
-    if (!formData.amount) {
-      addNotification({ message: "Enter an amount", error: true });
+    if (!formData.amount || parseFloat(formData.amount) < 1000) {
+      addNotification({ message: "Enter a valid amount", error: true });
       return;
     }
     try {
@@ -129,7 +129,7 @@ const Withdraw: React.FC = () => {
                     name="accountName"
                     value={formData.accountName}
                     onChange={handleInputChange}
-                    placeholder="Enter Amount (Min 1000 Points)"
+                    placeholder="Enter Account Name"
                     className="p-3 bg-black rounded-md focus:outline-none w-full "
                   />
 
@@ -171,7 +171,7 @@ const Withdraw: React.FC = () => {
                   </select>
                 </div>
 
-                <div className="my-4">
+                <div className="my-4 relative">
                   <input
                     type="text"
                     name="address"
@@ -229,7 +229,7 @@ const Withdraw: React.FC = () => {
           <div className="mb-8">
             <div className="font-jua mb-2 text-xl">Withdraw Limit</div>
             <div className="">
-              <b>Minimun Withdraw:</b> 200
+              <b>Minimun Withdraw:</b> 1000
             </div>
             <div className="">
               <b>Maximun Withdraw:</b> 100,000 per transaction

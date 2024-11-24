@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { INotification } from "../types/notification";
-import { fetchUserNotifications } from "../services/notification";
+import {
+  deleteAllUserNotifications,
+  fetchUserNotifications,
+} from "../services/notification";
 import { useUser } from "./user";
 import { useSocket } from "./socket";
 
@@ -11,6 +14,7 @@ interface NotificationContextValue {
   error: string | null;
   refetchNotifications: () => Promise<void>;
   markAsRead: (id: string) => void;
+  deleteNotifications: () => void;
 }
 
 // Create the context
@@ -43,6 +47,15 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
       setError(err || "Failed to fetch notifications");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteNotifications = async () => {
+    try {
+      await deleteAllUserNotifications();
+      setNotifications([]);
+    } catch (err: any) {
+      setError(err || "Failed to fetch notifications");
     }
   };
 
@@ -82,6 +95,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         error,
         markAsRead,
+        deleteNotifications,
         refetchNotifications: fetchNotifications,
       }}
     >

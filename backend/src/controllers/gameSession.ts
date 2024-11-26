@@ -16,7 +16,7 @@ export const getAllGameSessions = async (
       $expr: { $lt: [{ $size: '$players' }, 2] },
     })
       .populate('players', 'personalInfo.profilePictureUrl')
-      .populate('initiatedGame', 'name');
+      .populate('initiatedGame', 'name image');
 
     res.status(200).json(gameSessions);
   } catch (error) {

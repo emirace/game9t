@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
-import { fetchAllWallet } from "../../../../services/wallet";
-import { IWallet } from "../../../../types/wallet";
+import { adjustWallet, fetchAllWallet } from "../../../../../services/wallet";
+import { IWallet } from "../../../../../types/wallet";
+import Model from "../../../../_components/model";
+import Transactions from "./_component/transactions";
+import AdjustBalance from "./_component/adjustBalance";
+import { useToastNotification } from "../../../../../context/toastNotificationContext";
 
 function User() {
   const [wallets, setWallets] = useState<IWallet[]>([]);
+  const { addNotification } = useToastNotification();
+  const [showTransactions, setShowTransactions] = useState(false);
+  const [id, setId] = useState("");
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -23,6 +30,45 @@ function User() {
 
     loadWallets();
   }, [page]);
+
+  const handleClose = () => {
+    setId("");
+    setShowTransactions(false);
+  };
+
+  const handleOpen = (id: string) => {
+    setId(id);
+    setShowTransactions(true);
+  };
+
+  const handleSubmit = async ({
+    id,
+    balance,
+    isActive,
+  }: {
+    id: string;
+    balance?: string;
+    isActive?: boolean;
+  }) => {
+    try {
+      const res = await adjustWallet({
+        userId: id,
+        balanceAdjustment: balance ? Number(balance) : undefined,
+        isActive,
+      });
+      setWallets((prev) =>
+        prev.map((wallet) =>
+          wallet.user._id === id
+            ? { ...wallet, balance: res.balance, isActive: res.isActive }
+            : wallet
+        )
+      );
+
+      addNotification({ message: "Wallet updated successfully!" });
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+    }
+  };
 
   return (
     <div>
@@ -54,14 +100,26 @@ function User() {
                 </td>
                 <td className="p-4 font-bold">
                   <div className="flex items-center justify-center gap-3">
-                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                    <button
+                      onClick={() => handleOpen(wallet.user._id)}
+                      className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap"
+                    >
                       View Transactions
                     </button>
-                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
-                      Adjust Balance
-                    </button>
-                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
-                      Block User
+                    <AdjustBalance
+                      id={wallet.user._id}
+                      handleSubmit={handleSubmit}
+                    />
+                    <button
+                      onClick={() =>
+                        handleSubmit({
+                          id: wallet.user._id,
+                          isActive: !wallet.isActive,
+                        })
+                      }
+                      className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap"
+                    >
+                      {wallet.isActive ? "Block User" : "Activate"}
                     </button>
                   </div>
                 </td>
@@ -91,6 +149,9 @@ function User() {
           </button>
         </div>
       </div>
+      <Model isOpen={showTransactions} onClose={handleClose}>
+        <Transactions id={id} />
+      </Model>
     </div>
   );
 }

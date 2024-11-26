@@ -70,7 +70,11 @@ const Paystack: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         )}
       </div>
 
-      {!!amount && <div>Amount charge: ₦{amount}</div>}
+      {!!amount && (
+        <div>
+          {points} credit = ₦{amount}
+        </div>
+      )}
 
       <button
         onClick={() => {

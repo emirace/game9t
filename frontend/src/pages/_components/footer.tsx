@@ -23,11 +23,10 @@ const quickLinks = [
 ];
 
 const legalLinks = [
-  "Terms",
-  "Disclaimer",
-  "Privacy Policy",
-  "Terms & Conditions",
-  "Responsible Gaming",
+  { path: "terms", name: "Terms & Conditions" },
+  { path: "/disclaimer", name: "Disclaimer" },
+  { path: "privacy", name: "Privacy Policy" },
+  { path: "responsible", name: "Responsible Gaming" },
 ];
 
 // const contactInfo = {
@@ -116,11 +115,13 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Legal */}
-        <div className="col-span-1 hidden md:block">
+        <div className="col-span-1 hidden md:block z-50">
           <h4 className="font-jua text-lg mb-4">Legal</h4>
           <ul className="space-y-2">
             {legalLinks.map((link, index) => (
-              <li key={index}>{link}</li>
+              <li key={index}>
+                <Link to={link.path}>{link.name}</Link>
+              </li>
             ))}
           </ul>
         </div>

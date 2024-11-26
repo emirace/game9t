@@ -78,20 +78,22 @@ function Withdrawal() {
                 <td className="p-4">{moment(request.createdAt).calendar()}</td>
                 <td className="p-4">{request.status}</td>
                 <td className="p-4 font-bold">
-                  <div className="flex items-center justify-center gap-3">
-                    <button
-                      onClick={() => handleApprove(request._id)}
-                      className="bg-cream text-black text-xs p-1 px-4 rounded-full"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => handleDecline(request._id)}
-                      className="bg-cream text-black text-xs p-1 px-4 rounded-full"
-                    >
-                      Reject
-                    </button>
-                  </div>
+                  {request.status === "pending" && (
+                    <div className="flex items-center justify-center gap-3">
+                      <button
+                        onClick={() => handleApprove(request._id)}
+                        className="bg-cream text-black text-xs p-1 px-4 rounded-full"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleDecline(request._id)}
+                        className="bg-cream text-black text-xs p-1 px-4 rounded-full"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}

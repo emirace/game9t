@@ -4,8 +4,7 @@ import { useUser } from "../../context/user";
 import { imageUrl } from "../../services/api";
 
 const sidelists = [
-  { icon: ICONS.dashboard, label: "Dashboard", path: "/" },
-  { icon: ICONS.box, label: "Profile", path: "/profile" },
+  { icon: ICONS.box, label: "Dashboard", path: "/profile" },
   { icon: ICONS.wallet, label: "Wallet", path: "/wallet" },
   { icon: ICONS.flag, label: "Challenge", path: "/" },
   { icon: ICONS.settings, label: "Settings", path: "/settings" },
@@ -22,7 +21,7 @@ const Sidebar: React.FC<Props> = ({ onClose }) => {
       <div className="flex items-center gap-4 bg-black px-6 p-4 absolute top-0 left-0 right-0 ">
         <div>
           <img
-            src={imageUrl + user?.personalInfo.profilePictureUrl}
+            src={imageUrl + user?.personalInfo?.profilePictureUrl}
             className="h-10 w-10 rounded-full bg-white"
             alt="user"
           />

@@ -41,6 +41,10 @@ import Faq from "./pages/support/faq";
 import Chat from "./pages/support/chat";
 import Ticket from "./pages/support/ticket";
 import ForgotPassword from "./pages/auth/forgotPassword";
+import Terms from "./pages/terms";
+import PrivacyPolicy from "./pages/privacy";
+import Disclaimer from "./pages/disclaimer";
+import Responsible from "./pages/responsible";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +62,11 @@ export const router = createBrowserRouter([
           { path: "/support/faq", element: <Faq /> },
           { path: "/support/chat", element: <Chat /> },
           { path: "/support/ticket", element: <Ticket /> },
+          { path: "/terms", element: <Terms /> },
+          { path: "/privacy", element: <PrivacyPolicy /> },
+          { path: "/responsible", element: <Responsible /> },
+          { path: "/disclaimer", element: <Disclaimer /> },
+
           {
             path: "/",
             element: <Protected />,

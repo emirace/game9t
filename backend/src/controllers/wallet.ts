@@ -6,6 +6,7 @@ import paystack from 'paystack';
 import { ipnSecret, secretKey } from '../config/env';
 import crypto from 'crypto';
 import Transaction from '../models/transaction';
+import WithdrawalRequest from '../models/withdrawalRequest';
 
 const paystackInstance = paystack(secretKey as string);
 
@@ -201,6 +202,148 @@ export const ipn = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export async function getWalletStats(req: Request, res: Response) {
+  try {
+    // Total user wallets
+    const totalWallets = await Wallet.countDocuments();
+
+    // Total deposit amount
+    const totalDeposits = await Transaction.aggregate([
+      { $match: { type: 'Deposit', status: 'Completed' } },
+      { $group: { _id: null, total: { $sum: '$amount' } } },
+    ]);
+    const depositSum = totalDeposits.length > 0 ? totalDeposits[0].total : 0;
+
+    // Total withdrawal amount
+    const totalWithdrawals = await Transaction.aggregate([
+      { $match: { type: 'Withdrawal', status: 'Completed' } },
+      { $group: { _id: null, total: { $sum: '$amount' } } },
+    ]);
+    const withdrawalSum =
+      totalWithdrawals.length > 0 ? totalWithdrawals[0].total : 0;
+
+    // Number of pending withdrawals
+    const pendingWithdrawals = await WithdrawalRequest.countDocuments({
+      status: 'pending',
+    });
+
+    // Response
+    res.status(200).json({
+      totalWallets,
+      totalDepositAmount: depositSum,
+      totalWithdrawalAmount: withdrawalSum,
+      pendingWithdrawalCount: pendingWithdrawals,
+    });
+  } catch (error: any) {
+    console.error('Error fetching wallet stats:', error);
+    res.status(500).json({
+      message: 'Error fetching wallet stats',
+      error: error.message,
+    });
+  }
+}
+
+export async function getWalletTransactions(req: Request, res: Response) {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      res.status(400).json({
+        status: false,
+        message: 'User id is required',
+      });
+      return;
+    }
+
+    const { type, status, page = 1, limit = 10 } = req.query;
+
+    // Query filters
+    const filters: Record<string, any> = { user: userId };
+    if (type) filters.type = type;
+    if (status) filters.status = status;
+
+    // Pagination setup
+    const perPage = parseInt(limit as string) || 10;
+    const skip = (parseInt(page as string) - 1) * perPage;
+
+    // Fetch transactions with filters and pagination
+    const transactions = await Transaction.find(filters)
+      .sort({ createdAt: -1 }) // Most recent transactions first
+      .skip(skip)
+      .limit(perPage)
+      .exec();
+
+    // Total count for pagination
+    const totalCount = await Transaction.countDocuments(filters);
+
+    res.status(200).json({
+      transactions,
+      total: totalCount,
+      currentPage: parseInt(page as string),
+      totalPages: Math.ceil(totalCount / +limit),
+    });
+  } catch (error) {
+    console.error('Error fetching wallet transactions:', error);
+    res.status(500).json({
+      message: 'Error fetching wallet transactions',
+      error: error,
+    });
+  }
+}
+
+// Adjust wallet balance and activate/deactivate wallet
+export async function adjustWallet(req: Request, res: Response) {
+  try {
+    const { userId, balanceAdjustment, isActive } = req.body;
+
+    if (!userId) {
+      res.status(400).json({
+        message: 'User ID is required',
+      });
+      return;
+    }
+
+    // Find the user's wallet
+    let wallet = await Wallet.findOne({ user: userId });
+
+    if (!wallet) {
+      res.status(404).json({
+        message: 'Wallet not found for the user',
+      });
+      return;
+    }
+
+    // Adjust the balance if provided
+    if (typeof balanceAdjustment === 'number') {
+      wallet.balance = balanceAdjustment;
+      if (wallet.balance < 0) {
+        res.status(400).json({
+          message: 'Wallet balance cannot be negative',
+        });
+        return;
+      }
+    }
+
+    // Update the activation status if provided
+    if (typeof isActive === 'boolean') {
+      wallet.isActive = isActive;
+    }
+
+    // Save the wallet changes
+    await wallet.save();
+
+    res.status(200).json({
+      balance: wallet.balance,
+      isActive: wallet.isActive,
+    });
+  } catch (error) {
+    console.error('Error adjusting wallet:', error);
+    res.status(500).json({
+      message: 'Error adjusting wallet',
+      error: error,
+    });
+  }
+}
 
 const verifyIpnSignature = (signature: string, body: any): boolean => {
   const bodyString = JSON.stringify(body);

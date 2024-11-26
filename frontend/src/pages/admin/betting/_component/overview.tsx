@@ -1,11 +1,28 @@
-const stats = [
-  { name: "Total Bets Placed", value: "8,500" },
-  { name: "Total Amount Bet:", value: " 2,400,000" },
-  { name: "Total Bets Settled:", value: "6,400" },
-  { name: "Pending Bets:", value: "2,300" },
-];
+import { useEffect, useState } from "react";
+import { IBetStat, fetchBetStats } from "../../../../services/bet";
 
 function Overview() {
+  const [stat, setStat] = useState<IBetStat | null>(null);
+
+  const stats = [
+    { name: "Total Bets Placed", value: stat?.totalBetsPlaced || 0 },
+    { name: "Total Amount Bet:", value: stat?.totalAmountBet || 0 },
+    { name: "Total Bets Settled:", value: stat?.totalSettledBets || 0 },
+    { name: "Pending Bets:", value: stat?.totalPendingBets || 0 },
+  ];
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const res = await fetchBetStats();
+        setStat(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadStats();
+  }, []);
+
   return (
     <div className="mb-6">
       <div className="font-jua text-lg mb-2">Betting Overview</div>

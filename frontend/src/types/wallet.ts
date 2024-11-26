@@ -7,3 +7,10 @@ export interface IWallet {
   balance: number;
   isActive: boolean;
 }
+
+export interface IWalletStat {
+  totalWallets: number;
+  totalDepositAmount: number;
+  totalWithdrawalAmount: number;
+  pendingWithdrawalCount: number;
+}

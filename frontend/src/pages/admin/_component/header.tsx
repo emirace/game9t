@@ -23,7 +23,7 @@ function Header() {
       <div className="flex items-center justify-between bg-light_blue p-3 md:px-20">
         <div className="flex items-center gap-2">
           <IoMdMenu
-            className="text-cream text-2xl"
+            className="text-cream text-2xl md:hidden"
             onClick={() => setShowAdminSide(true)}
           />
           <div
@@ -49,7 +49,7 @@ function Header() {
             className="w-4 h-4 cursor-pointer"
           />
           <img
-            src={imageUrl + user?.personalInfo.profilePictureUrl}
+            src={imageUrl + user?.personalInfo?.profilePictureUrl}
             alt="faq"
             onClick={() => setShowSidebar(true)}
             className="w-8 h-8 cursor-pointer"

@@ -76,8 +76,7 @@ const ForgotPassword: React.FC = () => {
         >
           <img src={IMAGES.logo} alt="logo" className="w-8 h-8" />
           <div>
-            <div className="font-jua  text-xl">Online Games</div>
-            <div className="text-xs -mt-1">Play Online & Offline Game</div>
+            <div className="font-jua  text-xl">Game9t</div>
           </div>
         </div>
         <div className="">

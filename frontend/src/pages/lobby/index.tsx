@@ -31,7 +31,7 @@ function Lobby() {
                 <div className="flex items-center space-x-4 mb-4">
                   <img
                     src={
-                      imageUrl + user?.personalInfo.profilePictureUrl ||
+                      imageUrl + user?.personalInfo?.profilePictureUrl ||
                       IMAGES.user2
                     }
                     alt="Profile"

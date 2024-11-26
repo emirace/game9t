@@ -193,3 +193,36 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error fetching all users', error });
   }
 };
+
+export const inviteUser = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const { email } = req.body;
+    if (!email) {
+      res.status(400).json({ message: 'Email is required' });
+      return;
+    }
+
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    const message = `${user.username} invites tou to join Game9t ${req.protocol}://${req.get('host')}`;
+    console.log(message);
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Email Verification',
+    //   message,
+    // });
+
+    res.status(200).json({
+      message: 'Email sent successfully',
+    });
+  } catch (error) {
+    console.error('Error inviting user', error);
+    res.status(500).json({ message: 'Error inviting user', error });
+  }
+};

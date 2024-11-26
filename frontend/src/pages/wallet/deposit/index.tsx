@@ -29,7 +29,7 @@ const Deposit: React.FC = () => {
         <div className="flex-[2]">
           <div className="font-jua my-4">Pay With</div>
           <div className="bg-light_blue p-4 px-8 rounded-lg mb-6">
-            <div className="font-jua my-4 text-xl">Naira</div>
+            <div className="font-jua my-4 text-xl uppercase">Naira ₦</div>
 
             <div className="text-sm max-w-xl mb-4">
               Easily deposit and withdraw funds using secure payment gateway.
@@ -44,7 +44,7 @@ const Deposit: React.FC = () => {
             </button>
           </div>
           <div className="bg-light_blue p-4 px-8 rounded-lg">
-            <div className="font-jua text-xl my-4">Crypto</div>
+            <div className="font-jua text-xl my-4 uppercase">Crypto</div>
             <div className="text-sm max-w-xl mb-4">
               Make quick and secure deposits and withdrawals using stable coin
             </div>

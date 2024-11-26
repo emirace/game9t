@@ -7,7 +7,7 @@ import Loading from "../_components/loading";
 import { useUser } from "../../context/user";
 import { useToastNotification } from "../../context/toastNotificationContext";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useGoogleLogin } from "@react-oauth/google";
+// import { useGoogleLogin } from "@react-oauth/google";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -79,9 +79,9 @@ const Login: React.FC = () => {
     }
   };
 
-  const login = useGoogleLogin({
-    onSuccess: (tokenResponse) => console.log(tokenResponse),
-  });
+  // const login = useGoogleLogin({
+  //   onSuccess: (tokenResponse) => console.log(tokenResponse),
+  // });
 
   useEffect(() => {
     const check = () => {
@@ -111,8 +111,7 @@ const Login: React.FC = () => {
         >
           <img src={IMAGES.logo} alt="logo" className="w-8 h-8" />
           <div>
-            <div className="font-jua  text-xl">Online Games</div>
-            <div className="text-xs -mt-1">Play Online & Offline Game</div>
+            <div className="font-jua  text-xl">Game9t</div>
           </div>
         </div>
         <div className="">
@@ -194,7 +193,7 @@ const Login: React.FC = () => {
               </Link>
             </div>
           </form>
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <button
               onClick={() => login()}
               className="flex items-center justify-center w-full py-2 bg-light_blue hover:bg-medium_blue  rounded-md"
@@ -202,8 +201,8 @@ const Login: React.FC = () => {
               <img src={ICONS.google} className="h-5 w-5 mr-2" alt="Google" />
               Sign in with Google
             </button>
-          </div>
-          <div className="mt-2">
+          </div> */}
+          {/* <div className="mt-2">
             <button className="flex items-center justify-center w-full py-2 bg-light_blue hover:bg-medium_blue rounded-md">
               <img
                 src={ICONS.facebook_color}
@@ -212,7 +211,7 @@ const Login: React.FC = () => {
               />
               Sign in with Facebook
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

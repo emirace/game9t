@@ -126,14 +126,6 @@ const Payments: React.FC = () => {
           placeholder="Account Number"
           className="p-2 bg-black text-white rounded-md focus:outline-none "
         />
-        <input
-          type="text"
-          name="code"
-          value={formData.code}
-          onChange={handleInputChange}
-          placeholder="Enter Swift/BTC Code"
-          className="p-2 bg-black text-white rounded-md focus:outline-none "
-        />
       </div>
 
       {/* Cryptocurrency Section */}

@@ -1,4 +1,34 @@
+import { useState, useEffect } from "react";
+import { fetchAllBets } from "../../../../services/bet";
+import { IBet } from "../../../../types/bet";
+import moment from "moment";
+
 function History() {
+  const [bets, setBets] = useState<IBet[]>([]);
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
+  useEffect(() => {
+    const loadBets = async () => {
+      try {
+        const data = await fetchAllBets({
+          status: "completed",
+          page,
+          limit: 10,
+        });
+        setBets(data.bets);
+        setTotalPages(data.totalPages);
+        setTotalCount(data.total);
+      } catch (error) {
+        console.log("Error loading bet:", error);
+      }
+    };
+
+    loadBets();
+  }, [page]);
+
   return (
     <div>
       <div className="font-jua text-lg mb-4">Bet History</div>
@@ -16,21 +46,22 @@ function History() {
               <th className="p-4 font-jua text-center">Actions</th>
             </tr>
           </thead>
+          {bets.length <= 0 && <div>No bets available</div>}
           <tbody>
-            {[1, 2, 3, 4, 5, 6].map((_, index) => (
+            {bets.map((bet, index) => (
               <tr
-                key={index}
+                key={bet._id}
                 className={`${
                   index % 2 ? "bg-light_blue" : null
                 } text-white hover:bg-dark_blue`}
               >
-                <td className="p-4">BET{index + 1}</td>
-                <td className="p-4">Ludo</td>
-                <td className="p-4">player 1</td>
-                <td className="p-4">player 2</td>
-                <td className="p-4">player 1</td>
-                <td className="p-4"> 800</td>
-                <td className="p-4">2024-10-07</td>
+                <td className="p-4">{bet._id}</td>
+                <td className="p-4">{bet?.game?.game?.name}</td>
+                <td className="p-4">{bet?.game?.player1?.userId?.username}</td>
+                <td className="p-4">{bet?.game?.player2?.userId?.username}</td>
+                <td className="p-4">{bet?.winner?.username}</td>
+                <td className="p-4"> {bet.amount}</td>
+                <td className="p-4">{moment(bet.settlementDate).calendar()}</td>
                 <td className="p-4 font-bold text-center">Settled</td>
               </tr>
             ))}
@@ -38,10 +69,24 @@ function History() {
         </table>
       </div>
       <div className="flex justify-between items-center mt-6 mb-16 ">
-        <span>Showing: 12 / 30</span>
+        <span>
+          Showing: {bets.length} / {totalCount}
+        </span>
         <div>
-          <button className="hover:underline mr-4">PREVIOUS /</button>
-          <button className="hover:underline">NEXT</button>
+          <button
+            disabled={page <= 1}
+            onClick={() => (page > 1 ? setPage(page - 1) : null)}
+            className="hover:underline mr-4 disabled:text-gray-500"
+          >
+            PREVIOUS /
+          </button>
+          <button
+            disabled={page >= totalPages}
+            onClick={() => (page < totalPages ? setPage(page + 1) : null)}
+            className="hover:underline disabled:text-gray-500"
+          >
+            NEXT
+          </button>
         </div>
       </div>
     </div>

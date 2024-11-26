@@ -8,4 +8,5 @@ export interface ITransaction {
   type: "Deposit" | "Withdrawal" | "Bet";
   paymentMethod: "Credit Card" | "Bank Transfer" | "Crypto";
   createdAt: string;
+  reference?: string;
 }

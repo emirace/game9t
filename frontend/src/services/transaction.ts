@@ -14,3 +14,8 @@ export const fetchAllTransaction = async (data: {
   });
   return response.data;
 };
+
+export const fetchTransaction = async (id: string) => {
+  const response = await api.get(`/transactions/${id}`);
+  return response.data;
+};

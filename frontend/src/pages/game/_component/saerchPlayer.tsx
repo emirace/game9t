@@ -7,10 +7,14 @@ import { useToastNotification } from "../../../context/toastNotificationContext"
 import Loading from "../../_components/loading";
 import { IGameSession } from "../../../types/gameSession";
 import { useGameSession } from "../../../context/gameSession";
+import { useBranding } from "../../../context/branding";
+import { imageUrl } from "../../../services/api";
+import { inviteUser } from "../../../services/user";
 
 const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const { onlineUsers, createChallenge } = useSocket();
   const { addNotification } = useToastNotification();
+  const { branding } = useBranding();
   const { socket } = useSocket();
   const { cancelChallenge } = useGameSession();
   const [showConfirm, setShowConfirm] = useState(false);
@@ -22,6 +26,8 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const [success, setSuccess] = useState(false);
   const [gameSession, setGameSession] = useState<IGameSession | null>(null);
   const [cancelling, setCancelling] = useState(false);
+  const [email, setEmail] = useState("");
+  const [sendingInvite, setSendingInvite] = useState(false);
 
   const handleShowCompete = (user: IOnlineUser) => {
     setUser({ useranme: user.username, id: user.userId });
@@ -73,6 +79,19 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
     });
   }, [socket]);
 
+  const handleSendInvite = async () => {
+    try {
+      if (!email) return;
+      setSendingInvite(true);
+      await inviteUser(email);
+      addNotification({ message: "Invitation sent successfully" });
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+    } finally {
+      setSendingInvite(false);
+    }
+  };
+
   return (
     <div className=" px-0 md:px-20">
       <h2 className="font-jua text-2xl mb-6 text-center ">Search Players</h2>
@@ -91,7 +110,7 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
             className="flex flex-col gap-2 justify-center items-center p-4 bg-dark rounded-lg"
           >
             <img
-              src={player.image}
+              src={imageUrl + player.image}
               alt="Profile"
               className="w-12 h-12 rounded-full"
             />
@@ -107,6 +126,23 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
             </button>
           </div>
         ))}
+      </div>
+      <div className="mt-6">
+        <div className="">Invite someone to {branding?.name}</div>
+        <div className="flex items-center">
+          <input
+            placeholder="Enter an email"
+            className="bg-black w-full p-2 px-4 "
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <button
+            onClick={handleSendInvite}
+            className="bg-cream text-black round-md p-2 px-5"
+          >
+            Send
+          </button>
+          {sendingInvite && <Loading size="sm" />}
+        </div>
       </div>
       <Model isOpen={showConfirm} onClose={() => setShowConfirm(false)}>
         {showCompete ? (

@@ -1,11 +1,29 @@
-const stats = [
-  { name: "Total Users", value: "5,000" },
-  { name: "Total Funds Deposit", value: " 1,200,000" },
-  { name: "Total Funds Withdrawn", value: " 800,000" },
-  { name: "Pending Withdrawals", value: "12" },
-];
+import { useEffect, useState } from "react";
+import { fetchWalletStats } from "../../../../services/wallet";
+import { IWalletStat } from "../../../../types/wallet";
 
 function Overview() {
+  const [stat, setStat] = useState<IWalletStat | null>(null);
+
+  const stats = [
+    { name: "Total Users", value: stat?.totalWallets },
+    { name: "Total Funds Deposit", value: stat?.totalDepositAmount },
+    { name: "Total Funds Withdrawn", value: stat?.totalWithdrawalAmount },
+    { name: "Pending Withdrawals", value: stat?.pendingWithdrawalCount },
+  ];
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const res = await fetchWalletStats();
+        setStat(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadStats();
+  }, []);
+
   return (
     <div className="mb-6">
       <div className="font-jua text-lg mb-2">Wallet Overview</div>

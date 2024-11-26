@@ -98,7 +98,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
       <div className="bg-light_blue p-4  ">
         <div className="flex items-center space-x-4 mb-4">
           <img
-            src={imageUrl + user?.personalInfo.profilePictureUrl}
+            src={imageUrl + user?.personalInfo?.profilePictureUrl}
             alt="Profile"
             className="w-12 h-12 rounded-full"
           />

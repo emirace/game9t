@@ -1,20 +1,22 @@
-import { useState, useEffect } from "react";
-import { fetchAllBets, updateBetStatus } from "../../../../services/bet";
-import { IBet } from "../../../../types/bet";
-import { useToastNotification } from "../../../../context/toastNotificationContext";
+import { useEffect, useState } from "react";
+import { IBet } from "../../../../../types/bet";
+import { fetchAllBets } from "../../../../../services/bet";
+import Detail from "./detail";
+import Model from "../../../../_components/model";
 
-function Settlement() {
-  const { addNotification } = useToastNotification();
+function OnGoingBet() {
   const [bets, setBets] = useState<IBet[]>([]);
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [showDetail, setShowDetail] = useState(false);
+  const [id, setId] = useState("");
 
   useEffect(() => {
     const loadBets = async () => {
       try {
-        const data = await fetchAllBets({ status: "pending", page, limit: 10 });
+        const data = await fetchAllBets({ status: "ongoing", page, limit: 10 });
         setBets(data.bets);
         setTotalPages(data.totalPages);
         setTotalCount(data.total);
@@ -26,25 +28,19 @@ function Settlement() {
     loadBets();
   }, [page]);
 
-  async function handleBetStatusUpdate(
-    betId: string,
-    newStatus: "completed" | "rejected"
-  ) {
-    try {
-      const response = await updateBetStatus(betId, newStatus);
-      setBets((prev) =>
-        prev.map((bet) => (bet._id === response._id ? response : bet))
-      );
-      addNotification({ message: `Bet status updated to ${newStatus}` });
-    } catch (error: any) {
-      console.error("Error updating bet status:", error.message);
-      addNotification({ message: `Error updating bet status`, error: true });
-    }
-  }
+  const handleShowDetail = (id: string) => {
+    setShowDetail(true);
+    setId(id);
+  };
+
+  const handleCloseDetail = () => {
+    setShowDetail(false);
+    setId("");
+  };
 
   return (
     <div>
-      <div className="font-jua text-lg mb-4">Bet Settlements</div>
+      <div className="font-jua text-lg mb-4">Ongoing Bets</div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto rounded-lg">
           <thead>
@@ -53,7 +49,6 @@ function Settlement() {
               <th className="p-4 font-jua">Game</th>
               <th className="p-4 font-jua">User 1</th>
               <th className="p-4 font-jua">User 2</th>
-              <th className="p-4 font-jua">Winner</th>
               <th className="p-4 font-jua">Stack Amount</th>
               <th className="p-4 font-jua">Status</th>
               <th className="p-4 font-jua text-center">Actions</th>
@@ -72,24 +67,18 @@ function Settlement() {
                 <td className="p-4">{bet?.game?.game?.name}</td>
                 <td className="p-4">{bet?.game?.player1?.userId?.username}</td>
                 <td className="p-4">{bet?.game?.player2?.userId?.username}</td>
-                <td className="p-4">{bet?.winner?.username}</td>
                 <td className="p-4"> {bet.amount}</td>
                 <td className="p-4 capitalize">{bet.status}</td>
                 <td className="p-4 font-bold">
                   <div className="flex items-center justify-center gap-3">
                     <button
-                      onClick={() =>
-                        handleBetStatusUpdate(bet._id, "completed")
-                      }
-                      className="bg-cream text-black text-xs p-1 px-4 rounded-full"
+                      onClick={() => handleShowDetail(bet._id)}
+                      className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap"
                     >
-                      Approve
+                      View Details
                     </button>
-                    <button
-                      onClick={() => handleBetStatusUpdate(bet._id, "rejected")}
-                      className="bg-cream text-black text-xs p-1 px-4 rounded-full"
-                    >
-                      Reject
+                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                      Cancel Bet
                     </button>
                   </div>
                 </td>
@@ -119,8 +108,12 @@ function Settlement() {
           </button>
         </div>
       </div>
+
+      <Model isOpen={showDetail} onClose={handleCloseDetail}>
+        <Detail id={id} />
+      </Model>
     </div>
   );
 }
 
-export default Settlement;
+export default OnGoingBet;

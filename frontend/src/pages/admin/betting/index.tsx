@@ -1,7 +1,7 @@
 import Overview from "./_component/overview";
-import OnGoingBet from "./_component/ongoingbet";
 import History from "./_component/history";
 import Settlement from "./_component/settlement";
+import OnGoingBet from "./_component/ongoingbet";
 
 function Betting() {
   return (

@@ -89,6 +89,7 @@ export const createWithdrawalRequest = async (
       amount,
       status: 'Pending',
       paymentMethod: others.type === 'Naira' ? 'Bank Transfer' : 'Crypto',
+      reference: withdrawalRequest._id,
     });
 
     await transaction.save();

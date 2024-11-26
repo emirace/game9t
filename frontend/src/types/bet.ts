@@ -1,6 +1,7 @@
 import { IGameplay } from "./gameplay";
+import { IUser } from "./user";
 
-export interface IBet extends Document {
+export interface IBet {
   game: IGameplay;
   session: string;
   amount: number;
@@ -9,4 +10,5 @@ export interface IBet extends Document {
   settlementDate?: Date;
   createdAt: Date;
   _id: string;
+  winner?: IUser;
 }

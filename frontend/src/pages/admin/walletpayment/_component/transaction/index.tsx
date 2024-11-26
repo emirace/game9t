@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
-import { ITransaction } from "../../../../types/transaction";
-import { fetchAllTransaction } from "../../../../services/transaction";
+import { ITransaction } from "../../../../../types/transaction";
+import { fetchAllTransaction } from "../../../../../services/transaction";
 import moment from "moment";
+import Model from "../../../../_components/model";
+import Detail from "./detail";
 
 function Transaction() {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [showDetail, setShowDetail] = useState(false);
+  const [id, setId] = useState("");
 
   useEffect(() => {
     const loadTransaction = async () => {
@@ -23,6 +27,17 @@ function Transaction() {
 
     loadTransaction();
   }, [page]);
+
+  const handleShowDetail = (id: string) => {
+    setShowDetail(true);
+    setId(id);
+  };
+
+  const handleCloseDetail = () => {
+    setShowDetail(false);
+    setId("");
+  };
+
   return (
     <div>
       <div className="font-jua text-lg mb-4">Transaction Oversight</div>
@@ -61,13 +76,21 @@ function Transaction() {
                 <td className="p-4">{transaction.status}</td>
                 <td className="p-4 font-bold">
                   <div className="flex items-center justify-center gap-3">
-                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
-                      Approve
-                    </button>
-                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
-                      Reject
-                    </button>
-                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                    {transaction.type === "Withdrawal" &&
+                      transaction.status === "Pending" && (
+                        <>
+                          <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                            Approve
+                          </button>
+                          <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                            Reject
+                          </button>
+                        </>
+                      )}
+                    <button
+                      onClick={() => handleShowDetail(transaction._id)}
+                      className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap"
+                    >
                       View Details
                     </button>
                   </div>
@@ -98,6 +121,9 @@ function Transaction() {
           </button>
         </div>
       </div>
+      <Model isOpen={showDetail} onClose={handleCloseDetail}>
+        <Detail id={id} />
+      </Model>
     </div>
   );
 }

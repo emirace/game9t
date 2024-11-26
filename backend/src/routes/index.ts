@@ -12,6 +12,7 @@ import admin from './admin';
 import branding from './branding';
 import notification from './notification';
 import message from './message';
+import bet from './bet';
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.use('/admins', admin);
 router.use('/brandings', branding);
 router.use('/notifications', notification);
 router.use('/messages', message);
+router.use('/bets', bet);
 
 export default router;

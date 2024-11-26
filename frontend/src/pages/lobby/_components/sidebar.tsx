@@ -11,6 +11,7 @@ import SaerchPlayer from "./saerchPlayer";
 import Model from "../../_components/model";
 import { useMessage } from "../../../context/message";
 import { useSocket } from "../../../context/socket";
+import IMAGES from "../../../assets/images/images";
 
 // const amounts = ["200", "500", "1000", "2000", "5000", "10000"];
 
@@ -53,7 +54,11 @@ function Sidebar() {
       <div className="bg-light_blue p-4  ">
         <div className="flex items-center space-x-4 mb-4">
           <img
-            src={imageUrl + user?.personalInfo.profilePictureUrl}
+            src={
+              user?.personalInfo?.profilePictureUrl
+                ? imageUrl + user?.personalInfo?.profilePictureUrl
+                : IMAGES.user2
+            }
             alt="Profile"
             className="w-12 h-12 rounded-full"
           />
@@ -130,7 +135,12 @@ function Sidebar() {
             >
               <div className="flex items-center gap-4">
                 <img
-                  src={game.players[0]?.personalInfo?.profilePictureUrl}
+                  src={
+                    game.players[0]?.personalInfo?.profilePictureUrl
+                      ? imageUrl +
+                        game.players[0]?.personalInfo?.profilePictureUrl
+                      : IMAGES.user2
+                  }
                   alt="Profile"
                   className="w-12 h-12 rounded-full"
                 />

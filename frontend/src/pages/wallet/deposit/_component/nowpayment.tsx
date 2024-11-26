@@ -163,7 +163,7 @@ const PointsToCurrency: React.FC = () => {
           {/* Points Input */}
           <div className="mb-4">
             <label htmlFor="points" className="block mb-2">
-              Enter Points: (Max 100,000)
+              Enter Points: (100 - 100,000)
             </label>
             <input
               type="number"

@@ -11,13 +11,11 @@ const quickLinks = [
 ];
 
 const legalLinks = [
-  "Terms",
-  "Disclaimer",
-  "Privacy Policy",
-  "Terms & Conditions",
-  "Responsible Gaming",
+  { path: "terms", name: "Terms & Conditions" },
+  { path: "/disclaimer", name: "Disclaimer" },
+  { path: "privacy", name: "Privacy Policy" },
+  { path: "responsible", name: "Responsible Gaming" },
 ];
-
 function Gamesbar({ onClick }: { onClick?: () => void }) {
   return (
     <div className="overflow-y-auto h-screen ">
@@ -44,7 +42,9 @@ function Gamesbar({ onClick }: { onClick?: () => void }) {
         <h4 className="font-jua text-lg mb-2">Legal</h4>
         <ul className="space-y-2">
           {legalLinks.map((link, index) => (
-            <li key={index}>{link}</li>
+            <li key={index}>
+              <Link to={link.path}>{link.name}</Link>
+            </li>
           ))}
         </ul>
       </div>

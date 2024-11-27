@@ -39,3 +39,12 @@ export const verifyEmail = async (token: string) => {
   const response = await api.get(`/auths/verifyemail/${token}`);
   return response.data;
 };
+
+export const sendContactUs = async (data: {
+  email: string;
+  name: string;
+  message: string;
+}) => {
+  const response = await api.post(`/auths/contact`, data);
+  return response.data;
+};

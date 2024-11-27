@@ -4,6 +4,9 @@ import ICONS from "../../assets/icons/icons";
 import { useBranding } from "../../context/branding";
 import { imageUrl } from "../../services/api";
 import { Link } from "react-router-dom";
+import { useToastNotification } from "../../context/toastNotificationContext";
+import { sendContactUs } from "../../services/auth";
+import Loading from "./loading";
 
 // Data for the footer sections
 const features = [
@@ -37,6 +40,8 @@ const legalLinks = [
 
 const Footer: React.FC = () => {
   const { branding } = useBranding();
+  const { addNotification } = useToastNotification();
+  const [loading, setLoading] = useState(false);
   // const socialLinks = [
   //   { icon: ICONS.x, href: branding?.socialMedia.twitter },
   //   { icon: ICONS.instagram, href: branding?.socialMedia.instagram },
@@ -60,6 +65,20 @@ const Footer: React.FC = () => {
       [name]: value,
     }));
   };
+
+  const handleSendContact = async () => {
+    try {
+      setLoading(true);
+      await sendContactUs(formData);
+      addNotification({ message: "Your message has been sent" });
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <footer className="relative bg-dark pt-10 pb-16 md:pb-20">
       <div>
@@ -184,8 +203,9 @@ const Footer: React.FC = () => {
             placeholder="Enter Your Message Here"
             className="p-2 mb-4 bg-black text-white flex-1 w-full rounded-md focus:outline-none h-20 "
           />
+          {loading && <Loading size="sm" />}
           <button
-            //   onClick={onButtonClick}
+            onClick={handleSendContact}
             className="px-8 py-3 min-w-48 bg-black text-white font-jua rounded-full hover:bg-dark_blue transition-colors"
           >
             Send

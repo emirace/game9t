@@ -3,6 +3,7 @@ import User, { IUser } from '../models/user';
 import { AuthenticatedRequest } from '../middlewares/auth';
 import Gameplay from '../models/gameplay';
 import Bet from '../models/bet';
+import { sendEmail } from '../utils/email';
 
 export const getUserProfile = async (
   req: AuthenticatedRequest,
@@ -212,11 +213,11 @@ export const inviteUser = async (req: AuthenticatedRequest, res: Response) => {
 
     const message = `${user.username} invites tou to join Game9t ${req.protocol}://${req.get('host')}`;
     console.log(message);
-    // await sendEmail({
-    //   email: user.email,
-    //   subject: 'Email Verification',
-    //   message,
-    // });
+    await sendEmail({
+      to: user.email,
+      subject: 'Email Verification',
+      text: message,
+    });
 
     res.status(200).json({
       message: 'Email sent successfully',

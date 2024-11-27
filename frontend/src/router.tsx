@@ -45,6 +45,7 @@ import Terms from "./pages/terms";
 import PrivacyPolicy from "./pages/privacy";
 import Disclaimer from "./pages/disclaimer";
 import Responsible from "./pages/responsible";
+import ResetPassword from "./pages/auth/resetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -126,6 +127,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "login", element: <Login /> },
           { path: "register", element: <Register /> },
+          { path: "resetpassword/:token", element: <ResetPassword /> },
           { path: "forgot-password", element: <ForgotPassword /> },
         ],
       },

@@ -6,6 +6,7 @@ import {
   resetPassword,
   sendVerificationEmail,
   verifyEmail,
+  sendContactEmail,
 } from '../controllers/auth';
 import { auth } from '../middlewares/auth';
 
@@ -16,6 +17,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/forgotpassword', forgotPassword);
 router.post('/sendverificationemail', auth, sendVerificationEmail);
+router.post('/contact', sendContactEmail);
 router.put('/resetpassword/:token', resetPassword);
 
 export default router;

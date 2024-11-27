@@ -81,17 +81,18 @@ const Wallet: React.FC = () => {
         >
           Withdraw Funds
         </button>
-        {verifying ? (
-          <Loading size="sm" />
-        ) : (
-          <button
-            className="bg-black py-2 px-4 font-jua rounded-full disabled:bg-gray-300"
-            disabled={user?.verified}
-            onClick={handleVerify}
-          >
-            Verify
-          </button>
-        )}
+        {!user?.verified &&
+          (verifying ? (
+            <Loading size="sm" />
+          ) : (
+            <button
+              className="bg-black py-2 px-4 font-jua rounded-full disabled:bg-gray-300"
+              disabled={user?.verified}
+              onClick={handleVerify}
+            >
+              Verify
+            </button>
+          ))}
       </div>
 
       {/* Transaction History */}

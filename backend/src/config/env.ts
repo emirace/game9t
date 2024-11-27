@@ -13,3 +13,6 @@ export const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 export const secretKey = process.env.PAYSTACK_SECRET_KEY;
 export const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 export const ipnSecret = process.env.NOWPAYMENTS_IPN_SECRET || '';
+
+export const user = process.env.GMAIL_USERNAME || '';
+export const pass = process.env.GMAIL_PASSWORD || '';

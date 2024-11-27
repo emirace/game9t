@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import { useState } from "react";
+import { sendContactUs } from "../../services/auth";
+import { useToastNotification } from "../../context/toastNotificationContext";
+import Loading from "../_components/loading";
 
 // const features = [
 //   {
@@ -48,11 +51,13 @@ import { useState } from "react";
 // ];
 
 function Support() {
+  const { addNotification } = useToastNotification();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -63,6 +68,19 @@ function Support() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSendContact = async () => {
+    try {
+      setLoading(true);
+      await sendContactUs(formData);
+      addNotification({ message: "Your message has been sent" });
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="px-4 md:px-20 py-10">
@@ -106,8 +124,9 @@ function Support() {
             placeholder="Enter Your Message Here"
             className="p-2 mb-8 bg-black text-white flex-1 w-full rounded-md focus:outline-none h-56 "
           />
+          {loading && <Loading size="sm" />}
           <button
-            //   onClick={onButtonClick}
+            onClick={handleSendContact}
             className="px-8 py-3 min-w-48 bg-black text-white font-jua rounded-full hover:bg-dark_blue transition-colors"
           >
             Send

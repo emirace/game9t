@@ -43,8 +43,7 @@ const Payments: React.FC = () => {
       if (
         !formData.bankName ||
         !formData.accountHolderName ||
-        !formData.accountNumber ||
-        !formData.code
+        !formData.accountNumber
       ) {
         message = "Please fill in all bank transfer details.";
         isValid = false;

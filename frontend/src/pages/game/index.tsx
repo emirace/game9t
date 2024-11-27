@@ -14,6 +14,8 @@ import { IGame } from "../../types/game";
 import { useToastNotification } from "../../context/toastNotificationContext";
 import Loading from "../_components/loading";
 import { useUser } from "../../context/user";
+import { fetchGameSessionById } from "../../services/gameSession";
+import { IGameSession } from "../../types/gameSession";
 
 const Game: React.FC = () => {
   const params = useParams();
@@ -29,6 +31,7 @@ const Game: React.FC = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("sessionid");
   const [ready, setReady] = useState(false);
+  const [gameSession, setGameSession] = useState<IGameSession | null>(null);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -73,6 +76,9 @@ const Game: React.FC = () => {
         };
         iframeRef.current.contentWindow.postMessage(message, "*");
       }
+      fetchGameSessionById(sessionId).then((session) => {
+        setGameSession(session);
+      });
     }
   }, [sessionId, ready]);
 
@@ -113,7 +119,7 @@ const Game: React.FC = () => {
               <h3 className=" text-xl mb-2 font-jua">Challenge Stats</h3>
               <div className="flex items-center gap-8">
                 <p>
-                  <b>Bet:</b> Nil
+                  <b>Bet:</b> {gameSession?.amount || "Nil"}
                 </p>
                 <p>
                   <b>Win:</b> Nil
@@ -138,14 +144,18 @@ const Game: React.FC = () => {
             <div className="bg-cream text-black p-4 px-6 rounded-lg">
               <h3 className="font-jua text-xl mb-2">Player Stats</h3>
               <div className="flex items-start mb-1">
-                <p className="flex-[2]">AI (cpu) </p>
+                <p className="flex-[2]">
+                  {gameSession?.players[1].username || user?.username}
+                </p>
                 <div className="flex items-center gap-3">
                   <img src={ICONS.arrow_red} alt="main" className="w-3 h-2" />
                   <p className="flex-1"> 0 Points</p>
                 </div>
               </div>
               <div className="flex items-start gap-8">
-                <p className="flex-[2]">{user?.username} (You) </p>
+                <p className="flex-[2]">
+                  {gameSession?.players[0].username || "AI (cpu)"}
+                </p>
                 <div className="flex items-center gap-3">
                   <img src={ICONS.arrow_green} alt="main" className="w-3 h-2" />
                   <p className="flex-1">0 Points</p>

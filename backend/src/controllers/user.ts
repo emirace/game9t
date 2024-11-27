@@ -51,7 +51,7 @@ export const getUserProfile = async (
     const totalGamesWithoutBetToday = await Gameplay.countDocuments({
       $or: [{ 'player1.userId': user._id }, { 'player2.userId': user._id }],
       bet: { $exists: false }, // Exclude games with a bet
-      endTime: { $gte: startOfToday }, // Games that ended today
+      createdAt: { $gte: startOfToday }, // Games that ended today
     });
 
     // Create a single user object with the additional statistics

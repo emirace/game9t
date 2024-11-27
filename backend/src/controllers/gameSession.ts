@@ -24,3 +24,25 @@ export const getAllGameSessions = async (
     res.status(500).json({ message: 'Failed to fetch game sessions' });
   }
 };
+
+export const getGameSessionById = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  try {
+    const id = req.params.sessionId;
+    const gameSession = await GameSession.findById(id)
+      .populate('players', 'personalInfo.profilePictureUrl username')
+      .populate('initiatedGame', 'name image');
+
+    if (!gameSession) {
+      res.status(404).json({ message: 'Session not found' });
+      return;
+    }
+
+    res.status(200).json(gameSession);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Failed to fetch game session' });
+  }
+};

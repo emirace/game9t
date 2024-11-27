@@ -7,14 +7,12 @@ import { useToastNotification } from "../../../context/toastNotificationContext"
 import Loading from "../../_components/loading";
 import { IGameSession } from "../../../types/gameSession";
 import { useGameSession } from "../../../context/gameSession";
-import { useBranding } from "../../../context/branding";
 import { imageUrl } from "../../../services/api";
 import { inviteUser } from "../../../services/user";
 
 const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const { onlineUsers, createChallenge } = useSocket();
   const { addNotification } = useToastNotification();
-  const { branding } = useBranding();
   const { socket } = useSocket();
   const { cancelChallenge } = useGameSession();
   const [showConfirm, setShowConfirm] = useState(false);
@@ -28,6 +26,7 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const [cancelling, setCancelling] = useState(false);
   const [email, setEmail] = useState("");
   const [sendingInvite, setSendingInvite] = useState(false);
+  const [showInvite, setShowInvite] = useState(false);
 
   const handleShowCompete = (user: IOnlineUser) => {
     setUser({ useranme: user.username, id: user.userId });
@@ -85,6 +84,7 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
       setSendingInvite(true);
       await inviteUser(email);
       addNotification({ message: "Invitation sent successfully" });
+      setShowInvite(false);
     } catch (error: any) {
       addNotification({ message: error, error: true });
     } finally {
@@ -100,6 +100,12 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
         <img src={ICONS.search} alt="search" className="w-4 h-4" />
         <input placeholder="Search players..." className="bg-black w-full" />
       </div>
+      <button
+        onClick={() => setShowInvite(true)}
+        className="bg-cream text-black rounded-full font-jua p-1 px-5 mb-4"
+      >
+        Invite Players
+      </button>
       {onlineUsers.length <= 0 && (
         <div className="p-4">No player available</div>
       )}
@@ -127,23 +133,24 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
           </div>
         ))}
       </div>
-      <div className="mt-6">
-        <div className="">Invite someone to {branding?.name}</div>
-        <div className="flex items-center">
-          <input
-            placeholder="Enter an email"
-            className="bg-black w-full p-2 px-4 "
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button
-            onClick={handleSendInvite}
-            className="bg-cream text-black round-md p-2 px-5"
-          >
-            Send
-          </button>
-          {sendingInvite && <Loading size="sm" />}
+      {showInvite && (
+        <div className="mt-6">
+          <div className="flex items-center gap-5">
+            <input
+              placeholder="Enter an email"
+              className="bg-black w-full p-2 px-4 "
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button
+              onClick={handleSendInvite}
+              className="bg-cream text-black rounded-full font-jua p-2 px-5"
+            >
+              Send
+            </button>
+            {sendingInvite && <Loading size="sm" />}
+          </div>
         </div>
-      </div>
+      )}
       <Model isOpen={showConfirm} onClose={() => setShowConfirm(false)}>
         {showCompete ? (
           <div className="flex flex-col justify-center items-center w-full h-full">

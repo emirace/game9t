@@ -6,7 +6,7 @@ import { imageUrl } from "../../services/api";
 const sidelists = [
   { icon: ICONS.box, label: "Dashboard", path: "/profile" },
   { icon: ICONS.wallet, label: "Wallet", path: "/wallet" },
-  { icon: ICONS.flag, label: "Challenge", path: "/" },
+  { icon: ICONS.flag, label: "Challenge", path: "/lobby" },
   { icon: ICONS.settings, label: "Settings", path: "/settings" },
   { icon: ICONS.support, label: "Support", path: "/support" },
 ];

@@ -13,3 +13,10 @@ export const fetchGameSessions = async (): Promise<IGameSession[]> => {
     );
   }
 };
+
+export const fetchGameSessionById = async (
+  id: string
+): Promise<IGameSession> => {
+  const response = await api.get(`/gamesessions/${id}`);
+  return response.data;
+};

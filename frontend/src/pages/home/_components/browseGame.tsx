@@ -116,16 +116,6 @@ function BrowseGame() {
                     className="w-3 md:w-4 h-3 md:h-4"
                   />
                   <div className="mr-2">{game.totalPlays}</div>
-                  <img
-                    src={ICONS.heart}
-                    alt="like"
-                    className="w-3 md:w-4 h-3 md:h-4"
-                  />
-                  <img
-                    src={ICONS.share}
-                    alt="share"
-                    className="w-3 md:w-4 h-3 md:h-4"
-                  />
                 </div>
               </div>
             </div>

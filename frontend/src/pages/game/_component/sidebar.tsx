@@ -110,9 +110,9 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
           </div>
         </div>
         <p className="mb-2 font-jua">Free Game Access</p>
-        <div className="flex items-center bg-white bg-opacity-20 p-1 px-2 rounded-lg text-xs font-jua mb-4">
+        <div className="flex items-center bg-white bg-opacity-20  rounded-lg text-xs font-jua mb-4 overflow-hidden">
           <div
-            className={`flex-1 text-center ${
+            className={`flex-1 text-center p-1 ${
               user?.totalGamesWithoutBetToday &&
               user?.totalGamesWithoutBetToday >= 1
                 ? "bg-green"
@@ -122,7 +122,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
             Game 1
           </div>
           <div
-            className={`flex-1 text-center ${
+            className={`flex-1 text-center p-1 ${
               user?.totalGamesWithoutBetToday &&
               user?.totalGamesWithoutBetToday >= 2
                 ? "bg-green"
@@ -132,7 +132,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
             Game 2
           </div>
           <div
-            className={`flex-1 text-center ${
+            className={`flex-1 text-center p-1 ${
               user?.totalGamesWithoutBetToday &&
               user?.totalGamesWithoutBetToday >= 3
                 ? "bg-green"

@@ -228,11 +228,15 @@ const Withdraw: React.FC = () => {
           </div>
           <div className="mb-8">
             <div className="font-jua mb-2 text-xl">Withdraw Limit</div>
-            <div className="">
-              <b>Minimun Withdraw:</b> 1000
+            <div className="flex items-center gap-1">
+              <b>Minimun Withdraw:</b>
+              <img src={ICONS.coin} alt="coin" className="w-auto h-3" />
+              1000
             </div>
-            <div className="">
-              <b>Maximun Withdraw:</b> 100,000 per transaction
+            <div className="flex items-center gap-1">
+              <b>Maximun Withdraw:</b>
+              <img src={ICONS.coin} alt="coin" className="w-auto h-3" />
+              100,000 per transaction
             </div>
           </div>
 

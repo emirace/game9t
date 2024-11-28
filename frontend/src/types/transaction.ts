@@ -7,6 +7,7 @@ export interface ITransaction {
   status: "Pending" | "Completed" | "Failed" | "Won" | "Loss";
   type: "Deposit" | "Withdrawal" | "Bet";
   paymentMethod: "Credit Card" | "Bank Transfer" | "Crypto";
+  transactionType: "debit" | "credit";
   createdAt: string;
   reference?: string;
 }

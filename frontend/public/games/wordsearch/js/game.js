@@ -2241,6 +2241,7 @@ function completeStroke(n, j, i) {
       overwrite: true,
       onComplete: function () {
         showGameStatus("complete");
+        exitSocketGame("complete", playerData);
         endGame();
       },
     });
@@ -2306,6 +2307,7 @@ function solvePuzzle() {
     overwrite: true,
     onComplete: function () {
       showGameStatus("over");
+      exitSocketGame("solve", playerData);
       endGame();
     },
   });

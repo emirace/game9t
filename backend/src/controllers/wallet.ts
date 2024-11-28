@@ -105,6 +105,7 @@ export async function fundWallet(req: AuthenticatedRequest, res: Response) {
       amount: topUpAmount,
       status: 'Completed',
       reference: transactionId,
+      transactionType: 'credit',
       paymentMethod: 'Credit Card',
     });
     await transaction.save({ session });

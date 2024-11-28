@@ -15,7 +15,7 @@ let roomSettings = {
   },
   maxPlayers: [
     {
-      game: 'connectfour',
+      game: 'connectFour',
       total: 4,
     },
   ],
@@ -221,18 +221,6 @@ export const games = (io: SocketIOServer, socket: Socket) => {
 
         if (gameSession.amount) {
           try {
-            // Create a new Bet record
-            const bet = await Bet.create({
-              game: gameSession.initiatedGame,
-              session: gameSession._id,
-              amount: gameSession.amount,
-              status: 'ongoing',
-            });
-
-            // Associate the bet with the gameplay
-            gamePlay.bet = bet._id as mongoose.Types.ObjectId;
-            await gamePlay.save();
-
             // Fetch wallets for both players
             const [wallet1, wallet2] = await Promise.all([
               Wallet.findOne({ user: gameSession.players[0] }),
@@ -260,6 +248,18 @@ export const games = (io: SocketIOServer, socket: Socket) => {
             // Save updated wallet balances
             await Promise.all([wallet1.save(), wallet2.save()]);
 
+            // Create a new Bet record
+            const bet = await Bet.create({
+              game: gamePlay._id,
+              session: gameSession._id,
+              amount: gameSession.amount,
+              status: 'ongoing',
+            });
+
+            // Associate the bet with the gameplay
+            gamePlay.bet = bet._id as mongoose.Types.ObjectId;
+            await gamePlay.save();
+
             // Create transactions for both players
             const transactions = [
               new Transaction({
@@ -268,6 +268,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
                 amount: gameSession.amount,
                 status: 'Completed',
                 paymentMethod: 'Wallet',
+                transactionType: 'debit',
               }),
               new Transaction({
                 type: 'Bet',
@@ -275,6 +276,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
                 amount: gameSession.amount,
                 status: 'Completed',
                 paymentMethod: 'Wallet',
+                transactionType: 'debit',
               }),
             ];
 
@@ -313,6 +315,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
 
   socket.on('exitGame', async function ({ status, score }) {
     const userId = (socket.request as any).user._id;
+    console.log(status, score);
 
     try {
       const gameplay = await Gameplay.findOne({

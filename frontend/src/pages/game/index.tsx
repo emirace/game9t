@@ -180,7 +180,9 @@ const Game: React.FC = () => {
               <p className="font-bold">Name:</p>
               <p className="md:col-span-2 capitalize"> {game?.name}</p>
               <p className="font-bold">Platforms:</p>
-              <p className="md:col-span-2"> {game?.platforms.join(", ")}</p>
+              <p className="md:col-span-2">
+                {game?.platforms && game?.platforms.join(", ")}
+              </p>
               <p className="font-bold">Popularity:</p>
               <p className="md:col-span-2"> {game?.likes.length}+ players</p>
               <p className="font-bold">Technology:</p>

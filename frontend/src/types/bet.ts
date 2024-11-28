@@ -1,9 +1,10 @@
+import { IGameSession } from "./gameSession";
 import { IGameplay } from "./gameplay";
 import { IUser } from "./user";
 
 export interface IBet {
   game: IGameplay;
-  session: string;
+  session: IGameSession;
   amount: number;
   status: "pending" | "ongoing" | "completed";
   payout?: number;

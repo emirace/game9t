@@ -6,6 +6,7 @@ interface ITransaction extends Document {
   amount: number;
   status: 'Pending' | 'Completed' | 'Failed' | 'Won' | 'Loss';
   type: 'Deposit' | 'Withdrawal' | 'Bet';
+  transactionType: 'debit' | 'credit';
   paymentMethod: 'Credit Card' | 'Bank Transfer' | 'Crypto';
   reference: string;
 }
@@ -30,6 +31,11 @@ const TransactionSchema: Schema<ITransaction> = new Schema(
     type: {
       type: String,
       enum: ['Deposit', 'Withdrawal', 'Bet'],
+      required: true,
+    },
+    transactionType: {
+      type: String,
+      enum: ['debit', 'credit'],
       required: true,
     },
     paymentMethod: {

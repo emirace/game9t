@@ -12,6 +12,9 @@ function Admin() {
       <Loading />
     </div>;
   }
+  // if (!user) {
+  //   return <Navigate to="/" />;
+  // }
   if (user && user?.role !== "admin") {
     return <Navigate to="/profile" />;
   }

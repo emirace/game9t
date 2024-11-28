@@ -220,7 +220,7 @@ export const approveOrRejectBet = async (req: Request, res: Response) => {
     if (status === 'completed') {
       if (bet.winner) {
         // Pay the winner
-        const settleAmount = bet.amount * 2 - bet.amount * 0.05; // Deduct 5% fee
+        const settleAmount = bet.amount * 2 - bet.amount * 0.1; // Deduct 5% fee
         const wallet = await Wallet.findOne({ user: bet.winner._id }).session(
           session,
         );

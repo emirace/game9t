@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import Bet from '../models/bet';
 import Wallet from '../models/wallet';
 import Transaction from '../models/transaction';
+import Game from '../models/game';
 
 let roomSettings = {
   totalRooms: 8, //total rooms
@@ -309,6 +310,31 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     updateSocketGame(status, data, others);
   });
 
+  socket.on('startLocalGame', async function (slug) {
+    console.log(slug);
+    try {
+      const game = await Game.findOne({ slug });
+      if (!game) {
+        socket.emit('updateSocketRooms', 'nosession');
+        return;
+      }
+
+      await Gameplay.create({
+        game: game._id,
+        player1: {
+          userId: (socket.request as any).user._id,
+        },
+        multiplayer: false,
+        active: true,
+        startTime: Date,
+      });
+      socket.emit('startLocalGame');
+    } catch (error) {
+      console.log(error);
+      socket.emit('updateSocketRooms', 'nosession');
+    }
+  });
+
   socket.on('exitroom', function () {
     leaveSocketRoom();
   });
@@ -345,7 +371,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
       }
 
       // Determine winner
-      if (gameplay.player1 && gameplay.player2) {
+      if (gameplay.player1.userId && gameplay.player2?.userId) {
         if (gameplay.player1.score > gameplay.player2.score) {
           gameplay.winner = gameplay.player1.userId; // player1 is the winner
         } else if (gameplay.player2.score > gameplay.player1.score) {
@@ -353,9 +379,11 @@ export const games = (io: SocketIOServer, socket: Socket) => {
         }
       } else {
         // In case only one player played, declare them the winner by default
-        gameplay.winner = gameplay.player1
-          ? gameplay.player1.userId
-          : gameplay.player2?.userId;
+        if (score.win) {
+          gameplay.winner = gameplay.player1
+            ? gameplay.player1.userId
+            : gameplay.player2?.userId;
+        }
       }
 
       const bet = await Bet.findOne({

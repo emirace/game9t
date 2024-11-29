@@ -109,7 +109,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
             </p>
           </div>
         </div>
-        <p className="mb-2 font-jua">Free Game Access</p>
+        {/* <p className="mb-2 font-jua">Free Game Access</p>
         <div className="flex items-center bg-white bg-opacity-20  rounded-lg text-xs font-jua mb-4 overflow-hidden">
           <div
             className={`flex-1 text-center p-1 ${
@@ -141,7 +141,7 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
           >
             Game 3
           </div>
-        </div>
+        </div> */}
         <p className="text-xs">
           (Once you reach the limit, you can't play free games)
         </p>

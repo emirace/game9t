@@ -5,7 +5,7 @@
 //multiplayer settings
 var multiplayerSettings = {
   enable: true, //enable multiplayer
-  localPlay: false, //enable local and online play
+  localPlay: true, //enable local and online play
   roomLists: false, //enable room lists, false to enter without joining room (auto random connect)
   enterName: false, //quick play with or without enter name
   forceQuit: true, //everyone quit game if one player is leaved
@@ -231,6 +231,11 @@ function initSocket(game) {
       }
     }
   });
+
+  socket.on("startLocalGame", function () {
+    toggleSocketLoader(false);
+    toggleMainButton("default");
+  });
 }
 
 function addSocketUser() {
@@ -242,6 +247,11 @@ function addSocketUser() {
       textMultiplayerDisplay.enterNameError
     );
   }
+}
+
+function startLocalGame() {
+  toggleSocketLoader(true, textMultiplayerDisplay.findingAi, true);
+  socket.emit("startLocalGame", "wordsearch");
 }
 
 function addSocketRandomUser() {

@@ -100,7 +100,8 @@ function buildGameButton() {
   buttonLocal.addEventListener("click", function (evt) {
     playSound("soundClick");
     socketData.online = false;
-    goPage("level");
+    buttonLocalContainer.visible = false;
+    startLocalGame();
   });
 
   buttonOnline.cursor = "pointer";

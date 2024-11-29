@@ -5,7 +5,7 @@
 //multiplayer settings
 var multiplayerSettings = {
   enable: true, //enable multiplayer
-  localPlay: false, //enable local and online play
+  localPlay: true, //enable local and online play
   roomLists: false, //enable room lists, false to enter without joining room (auto random connect)
   enterName: false, //quick play with or without enter name
   forceQuit: true, //everyone quit game if one player is leaved
@@ -16,6 +16,7 @@ var multiplayerSettings = {
 //multiplayer text display
 var textMultiplayerDisplay = {
   findingPlayer: "Waiting for players",
+  findingAi: "Waiting for Computer",
   findingPlayerTimer: "\n([TIMER])",
   connectionTimeout: "No players found...",
   noSession: "Create or challegde a player",
@@ -231,6 +232,12 @@ function initSocket(game) {
       }
     }
   });
+
+  socket.on("startLocalGame", function () {
+    toggleSocketLoader(false);
+
+    goPage("level");
+  });
 }
 
 function addSocketUser() {
@@ -334,6 +341,11 @@ function joinSocketPrivateRoom() {
   } else {
     updateSocketLog(textMultiplayerDisplay.enterCode);
   }
+}
+
+function startLocalGame() {
+  toggleSocketLoader(true, textMultiplayerDisplay.findingAi, true);
+  socket.emit("startLocalGame", "snakesandladders");
 }
 
 function joinSocketRandomRoom() {

@@ -74,7 +74,7 @@ var iconsArr = [
 
 //classic settings
 var defaultSettings = {
-  twoPlayer: true,
+  twoPlayer: false,
   row: 6,
   column: 7,
   connect: 4,
@@ -83,7 +83,7 @@ var defaultSettings = {
 //custom settings
 var customSettings = {
   enable: true,
-  twoPlayer: true,
+  twoPlayer: false,
   rowMin: 6,
   rowMax: 8,
   columnMin: 7,
@@ -224,7 +224,9 @@ function buildGameButton() {
   buttonLocal.addEventListener("click", function (evt) {
     playSound("soundButton");
     socketData.online = false;
-    toggleMainButton("default");
+    buttonLocalContainer.visible = false;
+    startLocalGame();
+    // toggleMainButton("default");
   });
 
   buttonOnline.cursor = "pointer";

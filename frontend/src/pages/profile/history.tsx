@@ -60,8 +60,15 @@ function History() {
                   : his.player1.score;
 
                 // Determine win/loss status
-                const didWin = his.winner && his.winner._id === user?._id;
-                const result = !his.winner ? "Draw" : didWin ? "Win" : "Loss";
+                let result = "Draw";
+                if (currentUserScore && opponentScore) {
+                  result =
+                    currentUserScore > opponentScore
+                      ? "Win"
+                      : currentUserScore < opponentScore
+                      ? "Loss"
+                      : "Draw";
+                }
                 return (
                   <tr
                     key={index}
@@ -71,7 +78,7 @@ function History() {
                   >
                     <td className="p-4">{his._id}</td>
                     <td className="p-4">{his.game.name}</td>
-                    <td className="p-4">{opponent?.username}</td>
+                    <td className="p-4">{opponent?.username || "AI (cpu)"}</td>
                     <td className="p-4">{moment(his.createdAt).calendar()}</td>
                     <td className="p-4">{result}</td>
                     <td className="p-4">

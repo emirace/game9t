@@ -69,7 +69,7 @@ function Sidebar() {
             </p>
           </div>
         </div>
-        <p className="mb-2 font-jua">Free Game Access</p>
+        {/* <p className="mb-2 font-jua">Free Game Access</p>
         <div className="flex items-center bg-white bg-opacity-20 p-1 px-2 rounded-lg text-xs font-jua mb-4">
           <div
             className={`flex-1 text-center ${
@@ -101,7 +101,7 @@ function Sidebar() {
           >
             Game 3
           </div>
-        </div>
+        </div> */}
         <p className="text-xs">
           (Once you reach the limit, you can't play free games)
         </p>

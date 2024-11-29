@@ -265,7 +265,7 @@ var categorySettings = [
 
 //classic settings
 var defaultSettings = {
-  twoPlayer: true,
+  twoPlayer: false,
   category: true,
   row: 10,
   column: 10,
@@ -275,7 +275,7 @@ var defaultSettings = {
 //custom settings
 var customSettings = {
   enable: true,
-  twoPlayer: true,
+  twoPlayer: false,
   category: true,
   rowMin: 5,
   rowMax: 15,
@@ -468,7 +468,8 @@ function buildGameButton() {
   buttonLocal.addEventListener("click", function (evt) {
     playSound("soundButton");
     socketData.online = false;
-    toggleMainButton("default");
+    buttonLocalContainer.visible = false;
+    startLocalGame();
   });
 
   buttonOnline.cursor = "pointer";

@@ -224,7 +224,7 @@ const Sidebar: React.FC<{
         </div>
       </div>
       <div className="bg-light_blue p-4 flex justify-between ">
-        <div className="items-center gap-2 border border-cream rounded-md px-1 hidden md:flex cursor-pointer">
+        <div className="items-center gap-2 border border-cream rounded-md px-1 flex cursor-pointer">
           <img src={ICONS.coin_cream} alt="faq" className="w-auto h-4" />
           <div className="font-jua  text-lg text-cream">
             {parseFloat(selectedAmount) * 2}

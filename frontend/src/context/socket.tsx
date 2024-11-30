@@ -28,6 +28,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const [onlineUsers, setOnlineUsers] = useState<IOnlineUser[]>([]);
 
   const isOnline = (userId: string) => {
+    console.log(userId);
     return onlineUsers.some((user) => user?.userId === userId);
   };
 

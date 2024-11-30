@@ -16,23 +16,28 @@ import Loading from "../_components/loading";
 import { useUser } from "../../context/user";
 import { fetchGameSessionById } from "../../services/gameSession";
 import { IGameSession } from "../../types/gameSession";
+import { useGameSession } from "../../context/gameSession";
+import { useSocket } from "../../context/socket";
 
 const Game: React.FC = () => {
   const params = useParams();
   const { id } = params;
   const { fetchGameById } = useGame();
   const { user } = useUser();
+  const { isOnline } = useSocket();
   const { addNotification } = useToastNotification();
   const [game, setGame] = useState<IGame | null>(null);
   const [showSideBar, setShowSideBar] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const sessionId = searchParams.get("sessionid");
   const [ready, setReady] = useState(false);
   const [gameSession, setGameSession] = useState<IGameSession | null>(null);
   const [selectedAmount, setSelectedAmount] = useState("200");
+  const { cancelChallenge } = useGameSession();
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -86,6 +91,24 @@ const Game: React.FC = () => {
     }
   }, [sessionId, ready, selectedAmount]);
 
+  const handleCancelChallenge = async () => {
+    try {
+      if (!gameSession) return;
+      setCancelling(true);
+      const res = await cancelChallenge({ sessionId: gameSession?._id });
+      setGameSession(null);
+      addNotification({ message: res.message });
+      setSearchParams((params) => {
+        params.set("sessionid", "");
+        return params;
+      });
+    } catch (error: any) {
+      addNotification({ message: error.message, error: true });
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   return loading ? (
     <div className="w-full h-screen">
       <Loading />
@@ -123,7 +146,7 @@ const Game: React.FC = () => {
               <h3 className=" text-xl mb-2 font-jua">Challenge Stats</h3>
               <div className="flex items-center gap-8">
                 <p>
-                  <b>Bet:</b> {gameSession?.amount || "Nil"}
+                  <b>Bet:</b> {gameSession?.amount || selectedAmount || "Nil"}
                 </p>
                 <p>
                   <b>Win:</b> Nil
@@ -132,25 +155,35 @@ const Game: React.FC = () => {
                   <b>Lose:</b> Nil
                 </p>
               </div>
-              <div className="flex space-x-4 mt-2">
+              <div className="flex items-center space-x-4 mt-2">
                 <p>
                   <b>Stat:</b>
                 </p>
-                <span className="bg-green text-white px-1 rounded">
+                <span
+                  className={`${
+                    gameSession ? "bg-green" : "bg-gray-400"
+                  } text-white px-1 rounded`}
+                >
                   Running challenge
                 </span>
-                <span className="bg-red text-white px-1 rounded">
-                  Cancel challenge
-                </span>
+                {gameSession && (
+                  <>
+                    <button
+                      onClick={handleCancelChallenge}
+                      className="bg-red text-white px-1 rounded"
+                    >
+                      Cancel challenge
+                    </button>
+                    {cancelling && <Loading />}
+                  </>
+                )}
               </div>
             </div>
 
             <div className="bg-cream text-black p-4 px-6 rounded-lg">
               <h3 className="font-jua text-xl mb-2">Player Stats</h3>
               <div className="flex items-start mb-1">
-                <p className="flex-[2]">
-                  {gameSession?.players[1].username || user?.username}
-                </p>
+                <p className="flex-[2]">{user?.username} (online)</p>
                 <div className="flex items-center gap-3">
                   <img src={ICONS.arrow_red} alt="main" className="w-3 h-2" />
                   <p className="flex-1"> 0 Points</p>
@@ -158,7 +191,19 @@ const Game: React.FC = () => {
               </div>
               <div className="flex items-start gap-8">
                 <p className="flex-[2]">
-                  {gameSession?.players[0].username || "AI (cpu)"}
+                  {gameSession?.players && gameSession?.players?.length > 0
+                    ? (() => {
+                        const opponent = gameSession?.players.find(
+                          (player) => player._id !== user?._id
+                        );
+                        const opponentUsername =
+                          opponent?.username || "AI (cpu)";
+                        const isOpponentOnline = isOnline(opponent?._id || "");
+                        return `${opponentUsername} ${
+                          isOpponentOnline ? "(online)" : "(offline)"
+                        }`;
+                      })()
+                    : "AI (cpu) (offline)"}
                 </p>
                 <div className="flex items-center gap-3">
                   <img src={ICONS.arrow_green} alt="main" className="w-3 h-2" />

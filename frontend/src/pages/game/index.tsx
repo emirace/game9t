@@ -183,33 +183,33 @@ const Game: React.FC = () => {
             <div className="bg-cream text-black p-4 px-6 rounded-lg">
               <h3 className="font-jua text-xl mb-2">Player Stats</h3>
               <div className="flex items-start mb-1">
-                <p className="flex-[2]">{user?.username} (online)</p>
-                <div className="flex items-center gap-3">
-                  <img src={ICONS.arrow_red} alt="main" className="w-3 h-2" />
-                  <p className="flex-1"> 0 Points</p>
+                <p className="flex-[2]">{user?.username}</p>
+                <div className="font-bold text-sm">
+                  {user ? "Active" : "Inactive"}
                 </div>
               </div>
-              <div className="flex items-start gap-8">
-                <p className="flex-[2]">
-                  {gameSession?.players && gameSession?.players?.length > 0
-                    ? (() => {
-                        const opponent = gameSession?.players.find(
-                          (player) => player._id !== user?._id
-                        );
-                        const opponentUsername =
-                          opponent?.username || "AI (cpu)";
-                        const isOpponentOnline = isOnline(opponent?._id || "");
-                        return `${opponentUsername} ${
-                          isOpponentOnline ? "(online)" : "(offline)"
-                        }`;
-                      })()
-                    : "AI (cpu) (offline)"}
-                </p>
-                <div className="flex items-center gap-3">
-                  <img src={ICONS.arrow_green} alt="main" className="w-3 h-2" />
-                  <p className="flex-1">0 Points</p>
+              {gameSession?.players && gameSession?.players?.length > 0 ? (
+                (() => {
+                  const opponent = gameSession?.players.find(
+                    (player) => player._id !== user?._id
+                  );
+                  const opponentUsername = opponent?.username || "AI (cpu)";
+                  const isOpponentOnline = isOnline(opponent?._id || "");
+                  return (
+                    <div className="flex items-start">
+                      <div className="flex-[2]">{opponentUsername}</div>
+                      <div className="font-bold text-sm">
+                        {isOpponentOnline ? "Active" : "Inactive"}
+                      </div>
+                    </div>
+                  );
+                })()
+              ) : (
+                <div className="flex items-start">
+                  <p className="flex-[2]">AI (cpu)</p>
+                  <div className="font-bold text-sm">Inactive</div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 

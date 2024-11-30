@@ -58,6 +58,7 @@ var socketData = {
 var token = window.localStorage.getItem("authToken");
 
 var sessionId = null;
+var selectedAmount = "";
 
 function initSocket(game) {
   multiplayerSettings.game = game;
@@ -125,6 +126,7 @@ function initSocket(game) {
   window.addEventListener("message", (event) => {
     if (event.data && event.data.type === "GAME") {
       console.log("Received data:", event.data.sessionId);
+      selectedAmount = event.data.selectedAmount;
       sessionId = event.data.sessionId;
     }
   });
@@ -345,7 +347,7 @@ function joinSocketPrivateRoom() {
 
 function startLocalGame() {
   toggleSocketLoader(true, textMultiplayerDisplay.findingAi, true);
-  socket.emit("startLocalGame", "snakesandladders");
+  socket.emit("startLocalGame", "snakesandladders", selectedAmount);
 }
 
 function joinSocketRandomRoom() {

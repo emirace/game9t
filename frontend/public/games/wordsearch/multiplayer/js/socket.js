@@ -57,6 +57,7 @@ var socketData = {
 var token = window.localStorage.getItem("authToken");
 
 var sessionId = null;
+var selectedAmount = "";
 
 function initSocket(game) {
   multiplayerSettings.game = game;
@@ -124,6 +125,7 @@ function initSocket(game) {
   window.addEventListener("message", (event) => {
     if (event.data && event.data.type === "GAME") {
       console.log("Received data:", event.data.sessionId);
+      selectedAmount = event.data.selectedAmount;
       sessionId = event.data.sessionId;
     }
   });
@@ -251,7 +253,7 @@ function addSocketUser() {
 
 function startLocalGame() {
   toggleSocketLoader(true, textMultiplayerDisplay.findingAi, true);
-  socket.emit("startLocalGame", "wordsearch");
+  socket.emit("startLocalGame", "wordsearch", selectedAmount);
 }
 
 function addSocketRandomUser() {

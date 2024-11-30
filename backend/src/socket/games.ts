@@ -310,24 +310,66 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     updateSocketGame(status, data, others);
   });
 
-  socket.on('startLocalGame', async function (slug) {
-    console.log(slug);
+  socket.on('startLocalGame', async function (slug, selectedAmount) {
+    console.log(slug, selectedAmount);
     try {
+      const userId = (socket.request as any).user._id;
       const game = await Game.findOne({ slug });
       if (!game) {
         socket.emit('updateSocketRooms', 'nosession');
         return;
       }
 
-      await Gameplay.create({
+      const gameSession = await GameSession.create({
+        players: [userId],
+        active: true,
+        initiatedGame: game._id,
+        amount: selectedAmount,
+        private: true,
+      });
+
+      const gamePlay = await Gameplay.create({
         game: game._id,
         player1: {
-          userId: (socket.request as any).user._id,
+          userId,
         },
         multiplayer: false,
         active: true,
         startTime: Date,
+        session: gameSession._id,
       });
+
+      if (selectedAmount && gameSession.amount) {
+        const wallet = await Wallet.findOne({ user: userId });
+
+        // Check wallet existence and sufficient balance
+        if (!wallet) {
+          socket.emit('updateSocketRooms', 'nobalance');
+          return;
+        }
+
+        if (wallet.balance < gameSession.amount) {
+          socket.emit('updateSocketRooms', 'nobalance');
+          return;
+        }
+
+        // Deduct balances
+        wallet.balance -= gameSession.amount;
+
+        await wallet.save();
+
+        const bet = await Bet.create({
+          game: gamePlay._id,
+          session: gameSession._id,
+          amount: gameSession.amount,
+          status: 'ongoing',
+        });
+
+        // Associate the bet with the gameplay
+        gamePlay.bet = bet._id as mongoose.Types.ObjectId;
+        await gamePlay.save();
+      }
+
       socket.emit('startLocalGame');
     } catch (error) {
       console.log(error);
@@ -363,7 +405,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
           gameplay.player2.score = score.opponentScore;
         }
       } else if (
-        gameplay.player2 &&
+        gameplay?.player2?.userId &&
         gameplay.player2.userId.toString() === userId.toString()
       ) {
         gameplay.player2.score = score.score;

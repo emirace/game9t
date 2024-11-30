@@ -13,7 +13,11 @@ import { IGameSession } from "../../../types/gameSession";
 import { useGameSession } from "../../../context/gameSession";
 import { useBranding } from "../../../context/branding";
 
-const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
+const Sidebar: React.FC<{
+  gameId?: string;
+  selectedAmount: string;
+  setSelectedAmount: (value: string) => void;
+}> = ({ gameId, selectedAmount, setSelectedAmount }) => {
   const { user } = useUser();
   const { balance } = useWallet();
   const { branding } = useBranding();
@@ -21,7 +25,6 @@ const Sidebar: React.FC<{ gameId?: string }> = ({ gameId }) => {
   const { createChallenge, onlineUsers } = useSocket();
   const { cancelChallenge } = useGameSession();
   const { addNotification } = useToastNotification();
-  const [selectedAmount, setSelectedAmount] = useState("200");
   const [showSearchPlayer, setShowSearchPlayer] = useState(false);
   const [showCompete, setShowCompete] = useState(false);
   const [message, setMessage] = useState("");

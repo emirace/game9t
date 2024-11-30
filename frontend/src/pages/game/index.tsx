@@ -32,6 +32,7 @@ const Game: React.FC = () => {
   const sessionId = searchParams.get("sessionid");
   const [ready, setReady] = useState(false);
   const [gameSession, setGameSession] = useState<IGameSession | null>(null);
+  const [selectedAmount, setSelectedAmount] = useState("200");
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -67,20 +68,23 @@ const Game: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(sessionId, ready);
-    if (sessionId && ready) {
+    console.log(sessionId, ready, selectedAmount);
+    if (ready) {
       if (iframeRef.current?.contentWindow) {
         const message = {
           type: "GAME",
           sessionId,
+          selectedAmount,
         };
         iframeRef.current.contentWindow.postMessage(message, "*");
       }
-      fetchGameSessionById(sessionId).then((session) => {
-        setGameSession(session);
-      });
+      if (sessionId) {
+        fetchGameSessionById(sessionId).then((session) => {
+          setGameSession(session);
+        });
+      }
     }
-  }, [sessionId, ready]);
+  }, [sessionId, ready, selectedAmount]);
 
   return loading ? (
     <div className="w-full h-screen">
@@ -197,13 +201,21 @@ const Game: React.FC = () => {
         </div>
         <SideModel isOpen={showSideBar} onClose={() => setShowSideBar(false)}>
           <div className="absolute left-0 top-0 overflow-y-auto h-screen">
-            <Sidebar gameId={game?._id} />
+            <Sidebar
+              gameId={game?._id}
+              selectedAmount={selectedAmount}
+              setSelectedAmount={setSelectedAmount}
+            />
           </div>
         </SideModel>
 
         {/* Sidebar */}
         <div className="hidden md:block">
-          <Sidebar gameId={game?._id} />
+          <Sidebar
+            gameId={game?._id}
+            selectedAmount={selectedAmount}
+            setSelectedAmount={setSelectedAmount}
+          />
         </div>
       </div>
       <OtherGames />

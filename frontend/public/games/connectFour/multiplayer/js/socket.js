@@ -58,6 +58,7 @@ var socketData = {
 var token = window.localStorage.getItem("authToken");
 
 var sessionId = null;
+var selectedAmount = "";
 
 function initSocket(game) {
   multiplayerSettings.game = game;
@@ -124,7 +125,8 @@ function initSocket(game) {
 
   window.addEventListener("message", (event) => {
     if (event.data && event.data.type === "GAME") {
-      console.log("Received data:", event.data.sessionId);
+      console.log("Received data:", event.data);
+      selectedAmount = event.data.selectedAmount;
       if (event.data.sessionId) {
         sessionId = event.data.sessionId;
         multiplayerSettings.localPlay = false;
@@ -255,7 +257,7 @@ function addSocketUser() {
 
 function startLocalGame() {
   toggleSocketLoader(true, textMultiplayerDisplay.findingAi, true);
-  socket.emit("startLocalGame", "connectFour");
+  socket.emit("startLocalGame", "connectFour", selectedAmount);
 }
 
 function addSocketRandomUser() {

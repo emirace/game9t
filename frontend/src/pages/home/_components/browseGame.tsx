@@ -67,7 +67,7 @@ function BrowseGame() {
           />
         </div>
       </div>
-      <div className="flex justify-center mb-4">
+      {/* <div className="flex justify-center mb-4">
         <div
           className="relative  md:hidden w-56 h-6 bg-black rounded-full p-1 cursor-pointer transition-all"
           onClick={toggleSwitch}
@@ -84,7 +84,7 @@ function BrowseGame() {
             <div className="text-xs font-bold ">All Games</div>
           </div>
         </div>
-      </div>
+      </div> */}
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ">
           <div className="animate-pulse bg-medium_blue rounded-lg h-40 p-4" />

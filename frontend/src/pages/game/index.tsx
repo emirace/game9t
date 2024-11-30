@@ -207,7 +207,7 @@ const Game: React.FC = () => {
               ) : (
                 <div className="flex items-start">
                   <p className="flex-[2]">AI (cpu)</p>
-                  <div className="font-bold text-sm">Inactive</div>
+                  <div className="font-bold text-sm">Active</div>
                 </div>
               )}
             </div>

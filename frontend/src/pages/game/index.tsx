@@ -132,7 +132,7 @@ const Game: React.FC = () => {
         {/* Main Content */}
         <div className="flex-1">
           {/* Game Mode Selection */}
-          <div className="border-4 border-light_blue mb-6 h-[26rem]">
+          <div className="border-4 border-light_blue mb-4 h-[26rem]">
             <iframe
               ref={iframeRef}
               src={`/games/${game?.slug}/index.html`}
@@ -140,6 +140,14 @@ const Game: React.FC = () => {
             />
           </div>
 
+          <div className="flex justify-center md:hidden  mb-4">
+            <button
+              onClick={() => setShowSideBar(true)}
+              className="bg-black font-jua rounded-full text-white font-bold py-2 px-10  mt-4"
+            >
+              Place Bet
+            </button>
+          </div>
           {/* Challenge Stats & Player Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
             <div className="bg-cream text-black p-4 rounded-lg">
@@ -213,15 +221,6 @@ const Game: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex justify-center md:hidden  mb-4">
-            <button
-              onClick={() => setShowSideBar(true)}
-              className="bg-black font-jua rounded-full text-white font-bold py-2 px-10  mt-4"
-            >
-              Place Bet
-            </button>
-          </div>
-
           {/* Game Details */}
           <div className="bg-medium_blue px-8 p-6 rounded-lg">
             <h3 className="font-jua text-xl mb-4">Game Details</h3>
@@ -245,7 +244,7 @@ const Game: React.FC = () => {
           </div>
         </div>
         <SideModel isOpen={showSideBar} onClose={() => setShowSideBar(false)}>
-          <div className="absolute left-0 top-0 overflow-y-auto h-screen">
+          <div className="overflow-y-auto h-screen">
             <Sidebar
               gameId={game?._id}
               selectedAmount={selectedAmount}

@@ -92,7 +92,7 @@ const Sidebar: React.FC<{
   }, [socket]);
 
   return (
-    <aside className="bg-medium_blue w-full md:w-96 rounded-md ">
+    <aside className="bg-medium_blue w-full rounded-md pb-20 ">
       {/* Profile Section */}
       <div className="flex items-center gap-4 p-4">
         <img src={ICONS.profile_outline} alt="profile" className="w-5 h-5" />
@@ -145,9 +145,9 @@ const Sidebar: React.FC<{
             Game 3
           </div>
         </div> */}
-        <p className="text-xs">
+        {/* <p className="text-xs">
           (Once you reach the limit, you can't play free games)
-        </p>
+        </p> */}
         <div className="flex items-center gap-4 mt-2 ">
           <button className="border flex items-center gap-2 font-jua px-1 text-lg rounded-md">
             <img src={ICONS.wallet} alt="wallet" className="w-4 h-4" />

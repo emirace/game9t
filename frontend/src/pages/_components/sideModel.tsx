@@ -18,7 +18,7 @@ const SideModel: React.FC<SidebarProps> = ({ children, isOpen, onClose }) => {
   return (
     <>
       <div
-        className={`fixed top-0 right-0 h-full w-80 bg-dark transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-full md:w-80 bg-dark transform transition-transform duration-300 ease-in-out ${
           isVisible ? "translate-x-0" : "translate-x-full"
         } z-40`}
       >
@@ -30,7 +30,7 @@ const SideModel: React.FC<SidebarProps> = ({ children, isOpen, onClose }) => {
         />
 
         {/* SideModel Content */}
-        <div className="p-6">{children}</div>
+        <div className="p-6 w-full">{children}</div>
       </div>
 
       {/* Overlay when sidebar is open */}

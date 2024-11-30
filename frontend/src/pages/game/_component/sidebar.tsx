@@ -217,9 +217,23 @@ const Sidebar: React.FC<{
           <img src={ICONS.pointer} alt="profile" className="w-4 h-4" />
         </button>
       </div>
+      <div className="flex items-center justify-between gap-4 p-4">
+        <div className="flex items-center gap-4">
+          <img src={ICONS.trophy3} alt="profile" className="w-auto h-5" />
+          <h2 className="font-jua text-2xl ">Winning Amount</h2>
+        </div>
+      </div>
+      <div className="bg-light_blue p-4 flex justify-between ">
+        <div className="items-center gap-2 border border-cream rounded-md px-1 hidden md:flex cursor-pointer">
+          <img src={ICONS.coin_cream} alt="faq" className="w-auto h-4" />
+          <div className="font-jua  text-lg text-cream">
+            {parseFloat(selectedAmount) * 2}
+          </div>
+        </div>
+        <div className="text-cream font-jua">Wallet</div>
+      </div>
 
       {/* Available Players Section */}
-
       <div className="flex items-center gap-4 p-4">
         <img src={ICONS.users2} alt="profile" className="w-5 h-5" />
         <h2 className="font-jua text-2xl ">Available Players</h2>

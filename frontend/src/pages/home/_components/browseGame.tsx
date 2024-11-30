@@ -8,14 +8,14 @@ import { imageUrl } from "../../../services/api";
 function BrowseGame() {
   const { games, fetchGames } = useGame();
   const { addNotification } = useToastNotification();
-  const [isFreeGames, setIsFreeGames] = useState(true);
+  const [isFreeGames] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [loading, setLoading] = useState(true);
   const router = useNavigate();
 
-  const toggleSwitch = () => {
-    setIsFreeGames(!isFreeGames);
-  };
+  // const toggleSwitch = () => {
+  //   setIsFreeGames(!isFreeGames);
+  // };
 
   useEffect(() => {
     const refreshGames = async () => {
@@ -39,7 +39,7 @@ function BrowseGame() {
   return (
     <div>
       <div className="flex items-center justify-between my-3 md:my-8">
-        <div
+        {/* <div
           className="relative hidden md:block w-56 h-10 bg-black rounded-full p-1 cursor-pointer transition-all"
           onClick={toggleSwitch}
         >
@@ -54,7 +54,7 @@ function BrowseGame() {
             <div className="text-xs font-bold ">Free Games</div>
             <div className="text-xs font-bold ">All Games</div>
           </div>
-        </div>
+        </div> */}
         <div className="font-jua text-3xl">Browse Games</div>
 
         <div className="bg-black p-2 hidden md:flex gap-2 items-center">

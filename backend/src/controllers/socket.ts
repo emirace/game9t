@@ -8,6 +8,32 @@ import Notification from '../models/notification';
 import { createNotification } from '../utils/notification';
 import Message from '../models/message';
 
+export const startGame = async ({
+  mode,
+  socket,
+}: {
+  mode: string;
+  socket: Socket;
+}) => {
+  try {
+    const userId = (socket.request as any).user._id;
+
+    socket
+      .to(onlineUsers.get(userId.toString())?.socketId.main!)
+      .emit('startGame', { mode });
+  } catch (error) {
+    console.log(error);
+    socket.emit('updateSocketRooms', 'any', 'Error starting game, try again');
+  }
+};
+
+export const startPlayerGame = ({ socket }: { socket: Socket }) => {
+  const userId = (socket.request as any).user._id;
+  socket
+    .to(onlineUsers.get(userId.toString())?.socketId.game!)
+    .emit('startPlayerGame');
+};
+
 export const createChallenge = async ({
   gameId,
   socket,
@@ -62,7 +88,7 @@ export const createChallenge = async ({
 
     // Populate initiatedGame.name and players.image fields
     gameSession = await (
-      await gameSession.populate({ path: 'initiatedGame', select: 'name' })
+      await gameSession.populate({ path: 'initiatedGame', select: 'name slug' })
     ).populate({
       path: 'players',
       select: 'personalInfo.profilePictureUrl username',
@@ -85,9 +111,8 @@ export const createChallenge = async ({
       });
 
       if (!isUserOnline) throw new Error('User is not online');
-
       socket
-        .to(onlineUsers.get((opponent._id as any).toString()).socketId)
+        .to(onlineUsers.get((opponent._id as any).toString())?.socketId.main!)
         .emit('challengeRequest', { gameSession });
     }
 
@@ -200,6 +225,17 @@ export const cancelChallenge = async ({
     const userId = (socket.request as any).user._id;
     const username = (socket.request as any).user.username;
 
+    if (!sessionId) {
+      socket.emit('cancelChallengeResponse', {
+        success: true,
+        message: 'Challenge canceled successfully',
+      });
+      socket
+        .to(onlineUsers.get(userId.toString())?.socketId.game!)
+        .emit('updateSocketRooms', 'any', 'Game canceled');
+      return;
+    }
+
     // Find the active game session that the user is trying to cancel
     const gameSession = await GameSession.findOne({
       _id: sessionId,
@@ -208,7 +244,14 @@ export const cancelChallenge = async ({
     });
 
     if (!gameSession) {
-      throw new Error('Challenge not found or already inactive');
+      socket.emit('cancelChallengeResponse', {
+        success: true,
+        message: 'Challenge canceled successfully',
+      });
+      socket
+        .to(onlineUsers.get(userId.toString())?.socketId.game!)
+        .emit('updateSocketRooms', 'any', 'Game canceled');
+      return;
     }
 
     // Set game session to inactive (cancel it)
@@ -227,7 +270,7 @@ export const cancelChallenge = async ({
             message: `${username} cancelled the challenge`,
             link: `/game/${gameSession.initiatedGame._id}?sessionid=${gameSession._id}`,
           });
-          socket.to(opponentUser.socketId).emit('challengeCancelled', {
+          socket.to(opponentUser.socketId.main!).emit('challengeCancelled', {
             sessionId,
             message: `Challenge canceled by ${(socket.request as any).user.username}`,
           });

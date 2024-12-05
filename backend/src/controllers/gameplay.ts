@@ -88,7 +88,7 @@ export const getUserGameplays = async (
       .populate('player1.userId', 'username')
       .populate('player2.userId', 'username')
       .populate('bet', 'amount')
-      .sort({ startTime: -1 });
+      .sort({ createdAt: -1 });
 
     res.status(200).json({ gameplays: userGameplays });
   } catch (error) {

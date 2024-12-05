@@ -58,7 +58,9 @@ function History() {
                 <td className="p-4">{bet._id}</td>
                 <td className="p-4">{bet?.session.initiatedGame.name}</td>
                 <td className="p-4">{bet?.session.players[0].username}</td>
-                <td className="p-4">{bet?.session.players[1].username}</td>
+                <td className="p-4">
+                  {bet?.session.players[1]?.username || "AI(cpu)"}
+                </td>
                 <td className="p-4">{bet?.winner?.username}</td>
                 <td className="p-4"> {bet.amount}</td>
                 <td className="p-4">{moment(bet.settlementDate).calendar()}</td>

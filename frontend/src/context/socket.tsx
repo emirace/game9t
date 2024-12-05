@@ -2,15 +2,12 @@ import React, { createContext, useEffect, ReactNode, useState } from "react";
 import { Socket, io } from "socket.io-client";
 import { baseURL } from "../services/api";
 import { useUser } from "./user";
-import { createGameData } from "../types/game";
 import { IOnlineUser } from "../types/user";
-import { IGameSession } from "../types/gameSession";
 
 // Define the context types
 interface SocketContextType {
   socket: Socket | null;
   onlineUsers: IOnlineUser[];
-  createChallenge: (data: createGameData) => Promise<IGameSession>;
   isOnline: (id: string) => boolean;
 }
 
@@ -28,40 +25,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const [onlineUsers, setOnlineUsers] = useState<IOnlineUser[]>([]);
 
   const isOnline = (userId: string) => {
-    console.log(userId);
     return onlineUsers.some((user) => user?.userId === userId);
-  };
-
-  const createChallenge = async ({
-    gameId,
-    amount,
-    compete,
-  }: createGameData): Promise<IGameSession> => {
-    return new Promise<IGameSession>((resolve, reject) => {
-      socket?.emit("createChallenge", { gameId, amount, compete });
-
-      const handleResponse = ({
-        gameSession,
-      }: {
-        gameSession: IGameSession;
-      }) => {
-        resolve(gameSession);
-        cleanup();
-      };
-
-      const handleError = (error: string) => {
-        reject(new Error(error));
-        cleanup();
-      };
-
-      const cleanup = () => {
-        socket?.off("createChallengeResponse", handleResponse);
-        socket?.off("createChallengeError", handleError);
-      };
-
-      socket?.on("createChallengeResponse", handleResponse);
-      socket?.on("createChallengeError", handleError);
-    });
   };
 
   useEffect(() => {
@@ -93,6 +57,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       autoConnect: true,
       extraHeaders: {
         authorization: `Bearer ${token}`,
+        type: "main",
       },
     });
 
@@ -113,9 +78,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   }, [user]);
 
   return (
-    <SocketContext.Provider
-      value={{ socket, onlineUsers, createChallenge, isOnline }}
-    >
+    <SocketContext.Provider value={{ socket, onlineUsers, isOnline }}>
       {children}
     </SocketContext.Provider>
   );

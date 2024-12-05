@@ -214,7 +214,7 @@ export const approveOrRejectBet = async (req: Request, res: Response) => {
     }
 
     // Update bet status
-    bet.status = status;
+    bet.status = 'completed';
     bet.settlementDate = new Date();
 
     if (status === 'completed') {

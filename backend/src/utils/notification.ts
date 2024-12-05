@@ -32,7 +32,8 @@ export const createNotification = async ({
     });
 
     // Emit the notification to the recipient via socket if they're online
-    const recipientSocketId = onlineUsers.get(recipient)?.socketId;
+    const recipientSocketId = onlineUsers.get(recipient as string)?.socketId
+      .main;
     if (recipientSocketId) {
       io.to(recipientSocketId).emit('newNotification', notification);
     }

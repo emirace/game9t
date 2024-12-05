@@ -39,6 +39,7 @@ const ICONS = {
   profile_outline: new URL("./profile_outline.png", import.meta.url).href,
   flag: new URL("./flag.png", import.meta.url).href,
   question: new URL("./question.png", import.meta.url).href,
+  question_black: new URL("./question_black.png", import.meta.url).href,
   pointer: new URL("./pointer.png", import.meta.url).href,
   users2: new URL("./users2.png", import.meta.url).href,
   dollar: new URL("./dollar.png", import.meta.url).href,

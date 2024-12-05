@@ -10,6 +10,7 @@ import {
   setThemeColor,
 } from "../utils/branding";
 import Loading from "./_components/loading";
+import ToastNotification from "./_components/toastNotification";
 
 function Main() {
   const { branding, loading } = useBranding();
@@ -23,6 +24,7 @@ function Main() {
   }, [branding]);
   return (
     <GameSessionProvider>
+      <ToastNotification />
       <ScrollToTop />
       {loading ? (
         <div className="h-screen w-screen bg-black flex justify-center items-center ">

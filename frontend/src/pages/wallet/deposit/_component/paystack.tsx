@@ -7,6 +7,7 @@ import { useToastNotification } from "../../../../context/toastNotificationConte
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ICONS from "../../../../assets/icons/icons";
+import Loading from "../../../_components/loading";
 
 const POINT_TO_NGN_RATE = 5;
 
@@ -88,10 +89,10 @@ const Paystack: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           setLoading(true);
           initializePayment({ onSuccess, onClose });
         }}
-        className="px-4 py-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors disabled:bg-gray-500"
+        className="px-4 py-2 flex items-center gap-2 min-w-48 bg-black font-semibold rounded-full hover:bg-dark_blue transition-colors disabled:bg-gray-500"
         disabled={loading}
       >
-        Pay Now
+        {loading && <Loading size="sm" />} Pay Now
       </button>
     </div>
   );

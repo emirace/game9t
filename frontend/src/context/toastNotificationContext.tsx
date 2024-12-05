@@ -6,6 +6,7 @@ import React, {
   useRef,
   useContext,
 } from "react";
+import { IGameSession } from "../types/gameSession";
 
 interface Props {
   children: ReactNode;
@@ -13,7 +14,8 @@ interface Props {
 interface INotification {
   id: string;
   message: string;
-  action?: () => void;
+  gameSession?: IGameSession;
+  action?: boolean;
   buttonText?: string;
   error?: boolean;
 }
@@ -21,9 +23,10 @@ interface INotification {
 interface ToastNotificationContextProps {
   addNotification: (data: {
     message: string;
+    gameSession?: IGameSession;
     buttonText?: string;
     error?: boolean;
-    action?: () => void;
+    action?: boolean;
   }) => void;
   removeNotification: (id: string) => void;
   notifications: INotification[];
@@ -39,17 +42,17 @@ export const ToastNotificationProvider: React.FC<Props> = ({ children }) => {
 
   const addNotification = (data: {
     message: string;
+    gameSession?: IGameSession;
     buttonText?: string;
     error?: boolean;
-    action?: () => void;
+    action?: boolean;
   }) => {
-    const { message, action, buttonText, error } = data;
+    const { message, action, buttonText, error, gameSession } = data;
     const id = notificationIdCounter.current.toString();
     notificationIdCounter.current += 1;
-    console.log("notification message", message);
     setNotifications((prevNotifications) => [
       ...prevNotifications,
-      { id, message, action, buttonText, error },
+      { id, message, action, buttonText, error, gameSession },
     ]);
   };
 

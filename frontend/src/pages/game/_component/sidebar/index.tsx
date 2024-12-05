@@ -1,29 +1,31 @@
 import { useEffect, useState } from "react";
-import ICONS from "../../../assets/icons/icons";
-import Model from "../../_components/model";
-import SaerchPlayer from "./saerchPlayer";
-import { useUser } from "../../../context/user";
-import { useWallet } from "../../../context/wallet";
+import ICONS from "../../../../assets/icons/icons";
+import Model from "../../../_components/model";
+import SaerchPlayer from "../saerchPlayer";
+import { useUser } from "../../../../context/user";
+import { useWallet } from "../../../../context/wallet";
 import { Link } from "react-router-dom";
-import { imageUrl } from "../../../services/api";
-import { useSocket } from "../../../context/socket";
-import Loading from "../../_components/loading";
-import { useToastNotification } from "../../../context/toastNotificationContext";
-import { IGameSession } from "../../../types/gameSession";
-import { useGameSession } from "../../../context/gameSession";
-import { useBranding } from "../../../context/branding";
+import { imageUrl } from "../../../../services/api";
+import { useSocket } from "../../../../context/socket";
+import Loading from "../../../_components/loading";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
+import { IGameSession } from "../../../../types/gameSession";
+import { useGameSession } from "../../../../context/gameSession";
+import PlaceBet from "./_component/placeBet";
 
 const Sidebar: React.FC<{
   gameId?: string;
-  selectedAmount: string;
-  setSelectedAmount: (value: string) => void;
-}> = ({ gameId, selectedAmount, setSelectedAmount }) => {
+}> = ({ gameId }) => {
   const { user } = useUser();
   const { balance } = useWallet();
-  const { branding } = useBranding();
   const { socket } = useSocket();
-  const { createChallenge, onlineUsers } = useSocket();
-  const { cancelChallenge } = useGameSession();
+  const { onlineUsers } = useSocket();
+  const {
+    cancelChallenge,
+    createChallenge,
+    selectedAmount,
+    setSelectedAmount,
+  } = useGameSession();
   const { addNotification } = useToastNotification();
   const [showSearchPlayer, setShowSearchPlayer] = useState(false);
   const [showCompete, setShowCompete] = useState(false);
@@ -31,7 +33,6 @@ const Sidebar: React.FC<{
   const [success, setSuccess] = useState(false);
   const [gameSession, setGameSession] = useState<IGameSession | null>(null);
   const [cancelling, setCancelling] = useState(false);
-  const [showCustom, setShowCustom] = useState(false);
 
   const handleChallenge = async (compete?: string) => {
     if (!gameId) return;
@@ -55,7 +56,7 @@ const Sidebar: React.FC<{
         setSuccess(true);
       }
     } catch (error: any) {
-      addNotification({ message: error, error: true });
+      addNotification({ message: error.message, error: true });
       setShowCompete(false);
     }
   };
@@ -171,43 +172,10 @@ const Sidebar: React.FC<{
         <img src={ICONS.question} alt="profile" className="w-4 h-4" />
       </div>
       <div className="bg-light_blue p-4">
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {branding?.predefinedBets.map((amount) => (
-            <button
-              key={amount}
-              onClick={() => setSelectedAmount(amount)}
-              className={`bg-black flex items-center justify-center gap-1 hover:bg-cream hover:text-black font-bold py-2 rounded-full ${
-                selectedAmount === amount ? "bg-cream text-black" : null
-              }`}
-            >
-              <img
-                src={
-                  selectedAmount === amount
-                    ? ICONS.coin_black
-                    : ICONS.coin_cream
-                }
-                alt="coin"
-                className="w-auto h-3"
-              />
-              {amount}
-            </button>
-          ))}
-          <button
-            onClick={() => setShowCustom(!showCustom)}
-            className={`bg-black flex items-center justify-center gap-1 hover:bg-cream hover:text-black font-bold py-2 rounded-full ${
-              showCustom ? "bg-cream text-black" : null
-            }`}
-          >
-            Custom
-          </button>
-        </div>
-        {showCustom && (
-          <input
-            placeholder="Enter amount(100 - 100,000)"
-            className="bg-black p-2 rounded-full w-full"
-            onChange={(e) => setSelectedAmount(e.target.value)}
-          />
-        )}
+        <PlaceBet
+          selectedAmount={selectedAmount}
+          setSelectedAmount={setSelectedAmount}
+        />
 
         <button
           onClick={() => handleChallenge()}

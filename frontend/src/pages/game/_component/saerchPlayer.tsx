@@ -11,10 +11,10 @@ import { imageUrl } from "../../../services/api";
 import { inviteUser } from "../../../services/user";
 
 const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
-  const { onlineUsers, createChallenge } = useSocket();
+  const { onlineUsers } = useSocket();
   const { addNotification } = useToastNotification();
   const { socket } = useSocket();
-  const { cancelChallenge } = useGameSession();
+  const { selectedAmount, cancelChallenge, createChallenge } = useGameSession();
   const [showConfirm, setShowConfirm] = useState(false);
   const [user, setUser] = useState<{ useranme: string; id: string } | null>(
     null
@@ -35,12 +35,15 @@ const SaerchPlayer: React.FC<{ gameId?: string }> = ({ gameId }) => {
 
   const handleChallenge = async (compete?: string) => {
     if (!gameId) return;
+    if (!selectedAmount || parseFloat(selectedAmount) < 100) {
+      addNotification({ message: "Select a valid amount", error: true });
+    }
     try {
       setShowCompete(true);
       setMessage("Craeting Challenge...");
       const res = await createChallenge({
         gameId,
-        // amount: parseFloat(selectedAmount),
+        amount: parseFloat(selectedAmount),
         compete,
       });
       setGameSession(res);

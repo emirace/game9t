@@ -2,7 +2,6 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
 import { UserProvider } from "./context/user";
 import { ToastNotificationProvider } from "./context/toastNotificationContext";
-import ToastNotification from "./pages/_components/toastNotification";
 import { GameProvider } from "./context/game";
 import { WalletProvider } from "./context/wallet";
 import { TransactionProvider } from "./context/transaction";
@@ -24,7 +23,6 @@ function App() {
                   <NotificationProvider>
                     <MessageProvider>
                       <GoogleOAuthProvider clientId="466890716370-e5srktqi1k90ejf3vbdmkrg38fbdb8a9.apps.googleusercontent.com">
-                        <ToastNotification />
                         <RouterProvider router={router} />
                       </GoogleOAuthProvider>
                     </MessageProvider>

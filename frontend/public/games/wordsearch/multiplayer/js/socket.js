@@ -16,6 +16,8 @@ var multiplayerSettings = {
 //multiplayer text display
 var textMultiplayerDisplay = {
   findingPlayer: "Waiting for players",
+  findingAi: "Starting game with Computer",
+  creatingGame: "Creating game",
   findingPlayerTimer: "\n([TIMER])",
   connectionTimeout: "No players found...",
   noSession: "Create or challegde a player",
@@ -57,7 +59,6 @@ var socketData = {
 var token = window.localStorage.getItem("authToken");
 
 var sessionId = null;
-var selectedAmount = "";
 
 function initSocket(game) {
   multiplayerSettings.game = game;
@@ -124,9 +125,13 @@ function initSocket(game) {
 
   window.addEventListener("message", (event) => {
     if (event.data && event.data.type === "GAME") {
-      console.log("Received data:", event.data.sessionId);
-      selectedAmount = event.data.selectedAmount;
+      console.log("Received data:", event.data);
       sessionId = event.data.sessionId;
+      if (event.data.sessionId) {
+        multiplayerSettings.localPlay = false;
+      } else {
+        multiplayerSettings.localPlay = true;
+      }
     }
   });
   window.parent.postMessage({ type: "STATUS", data: "Ready" }, "*");
@@ -135,6 +140,7 @@ function initSocket(game) {
     autoConnect: true,
     extraHeaders: {
       authorization: `Bearer ${token}`,
+      type: "game",
     },
   });
   socket.on("connect", function () {
@@ -172,17 +178,21 @@ function initSocket(game) {
       setTimeout(function () {
         goPage("main");
       }, 3000);
-    }
-    if (status == "nosession") {
+    } else if (status == "nosession") {
       toggleSocketLoader(false);
       updateGameLog(textMultiplayerDisplay.noSession);
       setTimeout(function () {
         goPage("main");
       }, 3000);
-    }
-    if (status == "nobalance") {
+    } else if (status == "nobalance") {
       toggleSocketLoader(false);
       updateGameLog(textMultiplayerDisplay.noBalance);
+      setTimeout(function () {
+        goPage("main");
+      }, 3000);
+    } else if (status == "any") {
+      toggleSocketLoader(false);
+      updateGameLog(data);
       setTimeout(function () {
         goPage("main");
       }, 3000);
@@ -238,6 +248,10 @@ function initSocket(game) {
     toggleSocketLoader(false);
     toggleMainButton("default");
   });
+
+  socket.on("startPlayerGame", function () {
+    checkQuickGameMode();
+  });
 }
 
 function addSocketUser() {
@@ -253,7 +267,12 @@ function addSocketUser() {
 
 function startLocalGame() {
   toggleSocketLoader(true, textMultiplayerDisplay.findingAi, true);
-  socket.emit("startLocalGame", "wordsearch", selectedAmount);
+  socket.emit("startGame", "computer");
+}
+
+function startPlayerGame() {
+  toggleSocketLoader(true, textMultiplayerDisplay.creatingGame, true);
+  socket.emit("startGame", "players");
 }
 
 function addSocketRandomUser() {
@@ -349,7 +368,6 @@ function joinSocketPrivateRoom() {
 }
 
 function joinSocketRandomRoom() {
-  console.log(sessionId);
   socket.emit("joinrandomroom", sessionId);
 }
 
@@ -363,7 +381,12 @@ function postSocketCloseRoom() {
 }
 
 function exitSocketGame(status, score) {
-  socket.emit("exitGame", { status, score });
+  socket.emit("exitGame", {
+    status,
+    score,
+    sessionId,
+    host: socketData.host,
+  });
 }
 
 //games

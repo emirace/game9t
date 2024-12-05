@@ -232,7 +232,9 @@ function buildGameButton() {
   buttonOnline.cursor = "pointer";
   buttonOnline.addEventListener("click", function (evt) {
     playSound("soundButton");
-    checkQuickGameMode();
+    buttonPlayerContainer.visible = false;
+    buttonLocalContainer.visible = false;
+    startPlayerGame();
   });
 
   buttonStart.cursor = "pointer";

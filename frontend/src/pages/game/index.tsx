@@ -7,24 +7,23 @@ import {
 } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import OtherGames from "./_component/otherGames";
-import Sidebar from "./_component/sidebar";
 import SideModel from "../_components/sideModel";
 import { useGame } from "../../context/game";
 import { IGame } from "../../types/game";
 import { useToastNotification } from "../../context/toastNotificationContext";
 import Loading from "../_components/loading";
-import { useUser } from "../../context/user";
 import { fetchGameSessionById } from "../../services/gameSession";
-import { IGameSession } from "../../types/gameSession";
 import { useGameSession } from "../../context/gameSession";
-import { useSocket } from "../../context/socket";
+import MiniModel from "../_components/miniModal";
+import Sidebar from "./_component/sidebar";
+import CreateChallege from "./_component/createChallege";
 
 const Game: React.FC = () => {
   const params = useParams();
   const { id } = params;
   const { fetchGameById } = useGame();
-  const { user } = useUser();
-  const { isOnline } = useSocket();
+  // const { user } = useUser();
+  // const { isOnline } = useSocket();
   const { addNotification } = useToastNotification();
   const [game, setGame] = useState<IGame | null>(null);
   const [showSideBar, setShowSideBar] = useState(false);
@@ -34,9 +33,8 @@ const Game: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const sessionId = searchParams.get("sessionid");
   const [ready, setReady] = useState(false);
-  const [gameSession, setGameSession] = useState<IGameSession | null>(null);
-  const [selectedAmount, setSelectedAmount] = useState("200");
-  const { cancelChallenge } = useGameSession();
+  const { cancelChallenge, selectedAmount, gameSession, mode, setGameSession } =
+    useGameSession();
   const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
@@ -73,23 +71,27 @@ const Game: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(sessionId, ready, selectedAmount);
     if (ready) {
       if (iframeRef.current?.contentWindow) {
         const message = {
           type: "GAME",
-          sessionId,
-          selectedAmount,
+          sessionId: gameSession?._id || null,
         };
         iframeRef.current.contentWindow.postMessage(message, "*");
       }
-      if (sessionId) {
-        fetchGameSessionById(sessionId).then((session) => {
-          setGameSession(session);
-        });
-      }
     }
-  }, [sessionId, ready, selectedAmount]);
+  }, [gameSession, ready]);
+
+  useEffect(() => {
+    if (sessionId) {
+      fetchGameSessionById(sessionId).then((session) => {
+        setGameSession(session);
+      });
+    }
+    return () => {
+      setGameSession(null);
+    };
+  }, [sessionId]);
 
   const handleCancelChallenge = async () => {
     try {
@@ -107,6 +109,15 @@ const Game: React.FC = () => {
     } finally {
       setCancelling(false);
     }
+  };
+
+  const handleCloseCreateChallenge = async () => {
+    cancelChallenge({ sessionId: "" });
+    setGameSession(null);
+    setSearchParams((params) => {
+      params.set("sessionid", "");
+      return params;
+    });
   };
 
   return loading ? (
@@ -157,10 +168,11 @@ const Game: React.FC = () => {
                   <b>Bet:</b> {gameSession?.amount || selectedAmount || "Nil"}
                 </p>
                 <p>
-                  <b>Win:</b> Nil
+                  <b>Win:</b>{" "}
+                  {gameSession?.amount ? gameSession?.amount * 2 : "Nil"}
                 </p>
                 <p>
-                  <b>Lose:</b> Nil
+                  <b>Lose:</b> {gameSession ? "10" : "Nil"}
                 </p>
               </div>
               <div className="flex items-center space-x-4 mt-2">
@@ -189,8 +201,20 @@ const Game: React.FC = () => {
             </div>
 
             <div className="bg-cream text-black p-4 px-6 rounded-lg">
-              <h3 className="font-jua text-xl mb-2">Player Stats</h3>
-              <div className="flex items-start mb-1">
+              <div className="flex items-center gap-2 mb-2">
+                <img
+                  src={ICONS.question_black}
+                  alt="help"
+                  className="w-4 h-auto"
+                />
+                <h3 className="font-jua text-xl">How to Place Bet ?</h3>
+              </div>
+              <ol className="list-decimal px-4">
+                <li>Select Game mode “With Computer or With Friend”</li>
+                <li>Select Predefined Bet amount or put manually</li>
+                <li>Create Challenge</li>
+              </ol>
+              {/* <div className="flex items-start mb-1">
                 <p className="flex-[2]">{user?.username}</p>
                 <div className="font-bold text-sm">
                   {user ? "Active" : "Inactive"}
@@ -217,7 +241,7 @@ const Game: React.FC = () => {
                   <p className="flex-[2]">AI (cpu)</p>
                   <div className="font-bold text-sm">Active</div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -245,24 +269,19 @@ const Game: React.FC = () => {
         </div>
         <SideModel isOpen={showSideBar} onClose={() => setShowSideBar(false)}>
           <div className="overflow-y-auto h-screen">
-            <Sidebar
-              gameId={game?._id}
-              selectedAmount={selectedAmount}
-              setSelectedAmount={setSelectedAmount}
-            />
+            <Sidebar gameId={game?._id} />
           </div>
         </SideModel>
 
         {/* Sidebar */}
         <div className="hidden md:block">
-          <Sidebar
-            gameId={game?._id}
-            selectedAmount={selectedAmount}
-            setSelectedAmount={setSelectedAmount}
-          />
+          <Sidebar gameId={game?._id} />
         </div>
       </div>
       <OtherGames />
+      <MiniModel isOpen={!!mode} showClose onClose={handleCloseCreateChallenge}>
+        <CreateChallege gameId={id} />
+      </MiniModel>
     </div>
   );
 };

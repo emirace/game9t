@@ -1,5 +1,5 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
-import { generateCode, getTimeStamp } from '../utils/games';
+import { getTimeStamp } from '../utils/games';
 import GameSession, { IGameSession } from '../models/gameSession';
 import Gameplay from '../models/gameplay';
 import mongoose from 'mongoose';
@@ -7,11 +7,12 @@ import Bet from '../models/bet';
 import Wallet from '../models/wallet';
 import Transaction from '../models/transaction';
 import Game from '../models/game';
+import { onlineUsers } from '.';
 
 let roomSettings = {
   totalRooms: 8, //total rooms
   findPlayer: {
-    timeoutTimer: 25000, //connection timeout timer
+    timeoutTimer: 100000, //connection timeout timer
     connectTimer: 10000, //connection timer to start (must less than timeoutTimer)
   },
   maxPlayers: [
@@ -122,11 +123,11 @@ export const games = (io: SocketIOServer, socket: Socket) => {
   });
 
   socket.on('joinrandomroom', async function (sessionId) {
-    //find room and users
-    let roomCode: any = -1;
-
-    var gameSession: IGameSession | null;
     try {
+      //find room and users
+      let roomCode: any = -1;
+
+      var gameSession: IGameSession | null;
       if (!sessionId) {
         throw 'error';
       }
@@ -141,168 +142,168 @@ export const games = (io: SocketIOServer, socket: Socket) => {
       }
 
       socket.data.gameType = (gameSession.initiatedGame as any).slug;
-    } catch (error) {
-      socket.emit('updateSocketRooms', 'nosession');
-      return;
-    }
 
-    for (let n = 0; n < privateRooms.length; n++) {
-      if (
-        privateRooms[n].matching &&
-        !privateRooms[n].play &&
-        privateRooms[n].name === (gameSession._id as any).toString()
-      ) {
-        roomCode = privateRooms[n].name;
-        break;
-      }
-    }
-
-    if (roomCode == -1) {
-      //create new room if no room found
-      for (let n = 0; n < 10; n++) {
-        roomCode = (gameSession._id as any).toString();
-        let roomIndex = privateRooms.findIndex((x) => x.name === roomCode);
-        if (roomIndex == -1) {
-          n = 10;
-          privateRooms.push({
-            name: roomCode,
-            users: [],
-            id: rooms.length,
-            public: false,
-            play: false,
-            timer: 0,
-            matching: true,
-            nickNamesIndex: [],
-          });
+      for (let n = 0; n < privateRooms.length; n++) {
+        if (
+          privateRooms[n].matching &&
+          !privateRooms[n].play &&
+          privateRooms[n].name === (gameSession._id as any).toString()
+        ) {
+          roomCode = privateRooms[n].name;
+          break;
         }
       }
 
-      let roomIndex = privateRooms.length - 1;
-      socket.join(privateRooms[roomIndex].name);
-      socket.data.room = privateRooms[roomIndex].name;
-      socket.data.public = false;
-
-      privateRooms[roomIndex].users.push({
-        username: socket.data.username,
-        index: socket.data.index,
-        data: [],
-        active: false,
-      });
-      togglePrivateTimer();
-    } else {
-      //join exist room if available
-      let getRoomInfo = findSocketRoom(roomCode);
-      let roomIndex = getRoomInfo.roomIndex;
-      let targetArray = getRoomInfo.targetArray;
-
-      socket.join(targetArray[roomIndex].name);
-      socket.data.room = targetArray[roomIndex].name;
-      targetArray[roomIndex].users.push({
-        username: socket.data.username,
-        index: socket.data.index,
-        data: [],
-        ready: false,
-        active: false,
-      });
-
-      if (targetArray[roomIndex].users.length >= maxPlayers) {
-        const gamePlay = await Gameplay.create({
-          game: gameSession.initiatedGame,
-          player1: {
-            userId: gameSession.players[0],
-          },
-          player2: {
-            userId: gameSession.players[1],
-          },
-          multiplayer: true,
-          active: true,
-          startTime: Date,
-          session: gameSession._id,
-        });
-
-        if (gameSession.amount) {
-          try {
-            // Fetch wallets for both players
-            const [wallet1, wallet2] = await Promise.all([
-              Wallet.findOne({ user: gameSession.players[0] }),
-              Wallet.findOne({ user: gameSession.players[1] }),
-            ]);
-
-            // Check wallet existence and sufficient balance
-            if (!wallet1 || !wallet2) {
-              socket.emit('updateSocketRooms', 'nobalance');
-              return;
-            }
-
-            if (
-              wallet1.balance < gameSession.amount ||
-              wallet2.balance < gameSession.amount
-            ) {
-              socket.emit('updateSocketRooms', 'nobalance');
-              return;
-            }
-
-            // Deduct balances
-            wallet1.balance -= gameSession.amount;
-            wallet2.balance -= gameSession.amount;
-
-            // Save updated wallet balances
-            await Promise.all([wallet1.save(), wallet2.save()]);
-
-            // Create a new Bet record
-            const bet = await Bet.create({
-              game: gamePlay._id,
-              session: gameSession._id,
-              amount: gameSession.amount,
-              status: 'ongoing',
+      if (roomCode == -1) {
+        //create new room if no room found
+        for (let n = 0; n < 10; n++) {
+          roomCode = (gameSession._id as any).toString();
+          let roomIndex = privateRooms.findIndex((x) => x.name === roomCode);
+          if (roomIndex == -1) {
+            n = 10;
+            privateRooms.push({
+              name: roomCode,
+              users: [],
+              id: rooms.length,
+              public: false,
+              play: false,
+              timer: 0,
+              matching: true,
+              nickNamesIndex: [],
             });
-
-            // Associate the bet with the gameplay
-            gamePlay.bet = bet._id as mongoose.Types.ObjectId;
-            await gamePlay.save();
-
-            // Create transactions for both players
-            const transactions = [
-              new Transaction({
-                type: 'Bet',
-                user: gameSession.players[0],
-                amount: gameSession.amount,
-                status: 'Completed',
-                paymentMethod: 'Wallet',
-                transactionType: 'debit',
-              }),
-              new Transaction({
-                type: 'Bet',
-                user: gameSession.players[1],
-                amount: gameSession.amount,
-                status: 'Completed',
-                paymentMethod: 'Wallet',
-                transactionType: 'debit',
-              }),
-            ];
-
-            await Transaction.insertMany(transactions);
-
-            console.log('Bet and wallet transactions processed successfully');
-          } catch (error) {
-            console.error(
-              'Error processing bet or wallet transactions:',
-              error,
-            );
-            socket.emit('updateSocketRooms', 'error');
-            socket.emit('updateSocketRooms', 'nosession');
-            return;
           }
         }
 
-        gameSession.active = false;
-        await gameSession.save();
+        let roomIndex = privateRooms.length - 1;
+        socket.join(privateRooms[roomIndex].name);
+        socket.data.room = privateRooms[roomIndex].name;
+        socket.data.public = false;
 
-        targetArray[roomIndex].matching = false;
-        socket.broadcast
-          .to(socket.data.room)
-          .emit('updateSocketRooms', 'matched');
+        privateRooms[roomIndex].users.push({
+          username: socket.data.username,
+          index: socket.data.index,
+          data: [],
+          active: false,
+        });
+        togglePrivateTimer();
+      } else {
+        //join exist room if available
+        let getRoomInfo = findSocketRoom(roomCode);
+        let roomIndex = getRoomInfo.roomIndex;
+        let targetArray = getRoomInfo.targetArray;
+
+        socket.join(targetArray[roomIndex].name);
+        socket.data.room = targetArray[roomIndex].name;
+        targetArray[roomIndex].users.push({
+          username: socket.data.username,
+          index: socket.data.index,
+          data: [],
+          ready: false,
+          active: false,
+        });
+
+        if (targetArray[roomIndex].users.length >= maxPlayers) {
+          const gamePlay = await Gameplay.create({
+            game: gameSession.initiatedGame,
+            player1: {
+              userId: gameSession.players[0],
+            },
+            player2: {
+              userId: gameSession.players[1],
+            },
+            multiplayer: true,
+            active: true,
+            startTime: Date,
+            session: gameSession._id,
+          });
+
+          if (gameSession.amount) {
+            try {
+              // Fetch wallets for both players
+              const [wallet1, wallet2] = await Promise.all([
+                Wallet.findOne({ user: gameSession.players[0] }),
+                Wallet.findOne({ user: gameSession.players[1] }),
+              ]);
+
+              // Check wallet existence and sufficient balance
+              if (!wallet1 || !wallet2) {
+                socket.emit('updateSocketRooms', 'nobalance');
+                return;
+              }
+
+              if (
+                wallet1.balance < gameSession.amount ||
+                wallet2.balance < gameSession.amount
+              ) {
+                socket.emit('updateSocketRooms', 'nobalance');
+                return;
+              }
+
+              // Deduct balances
+              wallet1.balance -= gameSession.amount;
+              wallet2.balance -= gameSession.amount;
+
+              // Save updated wallet balances
+              await Promise.all([wallet1.save(), wallet2.save()]);
+
+              // Create a new Bet record
+              const bet = await Bet.create({
+                game: gamePlay._id,
+                session: gameSession._id,
+                amount: gameSession.amount,
+                status: 'ongoing',
+              });
+
+              // Associate the bet with the gameplay
+              gamePlay.bet = bet._id as mongoose.Types.ObjectId;
+              await gamePlay.save();
+
+              // Create transactions for both players
+              const transactions = [
+                new Transaction({
+                  type: 'Bet',
+                  user: gameSession.players[0],
+                  amount: gameSession.amount,
+                  status: 'Completed',
+                  paymentMethod: 'Wallet',
+                  transactionType: 'debit',
+                }),
+                new Transaction({
+                  type: 'Bet',
+                  user: gameSession.players[1],
+                  amount: gameSession.amount,
+                  status: 'Completed',
+                  paymentMethod: 'Wallet',
+                  transactionType: 'debit',
+                }),
+              ];
+
+              await Transaction.insertMany(transactions);
+
+              console.log('Bet and wallet transactions processed successfully');
+            } catch (error) {
+              console.error(
+                'Error processing bet or wallet transactions:',
+                error,
+              );
+              socket.emit('updateSocketRooms', 'error');
+              socket.emit('updateSocketRooms', 'nosession');
+              return;
+            }
+          }
+
+          gameSession.active = false;
+          await gameSession.save();
+
+          targetArray[roomIndex].matching = false;
+          socket.broadcast
+            .to(socket.data.room)
+            .emit('updateSocketRooms', 'matched');
+        }
       }
+    } catch (error) {
+      socket.emit('updateSocketRooms', 'nosession');
+      console.log(error);
     }
   });
 
@@ -310,14 +311,29 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     updateSocketGame(status, data, others);
   });
 
-  socket.on('startLocalGame', async function (slug, selectedAmount) {
-    console.log(slug, selectedAmount);
+  socket.on('startLocalGame', async function (gameId, selectedAmount) {
+    console.log(gameId, selectedAmount);
+    const userId = (socket.request as any).user._id;
     try {
-      const userId = (socket.request as any).user._id;
-      const game = await Game.findOne({ slug });
+      socket
+        .to(onlineUsers.get(userId.toString())?.socketId.game!)
+        .emit('creatingChallenge');
+      const game = await Game.findById(gameId);
       if (!game) {
-        socket.emit('updateSocketRooms', 'nosession');
+        socket
+          .to(onlineUsers.get(userId.toString())?.socketId.game!)
+          .emit('updateSocketRooms', 'nosession');
         return;
+      }
+
+      if (selectedAmount) {
+        const wallet = await Wallet.findOne({ user: userId });
+        if (selectedAmount > (wallet?.balance || 0)) {
+          socket
+            .to(onlineUsers.get(userId.toString())?.socketId.game!)
+            .emit('updateSocketRooms', 'nobalance');
+          return;
+        }
       }
 
       const gameSession = await GameSession.create({
@@ -327,6 +343,8 @@ export const games = (io: SocketIOServer, socket: Socket) => {
         amount: selectedAmount,
         private: true,
       });
+
+      socket.data.room = gameSession._id!.toString();
 
       const gamePlay = await Gameplay.create({
         game: game._id,
@@ -344,12 +362,16 @@ export const games = (io: SocketIOServer, socket: Socket) => {
 
         // Check wallet existence and sufficient balance
         if (!wallet) {
-          socket.emit('updateSocketRooms', 'nobalance');
+          socket
+            .to(onlineUsers.get(userId.toString())?.socketId.game!)
+            .emit('updateSocketRooms', 'nobalance');
           return;
         }
 
         if (wallet.balance < gameSession.amount) {
-          socket.emit('updateSocketRooms', 'nobalance');
+          socket
+            .to(onlineUsers.get(userId.toString())?.socketId.game!)
+            .emit('updateSocketRooms', 'nobalance');
           return;
         }
 
@@ -369,11 +391,15 @@ export const games = (io: SocketIOServer, socket: Socket) => {
         gamePlay.bet = bet._id as mongoose.Types.ObjectId;
         await gamePlay.save();
       }
-
-      socket.emit('startLocalGame');
+      socket.emit('updateGamesession', { gameSession });
+      socket
+        .to(onlineUsers.get(userId.toString())?.socketId.game!)
+        .emit('startLocalGame');
     } catch (error) {
       console.log(error);
-      socket.emit('updateSocketRooms', 'nosession');
+      socket
+        .to(onlineUsers.get(userId.toString())?.socketId.game!)
+        .emit('updateSocketRooms', 'nosession');
     }
   });
 
@@ -381,13 +407,20 @@ export const games = (io: SocketIOServer, socket: Socket) => {
     leaveSocketRoom();
   });
 
-  socket.on('exitGame', async function ({ status, score }) {
+  socket.on('exitGame', async function ({ status, score, sessionId, host }) {
     const userId = (socket.request as any).user._id;
-    console.log(status, score);
-
+    console.log(status, score, sessionId, host);
+    // if (!host) {
+    //   socket
+    //     .to(onlineUsers.get(userId.toString())?.socketId.main!)
+    //     .emit('updateGamesession', {
+    //       gameSession: null,
+    //     });
+    //   return;
+    // }
     try {
       const gameplay = await Gameplay.findOne({
-        session: socket.data.room,
+        session: socket.data.room || sessionId,
         active: true,
       });
 
@@ -432,7 +465,6 @@ export const games = (io: SocketIOServer, socket: Socket) => {
         session: gameplay.session,
         status: 'ongoing',
       });
-      console.log(bet);
       if (bet) {
         bet.status = 'pending';
         if (gameplay.player1 && gameplay.player2) {
@@ -447,14 +479,11 @@ export const games = (io: SocketIOServer, socket: Socket) => {
 
       // Save the updated gameplay record
       await gameplay.save();
-
-      // Emit an event to both players to notify game over and results
-      socket.to(socket.data.room).emit('gameOver', {
-        status: 'completed',
-        winner: gameplay.winner,
-        player1Score: gameplay.player1.score,
-        player2Score: gameplay.player2?.score,
-      });
+      socket
+        .to(onlineUsers.get(userId.toString())?.socketId.main!)
+        .emit('updateGamesession', {
+          gameSession: null,
+        });
 
       console.log('Game exited and updated successfully');
     } catch (error) {

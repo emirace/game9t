@@ -5,17 +5,26 @@ import { useSocket } from "./socket";
 import { useUser } from "./user";
 import { useToastNotification } from "./toastNotificationContext";
 import { useNavigate } from "react-router-dom";
+import { createGameData } from "../types/game";
 
 interface GameSessionContextType {
   gameSessions: IGameSession[];
+  gameSession: IGameSession | null;
   loading: boolean;
   error: string | null;
+  selectedAmount: string;
+  mode: string | null;
+  setSelectedAmount: (value: string) => void;
+  createChallenge: (data: createGameData) => Promise<IGameSession>;
+  setGameSession: (data: IGameSession | null) => void;
   acceptChallenge: (value: { sessionId: string }) => Promise<IGameSession>;
   cancelChallenge: (value: { sessionId: string }) => Promise<{
     success: boolean;
     message: string;
   }>;
   reloadGameSessions: (userId: string) => void;
+  startPlayerGame: (sessionId: string) => void;
+  startComputerGame: (gameId: string, amount: number) => void;
 }
 
 const GameSessionContext = createContext<GameSessionContextType | undefined>(
@@ -41,8 +50,11 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
   const { user } = useUser();
   const { addNotification } = useToastNotification();
   const [gameSessions, setGameSessions] = useState<IGameSession[]>([]);
+  const [gameSession, setGameSession] = useState<IGameSession | null>(null);
+  const [selectedAmount, setSelectedAmount] = useState("200");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const loadGameSessions = async () => {
@@ -58,6 +70,42 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
     }
   };
 
+  const createChallenge = async ({
+    gameId,
+    amount,
+    compete,
+  }: createGameData): Promise<IGameSession> => {
+    return new Promise<IGameSession>((resolve, reject) => {
+      socket?.emit("createChallenge", { gameId, amount, compete });
+
+      const handleResponse = ({
+        gameSession,
+      }: {
+        gameSession: IGameSession;
+      }) => {
+        setGameSession(gameSession);
+        navigate(
+          `/game/${gameSession?.initiatedGame?._id}?sessionid=${gameSession._id}`
+        );
+        resolve(gameSession);
+        cleanup();
+      };
+
+      const handleError = (error: string) => {
+        reject(new Error(error));
+        cleanup();
+      };
+
+      const cleanup = () => {
+        socket?.off("createChallengeResponse", handleResponse);
+        socket?.off("createChallengeError", handleError);
+      };
+
+      socket?.on("createChallengeResponse", handleResponse);
+      socket?.on("createChallengeError", handleError);
+    });
+  };
+
   const acceptChallenge = async ({
     sessionId,
   }: {
@@ -71,6 +119,7 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
       }: {
         gameSession: IGameSession;
       }) => {
+        setGameSession(gameSession);
         resolve(gameSession);
         cleanup();
       };
@@ -111,6 +160,7 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
         success: boolean;
         message: string;
       }) => {
+        setMode(null);
         resolve({
           success,
           message,
@@ -133,16 +183,36 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
     });
   };
 
+  const startPlayerGame = (sessionId: string) => {
+    socket?.emit("startPlayerGame", sessionId);
+    setMode(null);
+  };
+
+  const startComputerGame = (gameId: string, amount: number) => {
+    socket?.emit("startLocalGame", gameId, amount);
+    setMode(null);
+  };
+
   useEffect(() => {
     loadGameSessions();
   }, [user]);
 
   useEffect(() => {
     if (!socket) return;
+    socket.on("startGame", ({ mode }: { mode: string }) => {
+      setMode(mode);
+    });
     socket.on(
       "gameSessionCreated",
       ({ gameSession }: { gameSession: IGameSession }) => {
         setGameSessions((prevSessions) => [...prevSessions, gameSession]);
+      }
+    );
+    socket.on(
+      "updateGamesession",
+      ({ gameSession }: { gameSession: IGameSession }) => {
+        console.log("hello", gameSession);
+        setGameSession(gameSession);
       }
     );
     socket.on(
@@ -157,39 +227,18 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
     socket.on(
       "challengeRequest",
       ({ gameSession }: { gameSession: IGameSession }) => {
-        const handleAcceptChallenge = async () => {
-          try {
-            const res = await acceptChallenge({ sessionId: gameSession._id });
-            navigate(`/game/${res?.initiatedGame?._id}?sessionid=${res._id}`);
-          } catch (error: any) {
-            addNotification({ message: error.message, error: true });
-          }
-        };
         addNotification({
-          message: `${gameSession.players[0]?.username} challenge you to a ${
-            gameSession.initiatedGame.name
-          },  ${gameSession.amount || 0}`,
-          buttonText: "Accept",
-          action: () => handleAcceptChallenge(),
+          message: "Challenge Received !",
+          gameSession,
+          action: true,
         });
       }
     );
     socket.on(
       "challengeAccepted",
       ({ gameSession }: { gameSession: IGameSession }) => {
-        const handleAcceptChallenge = async () => {
-          try {
-            navigate(
-              `/game/${gameSession?.initiatedGame?._id}?sessionid=${gameSession._id}`
-            );
-          } catch (error: any) {
-            addNotification({ message: error.message, error: true });
-          }
-        };
         addNotification({
           message: `${gameSession.players[0]?.username} accepted your challenge`,
-          buttonText: "Play",
-          action: () => handleAcceptChallenge(),
         });
       }
     );
@@ -198,12 +247,20 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
   return (
     <GameSessionContext.Provider
       value={{
+        gameSession,
         gameSessions,
         loading,
         error,
+        selectedAmount,
+        mode,
+        setSelectedAmount,
+        setGameSession,
+        createChallenge,
         acceptChallenge,
         cancelChallenge,
         reloadGameSessions: loadGameSessions,
+        startComputerGame,
+        startPlayerGame,
       }}
     >
       {children}

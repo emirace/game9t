@@ -8,10 +8,23 @@ import {
   createChallenge,
   markNotificationAsRead,
   sendMessage,
+  startGame,
+  startPlayerGame,
 } from '../controllers/socket';
 import { games } from './games';
 
-export const onlineUsers = new Map();
+type OnlineUser = {
+  socketId: {
+    main: string | null;
+    game: string | null;
+  };
+  username: string;
+  userId: string;
+  image: string;
+  rating: number;
+};
+
+export const onlineUsers = new Map<string, OnlineUser>();
 
 export const setupSockets = (io: SocketIOServer) => {
   io.engine.use(async (req: any, res: any, next: any) => {
@@ -42,7 +55,6 @@ export const setupSockets = (io: SocketIOServer) => {
       return next(new Error('Not authorized, token verification failed'));
     }
   });
-
   io.on('connection', (socket: Socket) => {
     const {
       _id: userId,
@@ -50,19 +62,38 @@ export const setupSockets = (io: SocketIOServer) => {
       personalInfo,
       rating,
     } = (socket.request as any).user;
+    const type = (socket.request.headers as any).type; // 'main' or 'game'
 
-    console.log(`Client connected: ${username} ${socket.id}`);
+    console.log(`Client connected: ${username} ${socket.id} ${type}`);
 
-    // Add the user details to the onlineUsers map
-    onlineUsers.set(userId.toString(), {
-      socketId: socket.id,
+    // Initialize or update the user's entry in the onlineUsers map
+    const user = onlineUsers.get(userId.toString()) || {
+      socketId: { main: null, game: null },
       username,
       userId,
       image: personalInfo.profilePictureUrl,
       rating,
-    });
+    };
+
+    // Update the appropriate socketId field
+    if (type === 'main') {
+      user.socketId.main = socket.id;
+    } else if (type === 'game') {
+      user.socketId.game = socket.id;
+    }
+
+    // Save back the updated user details in the map
+    onlineUsers.set(userId.toString(), user);
 
     io.emit('onlineUsers', Array.from(onlineUsers.values()));
+
+    socket.on('startGame', async function (mode) {
+      startGame({ mode, socket });
+    });
+
+    socket.on('startPlayerGame', async function () {
+      startPlayerGame({ socket });
+    });
 
     socket.on('createChallenge', ({ gameId, amount, compete }) =>
       createChallenge({ gameId, amount, compete, socket }),
@@ -93,8 +124,29 @@ export const setupSockets = (io: SocketIOServer) => {
 
     // Handle disconnection
     socket.on('disconnect', () => {
-      console.log(`Client disconnected: ${socket.id}`);
-      onlineUsers.delete(userId.toString());
+      const type = (socket.request.headers as any).type; // 'main' or 'game'
+      console.log(`Client disconnected: ${socket.id} ${type}`);
+
+      const user = onlineUsers.get(userId.toString());
+
+      if (user) {
+        // Clear the relevant socketId field
+        if (type === 'main') {
+          user.socketId.main = null;
+        } else if (type === 'game') {
+          user.socketId.game = null;
+        }
+
+        // If both main and game are null, remove the user from the map
+        if (!user.socketId.main && !user.socketId.game) {
+          onlineUsers.delete(userId.toString());
+        } else {
+          // Otherwise, update the user entry
+          onlineUsers.set(userId.toString(), user);
+        }
+      }
+
+      // Emit the updated list of online users
       io.emit('onlineUsers', Array.from(onlineUsers.values()));
     });
   });

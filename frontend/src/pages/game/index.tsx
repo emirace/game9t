@@ -172,7 +172,7 @@ const Game: React.FC = () => {
                   {gameSession?.amount ? gameSession?.amount * 2 : "Nil"}
                 </p>
                 <p>
-                  <b>Lose:</b> {gameSession ? "10" : "Nil"}
+                  <b>Lose:</b> {gameSession?.amount || "Nil"}
                 </p>
               </div>
               <div className="flex items-center space-x-4 mt-2">

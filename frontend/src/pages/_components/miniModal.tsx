@@ -25,7 +25,7 @@ const MiniModel: React.FC<ModelProps> = ({
     isVisible && (
       <>
         <div
-          className={`fixed top-1/2  translate-x-1/2 right-1/2 w-3/4  bg-light_blue rounded-md overflow-y-auto  p-4 md:p-6 transform transition-transform duration-300 ease-in-out ${
+          className={`fixed top-1/2  translate-x-1/2 right-1/2 w-3/4 md:w-1/2  bg-light_blue rounded-md overflow-y-auto  p-4 md:p-6 transform transition-transform duration-300 ease-in-out ${
             isVisible ? "-translate-y-1/2" : "translate-y-full"
           } z-40`}
         >

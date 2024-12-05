@@ -12,8 +12,8 @@ import { IGameSession } from "../../../types/gameSession";
 
 function SaerchPlayer() {
   const { games } = useGame();
-  const { onlineUsers, createChallenge } = useSocket();
-  const { cancelChallenge } = useGameSession();
+  const { onlineUsers } = useSocket();
+  const { cancelChallenge, createChallenge } = useGameSession();
   const { addNotification } = useToastNotification();
   const [showConfirm, setShowConfirm] = useState(false);
   const [player, setPlayer] = useState<string | null>(null);

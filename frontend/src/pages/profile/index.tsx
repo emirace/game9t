@@ -83,8 +83,9 @@ function Profile() {
               <div className="flex flex-row md:flex-col items-center gap-2">
                 <img
                   src={
-                    imageUrl + user?.personalInfo?.profilePictureUrl ||
-                    IMAGES.user2
+                    user?.personalInfo?.profilePictureUrl
+                      ? imageUrl + user?.personalInfo?.profilePictureUrl
+                      : IMAGES.user2
                   }
                   alt="Profile"
                   className="w-12 h-12 rounded-full bg-white"

@@ -14,6 +14,8 @@ interface GameSessionContextType {
   error: string | null;
   selectedAmount: string;
   mode: string | null;
+  acceptSessionId: string;
+  setAcceptSessionId: (value: string) => void;
   setSelectedAmount: (value: string) => void;
   createChallenge: (data: createGameData) => Promise<IGameSession>;
   setGameSession: (data: IGameSession | null) => void;
@@ -55,6 +57,7 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<string | null>(null);
+  const [acceptSessionId, setAcceptSessionId] = useState("");
   const navigate = useNavigate();
 
   const loadGameSessions = async () => {
@@ -161,6 +164,7 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
         message: string;
       }) => {
         setMode(null);
+        setSelectedAmount("");
         resolve({
           success,
           message,
@@ -228,17 +232,30 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
       "challengeRequest",
       ({ gameSession }: { gameSession: IGameSession }) => {
         addNotification({
-          message: "Challenge Received !",
-          gameSession,
-          action: true,
+          message: `${gameSession.players[0]?.username} challenge you to a ${
+            gameSession.initiatedGame.name
+          },  ${gameSession.amount || 0}`,
+          buttonText: "View",
+          action: () => setAcceptSessionId(gameSession._id),
         });
       }
     );
     socket.on(
       "challengeAccepted",
       ({ gameSession }: { gameSession: IGameSession }) => {
+        const handleAcceptChallenge = async () => {
+          try {
+            navigate(
+              `/game/${gameSession?.initiatedGame?._id}?sessionid=${gameSession._id}`
+            );
+          } catch (error: any) {
+            addNotification({ message: error.message, error: true });
+          }
+        };
         addNotification({
           message: `${gameSession.players[0]?.username} accepted your challenge`,
+          buttonText: "Play",
+          action: () => handleAcceptChallenge(),
         });
       }
     );
@@ -253,6 +270,8 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
         error,
         selectedAmount,
         mode,
+        acceptSessionId,
+        setAcceptSessionId,
         setSelectedAmount,
         setGameSession,
         createChallenge,

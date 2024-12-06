@@ -9,9 +9,9 @@ import { imageUrl } from "../../../../services/api";
 import { useSocket } from "../../../../context/socket";
 import Loading from "../../../_components/loading";
 import { useToastNotification } from "../../../../context/toastNotificationContext";
-import { IGameSession } from "../../../../types/gameSession";
 import { useGameSession } from "../../../../context/gameSession";
 import PlaceBet from "./_component/placeBet";
+import IMAGES from "../../../../assets/images/images";
 
 const Sidebar: React.FC<{
   gameId?: string;
@@ -25,13 +25,14 @@ const Sidebar: React.FC<{
     createChallenge,
     selectedAmount,
     setSelectedAmount,
+    gameSession,
+    setGameSession,
   } = useGameSession();
   const { addNotification } = useToastNotification();
   const [showSearchPlayer, setShowSearchPlayer] = useState(false);
   const [showCompete, setShowCompete] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
-  const [gameSession, setGameSession] = useState<IGameSession | null>(null);
   const [cancelling, setCancelling] = useState(false);
 
   const handleChallenge = async (compete?: string) => {
@@ -176,14 +177,20 @@ const Sidebar: React.FC<{
           selectedAmount={selectedAmount}
           setSelectedAmount={setSelectedAmount}
         />
-
-        <button
-          onClick={() => handleChallenge()}
-          className="flex items-center justify-center gap-2 text-white font-bold py-2 px-4 rounded-md w-full"
-        >
-          Place Bet & Create Challenge
-          <img src={ICONS.pointer} alt="profile" className="w-4 h-4" />
-        </button>
+        {gameSession ? (
+          <span className="text-white font-bold font-jua text-center flex justify-center ">
+            Running Challenge
+          </span>
+        ) : (
+          <button
+            onClick={() => handleChallenge()}
+            className="flex items-center justify-center gap-2 text-white font-bold py-2 px-4 rounded-md w-full"
+            disabled={!!gameSession}
+          >
+            Place Bet & Create Challenge
+            <img src={ICONS.pointer} alt="profile" className="w-4 h-4" />
+          </button>
+        )}
       </div>
       <div className="flex items-center justify-between gap-4 p-4">
         <div className="flex items-center gap-4">
@@ -195,7 +202,7 @@ const Sidebar: React.FC<{
         <div className="items-center gap-2 border border-cream rounded-md px-1 flex cursor-pointer">
           <img src={ICONS.coin_cream} alt="faq" className="w-auto h-4" />
           <div className="font-jua  text-lg text-cream">
-            {parseFloat(selectedAmount) * 2}
+            {parseFloat(selectedAmount || "0") * 2}
           </div>
         </div>
         <div className="text-cream font-jua">Wallet</div>
@@ -218,7 +225,7 @@ const Sidebar: React.FC<{
             >
               <div className="flex items-center gap-4">
                 <img
-                  src={player.image}
+                  src={player.image ? imageUrl + player.image : IMAGES.user2}
                   alt="Profile"
                   className="w-12 h-12 rounded-full"
                 />

@@ -11,6 +11,7 @@ import {
 } from "../utils/branding";
 import Loading from "./_components/loading";
 import ToastNotification from "./_components/toastNotification";
+import AcceptGame from "./_components/acceptGame";
 
 function Main() {
   const { branding, loading } = useBranding();
@@ -25,6 +26,7 @@ function Main() {
   return (
     <GameSessionProvider>
       <ToastNotification />
+      <AcceptGame />
       <ScrollToTop />
       {loading ? (
         <div className="h-screen w-screen bg-black flex justify-center items-center ">

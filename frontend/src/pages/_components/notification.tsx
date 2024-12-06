@@ -2,15 +2,20 @@ import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../context/notification";
 import { INotification } from "../../types/notification";
 import Loading from "./loading";
+import { useGameSession } from "../../context/gameSession";
 
 function Notification() {
   const { notifications, loading, markAsRead, deleteNotifications } =
     useNotifications();
+  const { setAcceptSessionId } = useGameSession();
   const navigate = useNavigate();
 
   const handleOnclick = (not: INotification) => {
+    if (not.read) return;
     markAsRead(not._id);
-    if (not.link) {
+    if (not.type === "Challenge Received") {
+      setAcceptSessionId(not.link || "");
+    } else if (not.link) {
       navigate(not.link);
     }
   };

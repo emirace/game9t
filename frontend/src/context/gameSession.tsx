@@ -86,10 +86,11 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
       }: {
         gameSession: IGameSession;
       }) => {
-        setGameSession(gameSession);
-        navigate(
-          `/game/${gameSession?.initiatedGame?._id}?sessionid=${gameSession._id}`
-        );
+        compete && setGameSession(gameSession);
+        compete &&
+          navigate(
+            `/game/${gameSession?.initiatedGame?._id}?sessionid=${gameSession._id}`
+          );
         resolve(gameSession);
         cleanup();
       };
@@ -187,8 +188,8 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
     });
   };
 
-  const startPlayerGame = (sessionId: string) => {
-    socket?.emit("startPlayerGame", sessionId);
+  const startPlayerGame = (opponent?: string) => {
+    socket?.emit("startPlayerGame", opponent);
     setMode(null);
   };
 

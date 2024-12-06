@@ -91,8 +91,8 @@ export const setupSockets = (io: SocketIOServer) => {
       startGame({ mode, socket });
     });
 
-    socket.on('startPlayerGame', async function () {
-      startPlayerGame({ socket });
+    socket.on('startPlayerGame', async function (opponent) {
+      startPlayerGame({ opponent, socket });
     });
 
     socket.on('createChallenge', ({ gameId, amount, compete }) =>

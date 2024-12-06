@@ -27,11 +27,24 @@ export const startGame = async ({
   }
 };
 
-export const startPlayerGame = ({ socket }: { socket: Socket }) => {
+export const startPlayerGame = ({
+  opponent,
+  socket,
+}: {
+  opponent?: string;
+  socket: Socket;
+}) => {
   const userId = (socket.request as any).user._id;
-  socket
-    .to(onlineUsers.get(userId.toString())?.socketId.game!)
-    .emit('startPlayerGame');
+
+  if (opponent) {
+    socket
+      .to(onlineUsers.get(userId.toString())?.socketId.game!)
+      .emit('startPlayerGame');
+  } else {
+    socket
+      .to(onlineUsers.get(userId.toString())?.socketId.game!)
+      .emit('updateSocketRooms', 'any', 'Challenge created');
+  }
 };
 
 export const createChallenge = async ({
@@ -107,7 +120,7 @@ export const createChallenge = async ({
         sender: userId,
         type: 'Challenge Received',
         message: `You have received a challenge from ${username} ${gameSession.amount ? 'with a bet of ' + gameSession.amount : ''}`,
-        link: `/game/${gameSession.initiatedGame._id}?sessionid=${gameSession._id}`,
+        link: `${gameSession._id}`,
       });
 
       if (!isUserOnline) throw new Error('User is not online');
@@ -153,6 +166,7 @@ export const acceptChallenge = async ({
       _id: sessionId,
       active: true,
     })
+      .populate('players')
       .populate({ path: 'initiatedGame', select: 'name' })
       .populate({ path: 'players', select: 'personalInfo.profilePictureUrl' });
 

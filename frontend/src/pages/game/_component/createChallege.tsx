@@ -27,6 +27,7 @@ function CreateChallege({ gameId }: Props) {
   const [step, setStep] = useState("bet");
   const [opponent, setOpponent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleChallenge = async () => {
     if (!gameId) return;
@@ -37,6 +38,8 @@ function CreateChallege({ gameId }: Props) {
         amount: parseFloat(selectedAmount),
         compete: opponent,
       });
+      setSuccess(true);
+      setSelectedAmount("");
     } catch (error: any) {
       console.log(error);
       addNotification({ message: error.message, error: true });
@@ -60,7 +63,7 @@ function CreateChallege({ gameId }: Props) {
   };
 
   const handleStart = () => {
-    startPlayerGame(gameSession!._id);
+    startPlayerGame(opponent);
   };
 
   const renderScreen = () => {
@@ -118,28 +121,31 @@ function CreateChallege({ gameId }: Props) {
                   <div className="text-xs">
                     <span className="text-green">●</span> online
                   </div>
-                  {opponent === player.userId ? (
-                    <div className="font-jua text-xs">Selected</div>
-                  ) : (
-                    <button
-                      onClick={() => setOpponent(player.userId)}
-                      className="bg-black text-xs font-jua py-1 px-2 mt-2 rounded-md hover:bg-gray-600"
-                    >
-                      Select
-                    </button>
-                  )}
+                  <button
+                    onClick={() =>
+                      opponent === player.userId
+                        ? setOpponent("")
+                        : setOpponent(player.userId)
+                    }
+                    className={`${
+                      opponent === player.userId ? "bg-black" : ""
+                    } text-xs font-jua py-1 px-2 mt-2 rounded-md hover:bg-gray-600 disabled:hidden`}
+                    disabled={!!gameSession || success}
+                  >
+                    {opponent === player.userId ? "Seleted" : "Compete"}
+                  </button>
                 </div>
               ))}
             </div>
 
-            {gameSession ? (
+            {gameSession || success ? (
               <div className="flex items-center flex-col justify-center mt-6 gap-4 ">
                 <div>Challenge created sucessfully</div>
                 <button
                   onClick={handleStart}
                   className="bg-cream flex items-center rounded-full text-black font-bold py-2 px-10  mt-4 disabled:bg-gray-300"
                 >
-                  Start Game
+                  {!opponent ? "Continue" : "Start Game"}
                 </button>
               </div>
             ) : (
@@ -153,7 +159,6 @@ function CreateChallege({ gameId }: Props) {
                 <button
                   onClick={handleChallenge}
                   className="bg-cream flex items-center rounded-full text-black font-bold py-2 px-10  mt-4 disabled:bg-gray-300"
-                  disabled={!opponent}
                 >
                   {loading && <Loading size="sm" />}
                   Create Challenge

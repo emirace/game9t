@@ -6,6 +6,7 @@ import {
   acceptChallenge,
   cancelChallenge,
   createChallenge,
+  declineChallenge,
   markNotificationAsRead,
   sendMessage,
   startGame,
@@ -101,6 +102,10 @@ export const setupSockets = (io: SocketIOServer) => {
 
     socket.on('acceptChallenge', ({ sessionId }) => {
       acceptChallenge({ sessionId, socket });
+    });
+
+    socket.on('declineChallenge', ({ sessionId }) => {
+      declineChallenge({ sessionId, socket });
     });
 
     socket.on('cancelChallenge', ({ sessionId }) => {

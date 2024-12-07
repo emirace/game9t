@@ -33,9 +33,8 @@ function OnGoingBet() {
               <th className="p-4 font-jua">User ID</th>
               <th className="p-4 font-jua">Total Games Played</th>
               <th className="p-4 font-jua">Wins/Loses</th>
-              <th className="p-4 font-jua">Current Score</th>
+              <th className="p-4 font-jua">Points</th>
               <th className="p-4 font-jua text-center">Earnings</th>
-              <th className="p-4 font-jua text-center">Actions</th>
             </tr>
           </thead>
 
@@ -61,16 +60,6 @@ function OnGoingBet() {
                   </td>
                   <td className="p-4">{leaderboard.currentScore}</td>
                   <td className="p-4"> {leaderboard.totalEarnings}</td>
-                  <td className="p-4 font-bold">
-                    <div className="flex items-center justify-center gap-3">
-                      <button className="bg-cream text-black text-xs p-1 px-4 rounded-full">
-                        Edit
-                      </button>
-                      <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
-                        View Details
-                      </button>
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -78,7 +67,9 @@ function OnGoingBet() {
         </table>
       </div>
       <div className="flex justify-between items-center mt-6 mb-16 ">
-        <span>Showing: 12 / 30</span>
+        <span>
+          Showing: {leaderboards.length} / {leaderboards.length}
+        </span>
         <div>
           <button className="hover:underline mr-4">PREVIOUS /</button>
           <button className="hover:underline">NEXT</button>

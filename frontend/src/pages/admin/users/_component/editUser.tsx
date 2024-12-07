@@ -37,8 +37,8 @@ function EditUser({ user, handleSubmit }: Props) {
   };
 
   return (
-    <form onSubmit={handleUpdateUser} className=" space-y-4">
-      <h2 className="text-2xl font-semibold">Edit User Details</h2>
+    <form onSubmit={handleUpdateUser} className=" space-y-6">
+      <h2 className="text-2xl  font-jua">Edit User Details</h2>
 
       <input
         type="text"
@@ -83,15 +83,16 @@ function EditUser({ user, handleSubmit }: Props) {
         <option value="suspended">Suspended</option>
         <option value="deactivated">Deactivated</option>
       </select>
-
-      <button
-        type="submit"
-        className="py-2 px-4 mt-4 bg-cream w-full justify-center text-black rounded flex items-center gap-2"
-        disabled={loading}
-      >
-        {loading && <Loading size="sm" />}
-        <span className="font-jua">Save Changes</span>
-      </button>
+      <div className="flex items-end justify-end">
+        <button
+          type="submit"
+          className="py-2 px-8 mt-4 bg-black  justify-center text-cream hover:bg-cream hover:text-black  flex items-center gap-2 rounded-full"
+          disabled={loading}
+        >
+          {loading && <Loading size="sm" />}
+          <span className="font-jua">Save Changes</span>
+        </button>
+      </div>
     </form>
   );
 }

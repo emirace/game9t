@@ -20,6 +20,9 @@ interface GameSessionContextType {
   createChallenge: (data: createGameData) => Promise<IGameSession>;
   setGameSession: (data: IGameSession | null) => void;
   acceptChallenge: (value: { sessionId: string }) => Promise<IGameSession>;
+  declineChallenge: (value: {
+    sessionId: string;
+  }) => Promise<{ sessionId: string }>;
   cancelChallenge: (value: { sessionId: string }) => Promise<{
     success: boolean;
     message: string;
@@ -143,6 +146,34 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
     });
   };
 
+  const declineChallenge = async ({
+    sessionId,
+  }: {
+    sessionId: string;
+  }): Promise<{ sessionId: string }> => {
+    return new Promise<{ sessionId: string }>((resolve, reject) => {
+      socket?.emit("declineChallenge", { sessionId });
+
+      const handleResponse = ({ sessionId }: { sessionId: string }) => {
+        resolve({ sessionId });
+        cleanup();
+      };
+
+      const handleError = (error: string) => {
+        reject(new Error(error));
+        cleanup();
+      };
+
+      const cleanup = () => {
+        socket?.off("declineChallengeResponse", handleResponse);
+        socket?.off("declineChallengeError", handleError);
+      };
+
+      socket?.on("declineChallengeResponse", handleResponse);
+      socket?.on("declineChallengeError", handleError);
+    });
+  };
+
   const cancelChallenge = async ({
     sessionId,
   }: {
@@ -260,6 +291,17 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
         });
       }
     );
+    socket.on(
+      "challengeDeclined",
+      ({ username }: { userId: string; username: string }) => {
+        console.log(username);
+        addNotification({
+          message: `${username} declined your challenge`,
+          buttonText: "Close",
+          action: () => {},
+        });
+      }
+    );
   }, [socket]);
 
   return (
@@ -277,6 +319,7 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
         setGameSession,
         createChallenge,
         acceptChallenge,
+        declineChallenge,
         cancelChallenge,
         reloadGameSessions: loadGameSessions,
         startComputerGame,

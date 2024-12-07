@@ -13,11 +13,13 @@ function AcceptGame() {
     acceptChallenge,
     acceptSessionId: sessionId,
     setAcceptSessionId,
+    declineChallenge,
   } = useGameSession();
   const [gameSession, setGameSession] = useState<IGameSession | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [accepting, setAccepting] = useState(false);
+  const [declining, setDeclining] = useState(false);
 
   useEffect(() => {
     const loadGamesesseion = async () => {
@@ -50,6 +52,21 @@ function AcceptGame() {
       setAccepting(false);
     }
   };
+
+  const handleDeclineChallenge = async () => {
+    try {
+      setDeclining(true);
+      await declineChallenge({
+        sessionId: gameSession!._id,
+      });
+      setAcceptSessionId("");
+    } catch (error: any) {
+      addNotification({ message: error.message, error: true });
+    } finally {
+      setDeclining(false);
+    }
+  };
+
   return (
     !!sessionId && (
       <>
@@ -100,9 +117,10 @@ function AcceptGame() {
                   Accept
                 </button>
                 <button
-                  onClick={() => setAcceptSessionId("")}
-                  className="px-2 py-1 bg-cream *:  text-black text-jua text-sm rounded-full flex-1"
+                  onClick={handleDeclineChallenge}
+                  className="flex gap-2 items-center justify-center  px-2 py-1 bg-cream *:  text-black text-jua text-sm rounded-full flex-1"
                 >
+                  {declining && <Loading size="sm" />}
                   Decline
                 </button>
               </div>

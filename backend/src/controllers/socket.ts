@@ -238,6 +238,76 @@ export const acceptChallenge = async ({
   }
 };
 
+export const declineChallenge = async ({
+  sessionId,
+  socket,
+}: {
+  sessionId: string;
+  socket: Socket;
+}) => {
+  try {
+    const userId = (socket.request as any).user._id;
+    const username = (socket.request as any).user.username;
+
+    // Find the game session by ID
+    const gameSession = await GameSession.findOne({
+      _id: sessionId,
+      active: true,
+    })
+      .populate('players')
+      .populate({ path: 'initiatedGame', select: 'name' })
+      .populate({
+        path: 'players',
+        select: 'username',
+      });
+
+    if (!gameSession) {
+      throw new Error('Game session not found or ended');
+    }
+
+    // Check if the user is part of the game session
+    // const isPlayerInSession = gameSession.players.some(
+    //   (player: any) => player._id.toString() === userId,
+    // );
+    // if (!isPlayerInSession) {
+    //   throw new Error('User is not part of this game session');
+    // }
+
+    // Notify the challenge initiator or other players
+    const opponent = gameSession.players.find(
+      (player: any) => player._id.toString() !== userId,
+    );
+
+    if (opponent) {
+      await createNotification({
+        recipient: (opponent._id as any).toString(),
+        sender: userId,
+        type: 'Challenge Declined',
+        message: `${username} declined your challenge.`,
+        link: `/game/${gameSession.initiatedGame._id}`, // Adjust link if necessary
+      });
+
+      socket
+        .to(onlineUsers.get((opponent._id as any).toString())?.socketId.main!)
+        .emit('challengeDeclined', {
+          userId,
+          username,
+        });
+    }
+
+    gameSession.active = false;
+    await gameSession.save();
+
+    // Respond back to the user
+    socket.emit('declineChallengeResponse', {
+      message: 'Challenge declined successfully',
+    });
+  } catch (err: any) {
+    console.error(err);
+    socket.emit('declineChallengeError', err.message);
+  }
+};
+
 export const cancelChallenge = async ({
   sessionId,
   socket,

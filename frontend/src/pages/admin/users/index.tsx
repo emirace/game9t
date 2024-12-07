@@ -66,9 +66,6 @@ function Users() {
             className="bg-black w-full p-2 rounded-md"
             onChange={(e) => setSearch(e.target.value)}
           />
-          <button className="rounded-md bg-white text-black whitespace-nowrap p-1 px-2">
-            Add User
-          </button>
         </div>
       </div>
       <div className="overflow-x-auto">

@@ -91,6 +91,11 @@ const Sidebar: React.FC<{
       setGameSession(gameSession);
       setSuccess(true);
     });
+    socket?.on("challengeDeclined", () => {
+      console.log("hello");
+      setGameSession(null);
+      handleCloseCompete();
+    });
   }, [socket]);
 
   return (

@@ -158,6 +158,65 @@ export const updateUserProfile = async (
   }
 };
 
+export const updateUserById = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const userId = req.params.userId;
+  const { username, email, status, role, personalInfo } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    // Check if username or email already exists (excluding current user)
+    if (username && username !== user.username) {
+      const usernameExists = await User.findOne({ username });
+      if (usernameExists) {
+        res.status(400).json({ message: 'Username is already taken' });
+        return;
+      }
+      user.username = username; // Update username
+    }
+
+    if (email && email !== user.email) {
+      const emailExists = await User.findOne({ 'personalInfo.email': email });
+      if (emailExists) {
+        res.status(400).json({ message: 'Email is already taken' });
+        return;
+      }
+      user.email = email;
+      user.verified = false;
+    }
+
+    // Update other allowed fields
+    if (personalInfo) {
+      user.personalInfo = { ...user.personalInfo, ...personalInfo };
+    }
+    if (status) {
+      user.status = status;
+    }
+
+    if (role) {
+      user.role = role;
+    }
+
+    // Save the updated user
+    const updatedUser = await user.save();
+
+    // Return the updated user profile (without password)
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+    console.log(error);
+  }
+};
+
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const { page = 1, limit = 20, search = '' } = req.query;

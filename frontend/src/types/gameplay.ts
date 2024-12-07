@@ -23,3 +23,16 @@ export interface IGameplay {
   createdAt: Date;
   _id: string;
 }
+
+export interface ILeaderBoard {
+  _id: {
+    _id: string;
+    username: string;
+    personalInfo?: { profilePictureUrl?: string };
+  };
+  totalGamesPlayed: number;
+  totalWins: number;
+  totalLosses: number;
+  currentScore: number;
+  totalEarnings: number;
+}

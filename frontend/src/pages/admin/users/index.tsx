@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
-import { IUser } from "../../types/user";
-import { fetchAllUsers } from "../../services/user";
+import { IProfileData, IUser } from "../../../types/user";
+import { fetchAllUsers, updateUserById } from "../../../services/user";
 import moment from "moment";
-import ICONS from "../../assets/icons/icons";
+import ICONS from "../../../assets/icons/icons";
+import EditUser from "./_component/editUser";
+import { useToastNotification } from "../../../context/toastNotificationContext";
+import MiniModel from "../../_components/miniModal";
 
 function Users() {
+  const { addNotification } = useToastNotification();
   const [users, setUsers] = useState<IUser[]>([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [showEdit, SetshowEdit] = useState(false);
+  const [user, setUser] = useState<IUser | null>(null);
 
   useEffect(() => {
     fetchAllUsers({ page, search, limit: 20 })
@@ -24,8 +30,29 @@ function Users() {
       });
   }, [search, page]);
 
+  const handleShowUser = (user: IUser) => {
+    SetshowEdit(true);
+    setUser(user);
+  };
+
+  const handleClose = () => {
+    SetshowEdit(false);
+    setUser(null);
+  };
+
+  const handleSubmit = async (id: string, data: IProfileData) => {
+    try {
+      const res = await updateUserById(id, data);
+      addNotification({ message: "User updated succesfully" });
+      setUsers((prev) => prev.map((user) => (user._id === id ? res : user)));
+      handleClose();
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+    }
+  };
+
   return (
-    <div>
+    <div className="px-6">
       <h1 className="font-jua text-xl">User Management</h1>
       <div className="text-sm mb-6">
         Manage Your Users and their personal information
@@ -75,7 +102,12 @@ function Users() {
                 <td className="p-4">{user.role}</td>
                 <td className="p-4">{moment(user.createdAt).calendar()}</td>
                 <td className="p-4">{user.status}</td>
-                <td className="p-4 font-bold cursor-pointer">Edit</td>
+                <td
+                  className="p-4 font-bold cursor-pointer"
+                  onClick={() => handleShowUser(user)}
+                >
+                  Edit
+                </td>
               </tr>
             ))}
           </tbody>
@@ -102,6 +134,9 @@ function Users() {
           </button>
         </div>
       </div>
+      <MiniModel isOpen={showEdit} onClose={handleClose} showClose={true}>
+        <EditUser user={user} handleSubmit={handleSubmit} />
+      </MiniModel>
     </div>
   );
 }

@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import IMAGES from "../../assets/images/images";
+import { useEffect, useState } from "react";
+import { fetchLeaderboard } from "../../services/gameplay";
+import { useToastNotification } from "../../context/toastNotificationContext";
+import Loading from "../_components/loading";
+import { ILeaderBoard } from "../../types/gameplay";
+import { imageUrl } from "../../services/api";
 
 // const leaderboards = [
 //   {
@@ -10,6 +16,23 @@ import IMAGES from "../../assets/images/images";
 // ];
 
 function Leaderboard() {
+  const { addNotification } = useToastNotification();
+  const [leaderboards, setLeaderboards] = useState<ILeaderBoard[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const loadLeaderBoard = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchLeaderboard();
+        setLeaderboards(res);
+        setLoading(false);
+      } catch (error: any) {
+        addNotification({ message: error, error: true });
+      }
+    };
+    loadLeaderBoard();
+  }, []);
+
   return (
     <div className="px-20 py-10">
       <nav className="mb-6 flex items-center gap-2">
@@ -58,32 +81,51 @@ function Leaderboard() {
               <th className="p-4 font-jua">Earnings</th>
             </tr>
           </thead>
-          <div className="p-4">Leaddrboard not available </div>
-          <tbody>
-            {[].map((_, index) => (
-              <tr
-                key={index}
-                className={`${
-                  index % 2 ? "bg-light_blue" : null
-                } text-white hover:bg-dark_blue`}
-              >
-                <td className="p-4">{index + 1}</td>
-                <td className="p-4">
-                  <img src={ICONS.trophy2} className="h-6 w-6" />
-                </td>
-                <td className="p-4">
-                  <div className="flex items-center gap-2">
-                    <img src={IMAGES.user2} className="h-6 w-6" />
-                    <div className="font-jua text-xs">Mr Yogesh</div>
-                  </div>
-                </td>
-                <td className="p-4">300</td>
-                <td className="p-4">120</td>
-                <td className="p-4">80%</td>
-                <td className="p-4"> 25,000</td>
-              </tr>
-            ))}
-          </tbody>
+          {loading ? (
+            <Loading />
+          ) : leaderboards.length <= 0 ? (
+            <div className="p-4">Leaddrboard not available </div>
+          ) : (
+            <tbody>
+              {leaderboards.map((leaderboard, index) => (
+                <tr
+                  key={index}
+                  className={`${
+                    index % 2 ? "bg-light_blue" : null
+                  } text-white hover:bg-dark_blue`}
+                >
+                  <td className="p-4">{index + 1}</td>
+                  <td className="p-4">
+                    <img src={ICONS.trophy2} className="h-6 w-6" />
+                  </td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={
+                          leaderboard._id?.personalInfo?.profilePictureUrl
+                            ? imageUrl +
+                              leaderboard._id?.personalInfo?.profilePictureUrl
+                            : IMAGES.user2
+                        }
+                        className="h-6 w-6 rounded-full"
+                      />
+                      <div className="font-jua text-xs">
+                        {leaderboard._id.username}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-4">{leaderboard.totalGamesPlayed}</td>
+                  <td className="p-4">{leaderboard.totalWins}</td>
+                  <td className="p-4">
+                    {(leaderboard.totalWins / leaderboard.totalGamesPlayed) *
+                      100}
+                    %
+                  </td>
+                  <td className="p-4"> {leaderboard.totalEarnings}</td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
 

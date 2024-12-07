@@ -162,13 +162,16 @@ export const acceptChallenge = async ({
     const username = (socket.request as any).user.username;
 
     // Find the game session by ID
-    const gameSession = await GameSession.findOne({
+    let gameSession = await GameSession.findOne({
       _id: sessionId,
       active: true,
     })
       .populate('players')
       .populate({ path: 'initiatedGame', select: 'name' })
-      .populate({ path: 'players', select: 'personalInfo.profilePictureUrl' });
+      .populate({
+        path: 'players',
+        select: 'username',
+      });
 
     if (!gameSession) {
       throw new Error('Game session not found or ended');
@@ -200,6 +203,13 @@ export const acceptChallenge = async ({
 
     // Save the updated game session
     await gameSession.save();
+
+    gameSession = await (
+      await gameSession.populate({ path: 'initiatedGame', select: 'name slug' })
+    ).populate({
+      path: 'players',
+      select: 'personalInfo.profilePictureUrl username',
+    });
 
     // Notify both players that the game session has started
     socket.to(sessionId).emit('challengeAccepted', {

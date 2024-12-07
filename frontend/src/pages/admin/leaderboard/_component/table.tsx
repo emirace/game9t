@@ -1,7 +1,29 @@
+import { useState, useEffect } from "react";
+import { useToastNotification } from "../../../../context/toastNotificationContext";
+import { fetchLeaderboard } from "../../../../services/gameplay";
+import { ILeaderBoard } from "../../../../types/gameplay";
+import Loading from "../../../_components/loading";
+
 function OnGoingBet() {
+  const { addNotification } = useToastNotification();
+  const [leaderboards, setLeaderboards] = useState<ILeaderBoard[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const loadLeaderBoard = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchLeaderboard();
+        setLeaderboards(res);
+        setLoading(false);
+      } catch (error: any) {
+        addNotification({ message: error, error: true });
+      }
+    };
+    loadLeaderBoard();
+  }, []);
   return (
     <div>
-      <div className="font-jua text-lg mb-4">Ongoing Bets</div>
+      <div className="font-jua text-lg mb-4">Leaderboard Table</div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto rounded-lg">
           <thead>
@@ -16,34 +38,43 @@ function OnGoingBet() {
               <th className="p-4 font-jua text-center">Actions</th>
             </tr>
           </thead>
-          <tbody>
-            {[1, 2, 3, 4, 5, 6].map((_, index) => (
-              <tr
-                key={index}
-                className={`${
-                  index % 2 ? "bg-light_blue" : null
-                } text-white hover:bg-dark_blue`}
-              >
-                <td className="p-4">{index + 1}</td>
-                <td className="p-4">Player_ace</td>
-                <td className="p-4">USER123</td>
-                <td className="p-4">250</td>
-                <td className="p-4">180/70</td>
-                <td className="p-4">15,000</td>
-                <td className="p-4"> 100,000</td>
-                <td className="p-4 font-bold">
-                  <div className="flex items-center justify-center gap-3">
-                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full">
-                      Edit
-                    </button>
-                    <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
-                      View Details
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+
+          {loading ? (
+            <Loading />
+          ) : leaderboards.length <= 0 ? (
+            <div className="p-4">Leaddrboard not available </div>
+          ) : (
+            <tbody>
+              {leaderboards.map((leaderboard, index) => (
+                <tr
+                  key={index}
+                  className={`${
+                    index % 2 ? "bg-light_blue" : null
+                  } text-white hover:bg-dark_blue`}
+                >
+                  <td className="p-4">{index + 1}</td>
+                  <td className="p-4">{leaderboard._id.username}</td>
+                  <td className="p-4">{leaderboard._id._id}</td>
+                  <td className="p-4">{leaderboard.totalGamesPlayed}</td>
+                  <td className="p-4">
+                    {leaderboard.totalWins}/{leaderboard.totalLosses}
+                  </td>
+                  <td className="p-4">{leaderboard.currentScore}</td>
+                  <td className="p-4"> {leaderboard.totalEarnings}</td>
+                  <td className="p-4 font-bold">
+                    <div className="flex items-center justify-center gap-3">
+                      <button className="bg-cream text-black text-xs p-1 px-4 rounded-full">
+                        Edit
+                      </button>
+                      <button className="bg-cream text-black text-xs p-1 px-4 rounded-full whitespace-nowrap">
+                        View Details
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
       <div className="flex justify-between items-center mt-6 mb-16 ">

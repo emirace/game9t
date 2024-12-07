@@ -25,7 +25,6 @@ import Friends from "./pages/settings/friends";
 import Delete from "./pages/settings/delete";
 import Admin from "./pages/admin";
 import Dashboard from "./pages/admin/dashboard";
-import Users from "./pages/admin/users";
 import GameManage from "./pages/admin/game";
 import Walletpayment from "./pages/admin/walletpayment";
 import Betting from "./pages/admin/betting";
@@ -46,6 +45,7 @@ import PrivacyPolicy from "./pages/privacy";
 import Disclaimer from "./pages/disclaimer";
 import Responsible from "./pages/responsible";
 import ResetPassword from "./pages/auth/resetPassword";
+import Users from "./pages/admin/users";
 
 export const router = createBrowserRouter([
   {

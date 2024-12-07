@@ -86,6 +86,8 @@ export interface IProfileData {
   email?: string;
   password?: string;
   bio?: string;
+  role?: string;
+  status?: string;
   personalInfo?: {
     firstName?: string;
     lastName?: string;

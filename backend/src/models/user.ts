@@ -85,10 +85,14 @@ const UserSchema: Schema<IUser> = new Schema(
   {
     username: { type: String, required: true, unique: true },
     password: { type: String },
-    role: { type: String, enum: ['player', 'admin'], default: 'player' },
+    role: {
+      type: String,
+      enum: ['player', 'admin', 'moderator'],
+      default: 'player',
+    },
     status: {
       type: String,
-      enum: ['active', 'inactive', 'banned'],
+      enum: ['active', 'suspended', 'deactivated'],
       default: 'active',
     },
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],

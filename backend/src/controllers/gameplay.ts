@@ -14,15 +14,18 @@ export const getLeaderboard = async (req: Request, res: Response) => {
           player2: 1,
           winner: 1,
           multiplayer: 1,
+          bet: 1,
         },
       },
       // Unwind players to treat player1 and player2 separately
       {
         $facet: {
-          player1Data: [{ $project: { player: '$player1', winner: 1 } }],
+          player1Data: [
+            { $project: { player: '$player1', winner: 1, bet: 1 } },
+          ],
           player2Data: [
             { $match: { multiplayer: true } },
-            { $project: { player: '$player2', winner: 1 } },
+            { $project: { player: '$player2', winner: 1, bet: 1 } },
           ],
         },
       },
@@ -63,7 +66,7 @@ export const getLeaderboard = async (req: Request, res: Response) => {
     // Populate player details (name, etc.)
     const leaderboard = await User.populate(leaderboardData, {
       path: '_id',
-      select: 'username', // Populate with the fields you need
+      select: 'username personalInfo.profilePictureUrl', // Populate with the fields you need
     });
 
     res.status(200).json({ leaderboard });

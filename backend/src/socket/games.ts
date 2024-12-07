@@ -484,6 +484,22 @@ export const games = (io: SocketIOServer, socket: Socket) => {
         .emit('updateGamesession', {
           gameSession: null,
         });
+      socket
+        .to(
+          onlineUsers.get(gameplay?.player1?.userId.toString())?.socketId.main!,
+        )
+        .emit('updateGamesession', {
+          gameSession: null,
+        });
+      gameplay?.player2?.userId &&
+        socket
+          .to(
+            onlineUsers.get(gameplay?.player2?.userId.toString())?.socketId
+              .main!,
+          )
+          .emit('updateGamesession', {
+            gameSession: null,
+          });
 
       console.log('Game exited and updated successfully');
     } catch (error) {

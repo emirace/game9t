@@ -36,8 +36,14 @@ const Game: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const sessionId = searchParams.get("sessionid");
   const [ready, setReady] = useState(false);
-  const { cancelChallenge, selectedAmount, gameSession, mode, setGameSession } =
-    useGameSession();
+  const {
+    cancelChallenge,
+    selectedAmount,
+    gameSession,
+    mode,
+    setGameSession,
+    setSelectedAmount,
+  } = useGameSession();
   const [cancelling, setCancelling] = useState(false);
   const [gameOver, setGameOver] = useState<{
     show: boolean;
@@ -105,6 +111,7 @@ const Game: React.FC = () => {
     if (!socket) return;
     socket?.on("gameOver", ({ winner, amount }) => {
       setGameOver({ amount, winner, show: true });
+      setSelectedAmount("");
     });
   }, [socket]);
 

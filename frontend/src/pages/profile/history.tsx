@@ -54,21 +54,20 @@ function History() {
                   : his.player1.userId;
                 const currentUserScore = isPlayer1
                   ? his.player1.score
-                  : his.player2?.score;
+                  : his.player2!.score;
                 const opponentScore = isPlayer1
-                  ? his.player2?.score
+                  ? his.player2!.score
                   : his.player1.score;
 
                 // Determine win/loss status
                 let result = "Draw";
-                if (currentUserScore && opponentScore) {
-                  result =
-                    currentUserScore > opponentScore
-                      ? "Win"
-                      : currentUserScore < opponentScore
-                      ? "Loss"
-                      : "Draw";
-                }
+                result =
+                  currentUserScore > opponentScore
+                    ? "Win"
+                    : currentUserScore < opponentScore
+                    ? "Loss"
+                    : "Draw";
+
                 return (
                   <tr
                     key={index}

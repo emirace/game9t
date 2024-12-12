@@ -62,7 +62,6 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
   const [mode, setMode] = useState<string | null>(null);
   const [acceptSessionId, setAcceptSessionId] = useState("");
   const navigate = useNavigate();
-
   const loadGameSessions = async () => {
     setLoading(true);
     setError(null);

@@ -9,8 +9,8 @@ interface IGameplay extends Document {
     score: number;
   };
   player2?: {
-    userId: mongoose.Types.ObjectId;
-    status: 'online' | 'offline' | 'in-game' | 'waiting';
+    userId?: mongoose.Types.ObjectId;
+    status?: 'online' | 'offline' | 'in-game' | 'waiting';
     score: number;
   };
   multiplayer: boolean;

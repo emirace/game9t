@@ -17,11 +17,14 @@ import { useGameSession } from "../../context/gameSession";
 import MiniModel from "../_components/miniModal";
 import Sidebar from "./_component/sidebar";
 import CreateChallege from "./_component/createChallege";
+import { useSocket } from "../../context/socket";
+import GameOver from "./_component/gameOver";
 
 const Game: React.FC = () => {
   const params = useParams();
   const { id } = params;
   const { fetchGameById } = useGame();
+  const { socket } = useSocket();
   // const { user } = useUser();
   // const { isOnline } = useSocket();
   const { addNotification } = useToastNotification();
@@ -36,6 +39,11 @@ const Game: React.FC = () => {
   const { cancelChallenge, selectedAmount, gameSession, mode, setGameSession } =
     useGameSession();
   const [cancelling, setCancelling] = useState(false);
+  const [gameOver, setGameOver] = useState<{
+    show: boolean;
+    winner: string;
+    amount: string;
+  } | null>({ show: false, winner: "", amount: "" });
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -92,6 +100,13 @@ const Game: React.FC = () => {
       setGameSession(null);
     };
   }, [sessionId]);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket?.on("gameOver", ({ winner, amount }) => {
+      setGameOver({ amount, winner, show: true });
+    });
+  }, [socket]);
 
   const handleCancelChallenge = async () => {
     try {
@@ -283,6 +298,12 @@ const Game: React.FC = () => {
       <MiniModel isOpen={!!mode} showClose onClose={handleCloseCreateChallenge}>
         <CreateChallege gameId={id} />
       </MiniModel>
+      <GameOver
+        amount={gameOver?.amount}
+        winner={gameOver?.winner}
+        show={gameOver?.show}
+        close={() => setGameOver(null)}
+      />
     </div>
   );
 };

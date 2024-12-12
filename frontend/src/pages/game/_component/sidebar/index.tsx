@@ -87,7 +87,7 @@ const Sidebar: React.FC<{
 
   useEffect(() => {
     if (!socket) return;
-    socket?.on("challengeAccepted", (gameSession) => {
+    socket?.on("challengeAccepted", ({ gameSession }) => {
       setGameSession(gameSession);
       setSuccess(true);
     });

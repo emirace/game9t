@@ -429,36 +429,63 @@ export const games = (io: SocketIOServer, socket: Socket) => {
         return;
       }
 
-      gameplay.active = false; // Mark the game as inactive
+      gameplay.active = false;
 
-      // Update scores based on which player exited
+      const userScore = host
+        ? score.win
+          ? 1
+          : score.score
+            ? score.score
+            : 0
+        : score.win
+          ? 0
+          : score.opponentScore
+            ? score.opponentScore
+            : 1;
+      const opponentScore = host
+        ? score.win
+          ? 0
+          : score.opponentScore
+            ? score.opponentScore
+            : 1
+        : score.win
+          ? 1
+          : score.score
+            ? score.score
+            : 0;
+
+      console.log(userScore, opponentScore); // Debugging statement
+
+      // Update scores based on the player who exited
+      gameplay.player2 = gameplay.player2 || { score: 0 };
       if (gameplay.player1.userId.toString() === userId.toString()) {
-        gameplay.player1.score = score.score;
-        if (gameplay.player2) {
-          gameplay.player2.score = score.opponentScore;
+        // Player 1's logic
+        if (status === 'left') {
+          gameplay.player1.score = 0;
+          gameplay.player2.score = 1;
+        } else {
+          gameplay.player1.score = userScore;
+          gameplay.player2.score = opponentScore;
         }
       } else if (
         gameplay?.player2?.userId &&
         gameplay.player2.userId.toString() === userId.toString()
       ) {
-        gameplay.player2.score = score.score;
-        gameplay.player1.score = score.opponentScore;
+        // Player 2's logic
+        if (status === 'left') {
+          gameplay.player2.score = 0;
+          gameplay.player1.score = 1;
+        } else {
+          gameplay.player2.score = userScore;
+          gameplay.player1.score = opponentScore;
+        }
       }
 
       // Determine winner
-      if (gameplay.player1.userId && gameplay.player2?.userId) {
-        if (gameplay.player1.score > gameplay.player2.score) {
-          gameplay.winner = gameplay.player1.userId; // player1 is the winner
-        } else if (gameplay.player2.score > gameplay.player1.score) {
-          gameplay.winner = gameplay.player2.userId; // player2 is the winner
-        }
-      } else {
-        // In case only one player played, declare them the winner by default
-        if (score.win) {
-          gameplay.winner = gameplay.player1
-            ? gameplay.player1.userId
-            : gameplay.player2?.userId;
-        }
+      if (gameplay.player1.score > gameplay.player2.score) {
+        gameplay.winner = gameplay.player1.userId; // player1 is the winner
+      } else if (gameplay.player2.score > gameplay.player1.score) {
+        gameplay.winner = gameplay.player2.userId; // player2 is the winner
       }
 
       const bet = await Bet.findOne({
@@ -467,15 +494,14 @@ export const games = (io: SocketIOServer, socket: Socket) => {
       });
       if (bet) {
         bet.status = 'pending';
-        if (gameplay.player1 && gameplay.player2) {
-          if (gameplay.player1.score > gameplay.player2.score) {
-            bet.winner = gameplay.player1.userId; // player1 is the winner
-          } else if (gameplay.player2.score > gameplay.player1.score) {
-            bet.winner = gameplay.player2.userId; // player2 is the winner
-          }
+        if (gameplay.player1.score > gameplay.player2.score) {
+          bet.winner = gameplay.player1.userId; // player1 is the winner
+        } else if (gameplay.player2.score > gameplay.player1.score) {
+          bet.winner = gameplay.player2.userId; // player2 is the winner
         }
         await bet.save();
       }
+      console.log(bet);
 
       // Save the updated gameplay record
       await gameplay.save();
@@ -500,6 +526,27 @@ export const games = (io: SocketIOServer, socket: Socket) => {
           .emit('updateGamesession', {
             gameSession: null,
           });
+      if (bet) {
+        socket
+          .to(
+            onlineUsers.get(gameplay?.player1?.userId.toString())?.socketId
+              .main!,
+          )
+          .emit('gameOver', {
+            winner: gameplay.winner,
+            amount: bet?.amount,
+          });
+        gameplay?.player2?.userId &&
+          socket
+            .to(
+              onlineUsers.get(gameplay?.player2?.userId.toString())?.socketId
+                .main!,
+            )
+            .emit('gameOver', {
+              winner: gameplay.winner,
+              amount: bet?.amount,
+            });
+      }
 
       console.log('Game exited and updated successfully');
     } catch (error) {

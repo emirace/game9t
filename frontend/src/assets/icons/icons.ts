@@ -64,6 +64,8 @@ const ICONS = {
   coin: new URL("./coin.png", import.meta.url).href,
   coin_black: new URL("./coin_black.png", import.meta.url).href,
   coin_cream: new URL("./coin_cream.png", import.meta.url).href,
+  cancel: new URL("./cancel.png", import.meta.url).href,
+  draw: new URL("./draw.png", import.meta.url).href,
 };
 
 export default ICONS;

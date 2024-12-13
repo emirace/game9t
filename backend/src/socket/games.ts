@@ -460,7 +460,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
           gameplay.player1.score = opponentScore;
         }
       }
-
+      console.log('players', gameplay.player1.score, gameplay.player2.score);
       // Determine winner
       if (gameplay.player1.score > gameplay.player2.score) {
         gameplay.winner = gameplay.player1.userId; // player1 is the winner

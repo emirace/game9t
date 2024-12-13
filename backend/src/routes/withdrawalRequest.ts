@@ -12,7 +12,7 @@ const router = express.Router();
 // Route for admin to get all withdrawal requests with pagination
 router.get('/all', auth, isAdmin, getAllWithdrawalRequests);
 
-router.post('/', createWithdrawalRequest);
+router.post('/', auth, createWithdrawalRequest);
 
 router.put('/:id/approve', auth, isAdmin, approveWithdrawalRequest);
 

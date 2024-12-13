@@ -17,6 +17,7 @@ export const getLeaderboard = async (req: Request, res: Response) => {
           bet: 1,
         },
       },
+      { $unwind: { path: '$bet', preserveNullAndEmptyArrays: true } },
       // Unwind players to treat player1 and player2 separately
       {
         $facet: {
@@ -52,7 +53,16 @@ export const getLeaderboard = async (req: Request, res: Response) => {
           currentScore: { $sum: '$player.score' }, // Sum of all scores for each player
           totalEarnings: {
             $sum: {
-              $cond: [{ $eq: ['$winner', '$player.userId'] }, '$bet.amount', 0],
+              $cond: [
+                {
+                  $and: [
+                    { $eq: ['$winner', '$player.userId'] },
+                    { $ifNull: ['$bet.amount', false] },
+                  ],
+                },
+                '$bet.amount',
+                0,
+              ],
             },
           },
         },

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ICONS from "../../assets/icons/icons";
 import { useWallet } from "../../context/wallet";
 import { useUser } from "../../context/user";
 import { createWithdrawalRequest } from "../../services/withdrawalRequest";
 import { useToastNotification } from "../../context/toastNotificationContext";
+import Loading from "../_components/loading";
 
 const Withdraw: React.FC = () => {
   const { balance } = useWallet();
@@ -21,6 +22,7 @@ const Withdraw: React.FC = () => {
     address: user?.paymentMethods.details.crypto?.walletAddress,
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -48,6 +50,8 @@ const Withdraw: React.FC = () => {
     try {
       await createWithdrawalRequest(formData);
       addNotification({ message: "Withdrawal request sent successfully" });
+      setFormData((prev) => ({ ...prev, type: "", amount: "" }));
+      navigate(-1);
     } catch (err: any) {
       addNotification({ message: err, error: true });
     } finally {
@@ -205,8 +209,9 @@ const Withdraw: React.FC = () => {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-8 py-3 min-w-48 bg-black text-white font-jua rounded-full hover:bg-dark_blue transition-colors"
+              className="flex items-center gap-2 px-8 py-3 min-w-48 bg-black text-white font-jua rounded-full hover:bg-dark_blue transition-colors disabled:bg-gray-600"
             >
+              {loading && <Loading size="sm" />}
               Send Request
             </button>
           </div>

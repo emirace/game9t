@@ -18,3 +18,14 @@ export function getTimeStamp() {
 
   return hours + ':' + minutes + ' ';
 }
+
+export const getScore = (host: boolean, score: any) => {
+  const { win, scores, score: singleScore, opponentScore } = score;
+
+  if (win) return host ? 1 : 0; // Host wins or loses.
+
+  if (scores) return host ? scores[0] : scores[1]; // Use scores array if available.
+
+  if (host) return singleScore ?? 0; // Host score fallback.
+  return opponentScore ?? 1; // Opponent score fallback.
+};

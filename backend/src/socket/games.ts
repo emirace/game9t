@@ -1,5 +1,5 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
-import { getTimeStamp } from '../utils/games';
+import { getScore, getTimeStamp } from '../utils/games';
 import GameSession, { IGameSession } from '../models/gameSession';
 import Gameplay from '../models/gameplay';
 import mongoose from 'mongoose';
@@ -431,28 +431,8 @@ export const games = (io: SocketIOServer, socket: Socket) => {
 
       gameplay.active = false;
 
-      const userScore = host
-        ? score.win
-          ? 1
-          : score.score
-            ? score.score
-            : 0
-        : score.win
-          ? 0
-          : score.opponentScore
-            ? score.opponentScore
-            : 1;
-      const opponentScore = host
-        ? score.win
-          ? 0
-          : score.opponentScore
-            ? score.opponentScore
-            : 1
-        : score.win
-          ? 1
-          : score.score
-            ? score.score
-            : 0;
+      const userScore = getScore(host, score);
+      const opponentScore = getScore(!host, score);
 
       console.log(userScore, opponentScore); // Debugging statement
 

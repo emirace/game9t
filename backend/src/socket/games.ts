@@ -477,7 +477,9 @@ export const games = (io: SocketIOServer, socket: Socket) => {
         if (gameplay.player1.score > gameplay.player2.score) {
           bet.winner = gameplay.player1.userId; // player1 is the winner
         } else if (gameplay.player2.score > gameplay.player1.score) {
-          bet.winner = gameplay.player2.userId; // player2 is the winner
+          bet.winner =
+            gameplay.player2.userId ||
+            ('675c2244ae296dd02fd27858' as unknown as mongoose.Types.ObjectId); // player2 is the winner
         }
         await bet.save();
       }

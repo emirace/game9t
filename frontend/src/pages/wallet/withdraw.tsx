@@ -14,12 +14,12 @@ const Withdraw: React.FC = () => {
   const [formData, setFormData] = useState({
     type: "",
     amount: "",
-    crypto: user?.paymentMethods.details.crypto?.currency,
-    network: user?.paymentMethods.details.crypto?.network,
-    bankName: user?.paymentMethods.details.bankTransfer?.bankName,
-    accountNumber: user?.paymentMethods.details.bankTransfer?.accountNumber,
-    accountName: user?.paymentMethods.details.bankTransfer?.accountHolderName,
-    address: user?.paymentMethods.details.crypto?.walletAddress,
+    crypto: user?.paymentMethods?.details?.crypto?.currency,
+    network: user?.paymentMethods?.details?.crypto?.network,
+    bankName: user?.paymentMethods?.details?.bankTransfer?.bankName,
+    accountNumber: user?.paymentMethods?.details?.bankTransfer?.accountNumber,
+    accountName: user?.paymentMethods?.details?.bankTransfer?.accountHolderName,
+    address: user?.paymentMethods?.details?.crypto?.walletAddress,
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -119,7 +119,8 @@ const Withdraw: React.FC = () => {
                     placeholder="Enter Account Number"
                     className="p-3 bg-black rounded-md focus:outline-none w-full "
                   />
-                  {user?.paymentMethods.details.bankTransfer?.accountNumber && (
+                  {user?.paymentMethods?.details?.bankTransfer
+                    ?.accountNumber && (
                     <img
                       src={ICONS.check_green}
                       className="h-4 w-auto absolute top-1/2 -translate-y-1/2 right-4"
@@ -137,7 +138,8 @@ const Withdraw: React.FC = () => {
                     className="p-3 bg-black rounded-md focus:outline-none w-full "
                   />
 
-                  {user?.paymentMethods.details.bankTransfer?.accountNumber && (
+                  {user?.paymentMethods?.details?.bankTransfer
+                    ?.accountNumber && (
                     <img
                       src={ICONS.check_green}
                       className="h-4 w-auto absolute top-1/2 -translate-y-1/2 right-4"
@@ -185,7 +187,7 @@ const Withdraw: React.FC = () => {
                     className="p-3 bg-black rounded-md focus:outline-none w-full "
                   />
 
-                  {user?.paymentMethods.details.crypto?.walletAddress && (
+                  {user?.paymentMethods?.details?.crypto?.walletAddress && (
                     <img
                       src={ICONS.check_green}
                       className="h-4 w-auto absolute top-1/2 -translate-y-1/2 right-4"

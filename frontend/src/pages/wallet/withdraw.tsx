@@ -229,9 +229,15 @@ const Withdraw: React.FC = () => {
                 {balance}
               </span>
             </h2>
-            <span className="bg-red text-xs px-4 py-1 rounded-lg cursor-pointer">
-              Not Verified
-            </span>
+            {user?.verified ? (
+              <span className="bg-green text-xs px-4 py-1 rounded-lg">
+                Verified
+              </span>
+            ) : (
+              <span className="bg-red text-xs px-4 py-1 rounded-lg cursor-pointer">
+                Not Verified
+              </span>
+            )}
           </div>
           <div className="mb-8">
             <div className="font-jua mb-2 text-xl">Withdraw Limit</div>

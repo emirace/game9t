@@ -94,7 +94,7 @@ function detectAddScript(addon) {
         "multiplayer/css/socket.css",
         "multiplayer/js/socket.js",
         "multiplayer/js/socket-app.js",
-        "213.130.147.200:5000/socket.io/socket.io.js"
+        "http://213.130.147.200:5000/socket.io/socket.io.js"
       )
     ) {
       doneAddScript();

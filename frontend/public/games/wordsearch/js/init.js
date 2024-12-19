@@ -94,7 +94,7 @@ function detectAddScript(addon) {
         "multiplayer/css/socket.css",
         "multiplayer/js/socket.js",
         "multiplayer/js/socket-app.js",
-        "https://api.game9t.com//socket.io/socket.io.js"
+        "https://api.game9t.com/socket.io/socket.io.js"
       )
     ) {
       doneAddScript();

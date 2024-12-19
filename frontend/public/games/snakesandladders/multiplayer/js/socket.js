@@ -136,7 +136,7 @@ function initSocket(game) {
   });
   window.parent.postMessage({ type: "STATUS", data: "Ready" }, "*");
 
-  socket = io("https://game9t.onrender.com", {
+  socket = io("http://localhost:5000", {
     autoConnect: true,
     extraHeaders: {
       authorization: `Bearer ${token}`,

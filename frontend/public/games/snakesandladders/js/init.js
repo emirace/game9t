@@ -94,7 +94,7 @@ function detectAddScript(addon) {
         "multiplayer/css/socket.css",
         "multiplayer/js/socket.js",
         "multiplayer/js/socket-app.js",
-        "https://game9t.onrender.com/socket.io/socket.io.js"
+        "http://localhost:5000/socket.io/socket.io.js"
       )
     ) {
       doneAddScript();

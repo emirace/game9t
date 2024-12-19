@@ -5,8 +5,8 @@ import axios, {
 } from "axios";
 import { getBackendErrorMessage } from "../utils/error";
 
-// export const baseURL = "http://213.130.147.200:5000";
-export const baseURL = "http://213.130.147.200:5000";
+// export const baseURL = "https://api.game9t.com/";
+export const baseURL = "https://api.game9t.com/";
 export const imageUrl = baseURL;
 
 const api = axios.create({

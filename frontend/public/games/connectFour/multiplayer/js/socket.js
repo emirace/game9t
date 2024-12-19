@@ -136,7 +136,7 @@ function initSocket(game) {
   });
   window.parent.postMessage({ type: "STATUS", data: "Ready" }, "*");
 
-  socket = io("http://213.130.147.200:5000", {
+  socket = io("https://api.game9t.com/", {
     autoConnect: true,
     extraHeaders: {
       authorization: `Bearer ${token}`,

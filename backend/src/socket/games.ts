@@ -517,6 +517,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
           .emit('gameOver', {
             winner: gameplay.winner,
             amount: bet?.amount,
+            sessionId,
           });
         gameplay?.player2?.userId &&
           socket
@@ -527,6 +528,7 @@ export const games = (io: SocketIOServer, socket: Socket) => {
             .emit('gameOver', {
               winner: gameplay.winner,
               amount: bet?.amount,
+              sessionId,
             });
       }
 

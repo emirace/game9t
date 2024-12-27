@@ -18,6 +18,7 @@ interface GameSessionContextType {
   setAcceptSessionId: (value: string) => void;
   setSelectedAmount: (value: string) => void;
   createChallenge: (data: createGameData) => Promise<IGameSession>;
+  replayChallenge: (data: { gameSessionId: string }) => Promise<IGameSession>;
   setGameSession: (data: IGameSession | null) => void;
   acceptChallenge: (value: { sessionId: string }) => Promise<IGameSession>;
   declineChallenge: (value: {
@@ -109,6 +110,42 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
 
       socket?.on("createChallengeResponse", handleResponse);
       socket?.on("createChallengeError", handleError);
+    });
+  };
+
+  const replayChallenge = async ({
+    gameSessionId,
+  }: {
+    gameSessionId: string;
+  }): Promise<IGameSession> => {
+    return new Promise<IGameSession>((resolve, reject) => {
+      socket?.emit("replayChallenge", { gameSessionId });
+
+      const handleResponse = ({
+        gameSession,
+      }: {
+        gameSession: IGameSession;
+      }) => {
+        setGameSession(gameSession);
+        navigate(
+          `/game/${gameSession?.initiatedGame?._id}?sessionid=${gameSession._id}`
+        );
+        resolve(gameSession);
+        cleanup();
+      };
+
+      const handleError = (error: string) => {
+        reject(new Error(error));
+        cleanup();
+      };
+
+      const cleanup = () => {
+        socket?.off("replayChallengeResponse", handleResponse);
+        socket?.off("replayChallengeError", handleError);
+      };
+
+      socket?.on("replayChallengeResponse", handleResponse);
+      socket?.on("replayChallengeError", handleError);
     });
   };
 
@@ -317,6 +354,7 @@ export const GameSessionProvider: React.FC<GameSessionProviderProps> = ({
         setSelectedAmount,
         setGameSession,
         createChallenge,
+        replayChallenge,
         acceptChallenge,
         declineChallenge,
         cancelChallenge,

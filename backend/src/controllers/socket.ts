@@ -150,6 +150,101 @@ export const createChallenge = async ({
   }
 };
 
+export const replayChallenge = async ({
+  gameSessionId,
+  socket,
+}: {
+  gameSessionId: string;
+  socket: Socket;
+}) => {
+  try {
+    const userId = (socket.request as any).user._id;
+    const username = (socket.request as any).user.username;
+
+    // Deactivate existing game sessions for the user
+    const existGameSessions = await GameSession.find({
+      players: userId,
+      active: true,
+    });
+
+    if (existGameSessions.length > 0) {
+      for (const session of existGameSessions) {
+        session.active = false;
+        await session.save();
+        socket.broadcast.emit('replayCancelled', {
+          sessionId: session._id,
+        });
+      }
+    }
+
+    const initialGameSession = await GameSession.findById(gameSessionId);
+    if (!initialGameSession) {
+      throw new Error('GameSession not found or expired');
+    }
+
+    if (initialGameSession.amount) {
+      const wallet = await Wallet.findOne({ user: userId });
+      if (initialGameSession.amount > (wallet?.balance || 0)) {
+        throw new Error('Insufficient balance, Top up wallet');
+      }
+    }
+
+    // Create a new game session
+    let gameSession = await GameSession.create({
+      players: [userId],
+      active: true,
+      initiatedGame: initialGameSession.initiatedGame,
+      amount: initialGameSession.amount,
+      private: initialGameSession.private,
+    });
+
+    // Populate initiatedGame.name and players.image fields
+    gameSession = await (
+      await gameSession.populate({ path: 'initiatedGame', select: 'name slug' })
+    ).populate({
+      path: 'players',
+      select: 'personalInfo.profilePictureUrl username',
+    });
+
+    const compete = initialGameSession.players.find(
+      (player) => player.toString() !== userId.toString(),
+    );
+
+    console.log('compete', compete);
+
+    // If there's an opponent to challenge, emit challenge request to them
+    if (!compete) {
+      throw new Error('User is not active');
+    }
+    const opponent: IUser | null = await User.findById(compete);
+    if (!opponent) throw new Error('Opponent not found');
+    const isUserOnline = Array.from(onlineUsers.values()).some(
+      (user) => user.userId.toString() === (opponent._id as any).toString(),
+    );
+
+    if (!isUserOnline) throw new Error('User is not online');
+    socket
+      .to(onlineUsers.get((opponent._id as any).toString())?.socketId.main!)
+      .emit('replayRequest', { gameSession });
+
+    // Make the user join the game session room
+    for (const room of socket.rooms) {
+      console.log(room);
+      if (room !== socket.id) {
+        socket.leave(room);
+      }
+    }
+
+    await socket.join((gameSession._id as any).toString());
+
+    socket.emit('replayChallengeResponse', { gameSession });
+  } catch (err: any) {
+    console.log(err);
+    socket.emit('replayChallengeError', err.message);
+    // throw new Error(err.message);
+  }
+};
+
 export const acceptChallenge = async ({
   sessionId,
   socket,
@@ -200,6 +295,7 @@ export const acceptChallenge = async ({
 
     // Add the user to the players array
     gameSession.players.push(userId);
+    gameSession.private = true;
 
     // Save the updated game session
     await gameSession.save();

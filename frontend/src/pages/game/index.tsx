@@ -43,13 +43,15 @@ const Game: React.FC = () => {
     mode,
     setGameSession,
     setSelectedAmount,
+    setAcceptSessionId,
   } = useGameSession();
   const [cancelling, setCancelling] = useState(false);
   const [gameOver, setGameOver] = useState<{
     show: boolean;
     winner: string;
     amount: string;
-  } | null>({ show: false, winner: "", amount: "" });
+    sessionId: string;
+  } | null>({ show: false, winner: "", amount: "", sessionId: "" });
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -109,9 +111,21 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     if (!socket) return;
-    socket?.on("gameOver", ({ winner, amount }) => {
-      setGameOver({ amount, winner, show: true });
+    socket?.on("gameOver", ({ winner, amount, sessionId }) => {
+      setGameOver({ amount, winner, show: true, sessionId });
       setSelectedAmount("");
+    });
+
+    socket?.on("replayRequest", ({ gameSession }) => {
+      if (!gameOver) {
+        addNotification({
+          message: `${gameSession.players[0]?.username} challenge you to a ${
+            gameSession.initiatedGame.name
+          },  ${gameSession.amount || 0}`,
+          buttonText: "View",
+          action: () => setAcceptSessionId(gameSession._id),
+        });
+      }
     });
   }, [socket]);
 
@@ -309,6 +323,7 @@ const Game: React.FC = () => {
         amount={gameOver?.amount}
         winner={gameOver?.winner}
         show={gameOver?.show}
+        sessionId={gameOver?.sessionId}
         close={() => setGameOver(null)}
       />
     </div>

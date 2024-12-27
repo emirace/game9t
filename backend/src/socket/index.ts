@@ -8,6 +8,7 @@ import {
   createChallenge,
   declineChallenge,
   markNotificationAsRead,
+  replayChallenge,
   sendMessage,
   startGame,
   startPlayerGame,
@@ -98,6 +99,10 @@ export const setupSockets = (io: SocketIOServer) => {
 
     socket.on('createChallenge', ({ gameId, amount, compete }) =>
       createChallenge({ gameId, amount, compete, socket }),
+    );
+
+    socket.on('replayChallenge', ({ gameSessionId }) =>
+      replayChallenge({ gameSessionId, socket }),
     );
 
     socket.on('acceptChallenge', ({ sessionId }) => {

@@ -61,9 +61,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       },
     });
 
-    // newSocket.onAny((event, ...args) => {
-    //   console.log(event, args);
-    // });
+    newSocket.onAny((event, ...args) => {
+      console.log(event, args);
+    });
 
     newSocket.on("connect_error", (err) => {
       console.log("error", err.message);

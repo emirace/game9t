@@ -207,7 +207,7 @@ function GameOver({ amount, winner, show, sessionId, close }: Props) {
                       className="w-auto h-4"
                     />
                     <div className="font-jua  text-lg text-cream">
-                      {amount && parseFloat(amount) * 2}
+                      {amount && parseFloat(amount) * (isWinner ? 2 : 1)}
                     </div>
                   </div>
                 </div>

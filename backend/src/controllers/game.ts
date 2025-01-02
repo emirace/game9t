@@ -89,9 +89,9 @@ export const getAllGames = async (req: Request, res: Response) => {
     const gameIds = games.map((game) => game._id);
     const playsData = await Gameplay.aggregate([
       { $match: { game: { $in: gameIds } } },
-      { $group: { _id: '$_id', totalPlays: { $sum: 1 } } },
+      { $group: { _id: '$game', totalPlays: { $sum: 1 } } },
     ]);
-
+    console.log(gameIds, playsData);
     // Create a map of gameId -> totalPlays
     const playsMap = playsData.reduce(
       (acc, { _id, totalPlays }) => {
